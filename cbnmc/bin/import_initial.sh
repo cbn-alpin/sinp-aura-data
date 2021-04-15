@@ -73,7 +73,8 @@ function main() {
     prepareDb
     insertSource
     insertOrganism
-    insertUser
+    # "user.csv" not used for now !
+    #insertUser
     insertAcquisitionFramework
     insertDataset
     prepareSynthese
