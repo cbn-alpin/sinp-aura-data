@@ -79,7 +79,7 @@ function main() {
     insertDataset
     prepareSynthese
     insertSynthese
-    #maintainDb
+    maintainDb
 
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos

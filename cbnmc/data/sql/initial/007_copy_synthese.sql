@@ -68,7 +68,7 @@ COPY synthese (
     last_action
 )
 FROM :'csvFilePath'
-WITH CSV HEADER DELIMITER E'\t' NULL '\N' QUOTE '"' ESCAPE '\';
+WITH CSV HEADER DELIMITER E'\t' NULL '\N' QUOTE '"' ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Update geom fields'
