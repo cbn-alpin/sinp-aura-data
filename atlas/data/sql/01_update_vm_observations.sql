@@ -13,6 +13,7 @@ BEGIN;
 --------------------------------------------------------------
 -- SUPPRESSION DES VUES DEPENDANT DE LA VUE VM_OBSERVATIONS --
 --------------------------------------------------------------
+DROP MATERIALIZED VIEW IF EXISTS atlas.vm_stats;
 DROP MATERIALIZED VIEW IF EXISTS atlas.vm_taxons_plus_observes;
 DROP MATERIALIZED VIEW IF EXISTS atlas.vm_search_taxon;
 DROP MATERIALIZED VIEW IF EXISTS atlas.vm_taxons;
@@ -339,15 +340,34 @@ CREATE INDEX ON atlas.vm_observations_mailles (annee);
 SELECT atlas.create_vm_altitudes();
 
 
--- Rétablir les droits SELECT à l'utilisateur de l'application GeoNature-atlas (user_pg dans main/configuration/settings.ini).
+-- Materialized View: atlas.vm_stats
+-- DROP MATERIALIZED VIEW IF EXISTS atlas.vm_stats;
+CREATE MATERIALIZED VIEW atlas.vm_stats AS
+    SELECT 'observations' AS label, COUNT(*) AS result FROM atlas.vm_observations
+    UNION
+    SELECT 'municipalities' AS label, COUNT(*) AS result FROM atlas.vm_communes
+    UNION
+    SELECT 'taxons' AS label, COUNT(DISTINCT cd_ref) AS result FROM atlas.vm_taxons
+    UNION
+    SELECT 'pictures' AS label, COUNT (DISTINCT id_media) AS result
+    FROM atlas.vm_medias AS m
+        JOIN atlas.vm_taxons AS t ON ( t.cd_ref = m.cd_ref )
+    WHERE id_type IN (1, 2) ;
+
+CREATE UNIQUE INDEX ON atlas.vm_stats (label);
+
+
+-- Rétablir les droits SELECT à l'utilisateur de l'application GeoNature-atlas
+-- (user_pg dans main/configuration/settings.ini).
 -- Remplacer geonatatlas par votre utilisateur de BDD si vous l'avez modifié.
-GRANT SELECT ON TABLE atlas.t_subdivided_territory TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_observations TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_taxons_plus_observes TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_search_taxon TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_taxons TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_mois TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_altitudes TO geonatadmin;
-GRANT SELECT ON TABLE atlas.vm_observations_mailles TO geonatadmin;
+GRANT SELECT ON TABLE atlas.t_subdivided_territory TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_observations TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_taxons_plus_observes TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_search_taxon TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_taxons TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_mois TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_altitudes TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_observations_mailles TO geonatatlas;
+GRANT SELECT ON TABLE atlas.vm_stats TO geonatatlas;
 
 COMMIT;

@@ -13,7 +13,7 @@ Pour transférer uniquement le dossier `atlas/` sur le serveur, utiliser `rsync`
 en testant avec l'option `--dry-run` (à supprimer quand tout est ok):
 
 ```bash
-rsync -av --copy-unsafe-links ./ geonat@db-paca-sinp:~/data/atlas/ --dry-run
+rsync -av --copy-unsafe-links ./ geonat@db-aura-sinp:~/data/atlas/ --dry-run
 ```
 
 
