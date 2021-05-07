@@ -47,12 +47,12 @@ COPY tmp_datasets (
     marine_domain,
     terrestrial_domain,
     id_nomenclature_dataset_objectif,
-    bbox_west,
-    bbox_east,
-    bbox_south,
-    bbox_north,
-    id_nomenclature_data_origin,-- Interverted order with id_nomenclature_collecting_method
-    id_nomenclature_collecting_method,-- Interverted order with id_nomenclature_data_origin
+    -- bbox_west, -- Champ abscent du fichier CSV.
+    -- bbox_east, -- Champ abscent du fichier CSV.
+    -- bbox_south, -- Champ abscent du fichier CSV.
+    -- bbox_north, -- Champ abscent du fichier CSV.
+    id_nomenclature_collecting_method,
+    id_nomenclature_data_origin,
     id_nomenclature_source_status,
     cor_territory,
     cor_actors_organism,
@@ -111,7 +111,7 @@ FROM tmp_datasets AS tmp
 WHERE NOT EXISTS (
         SELECT 'X'
         FROM t_datasets AS td
-        WHERE td.dataset_shortname = tmp.dataset_shortname
+        WHERE td.unique_dataset_id = tmp.unique_dataset_id
     ) ;
 
 \echo '-------------------------------------------------------------------------------'
@@ -122,7 +122,7 @@ INSERT INTO cor_dataset_territory (
     territory_desc
 )
     SELECT
-        gn_meta.get_id_dataset_by_shortname(tmp.dataset_shortname),
+        gn_meta.get_id_dataset_by_uuid(tmp.unique_dataset_id),
         ref_nomenclatures.get_id_nomenclature('TERRITOIRE', elems ->> 0),
         elems ->> 1
     FROM gn_meta.tmp_datasets AS tmp,
@@ -137,8 +137,8 @@ INSERT INTO cor_dataset_actor (
     id_nomenclature_actor_role
 )
     SELECT
-        gn_meta.get_id_dataset_by_shortname(tmp.dataset_shortname),
-        utilisateurs.get_id_organism_by_name(elems ->> 0),
+        gn_meta.get_id_dataset_by_uuid(tmp.unique_dataset_id),
+        utilisateurs.get_id_organism_by_uuid(uuid(elems ->> 0)),
         ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', elems ->> 1)
     FROM gn_meta.tmp_datasets AS tmp,
         json_array_elements(array_to_json(tmp.cor_actors_organism)) elems
@@ -152,8 +152,8 @@ INSERT INTO cor_dataset_actor (
     id_nomenclature_actor_role
 )
     SELECT
-        gn_meta.get_id_dataset_by_shortname(tmp.dataset_shortname),
-        utilisateurs.get_id_role_by_identifier(elems ->> 0),
+        gn_meta.get_id_dataset_by_uuid(tmp.unique_dataset_id),
+        utilisateurs.get_id_role_by_uuid(uuid(elems ->> 0)),
         ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', elems ->> 1)
     FROM gn_meta.tmp_datasets AS tmp,
         json_array_elements(array_to_json(tmp.cor_actors_user)) elems

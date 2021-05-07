@@ -36,8 +36,8 @@ COPY tmp_users (
     email,
     id_organisme,
     remarques,
-    active,
-    champs_addi,
+    -- active, -- Champ abscent du fichier CSV.
+    -- champs_addi, -- Champ abscent du fichier CSV.
     date_insert,
     date_update
 )
@@ -76,7 +76,7 @@ FROM tmp_users AS tmp
 WHERE NOT EXISTS (
     SELECT 'X'
     FROM t_roles AS tr
-    WHERE tr.identifiant = tmp.identifiant
+    WHERE tr.uuid_role = tmp.uuid_role
 ) ;
 
 

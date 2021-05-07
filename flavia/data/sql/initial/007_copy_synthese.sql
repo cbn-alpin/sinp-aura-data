@@ -11,21 +11,21 @@ SET search_path = gn_synthese, public, pg_catalog ;
 COPY synthese (
     unique_id_sinp,
     unique_id_sinp_grp,
-    entity_source_pk_value,
+    -- entity_source_pk_value, -- Missing field !
     id_source,
     id_dataset,
     id_nomenclature_geo_object_nature,
     id_nomenclature_grp_typ,
-    grp_method,
+    -- grp_method, -- Missing field !
     id_nomenclature_obs_technique,
     id_nomenclature_bio_status,
     id_nomenclature_bio_condition,
     id_nomenclature_naturalness,
-    id_nomenclature_exist_proof, -- Errors in field values, remove for now !
+    id_nomenclature_exist_proof,
     id_nomenclature_valid_status,
     id_nomenclature_diffusion_level,
     id_nomenclature_life_stage,
-    id_nomenclature_sex, -- Errors in field values, remove for now !
+    id_nomenclature_sex,
     id_nomenclature_obj_count,
     id_nomenclature_type_count,
     id_nomenclature_sensitivity,
@@ -34,16 +34,16 @@ COPY synthese (
     id_nomenclature_source_status,
     id_nomenclature_info_geo_type,
     id_nomenclature_behaviour,
-    --id_nomenclature_biogeo_status, -- Missing field !
+    id_nomenclature_biogeo_status,
     reference_biblio,
     count_min,
     count_max,
     cd_nom,
-    --cd_hab, -- Missing field !
+    cd_hab,
     nom_cite,
     --sample_number_proof, -- Missing field !
     digital_proof,
-    --non_digital_proof, -- Missing field !
+    non_digital_proof,
     altitude_min,
     altitude_max,
     depth_min,
@@ -58,8 +58,8 @@ COPY synthese (
     meta_validation_date,
     observers,
     determiner,
-    id_digitiser,
-    id_nomenclature_determination_method, -- Errors in field values, remove for now !
+    -- id_digitiser, -- Missing field !
+    id_nomenclature_determination_method,
     comment_context,
     comment_description,
     additional_data,

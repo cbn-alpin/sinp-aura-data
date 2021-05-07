@@ -37,7 +37,7 @@ COPY tmp_sources (
     meta_update_date
 )
 FROM :'csvFilePath'
-WITH CSV HEADER DELIMITER E';' NULL '\N' QUOTE '"' FORCE_NULL;
+WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
 
 
 \echo '-------------------------------------------------------------------------------'

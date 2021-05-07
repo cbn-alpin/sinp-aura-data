@@ -41,7 +41,7 @@ COPY tmp_organisms (
     url_logo
 )
 FROM :'csvFilePath'
-WITH CSV HEADER DELIMITER E';' NULL '\N' QUOTE '"' FORCE_NULL;
+WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
 
 
 \echo '-------------------------------------------------------------------------------'
@@ -73,7 +73,7 @@ FROM tmp_organisms AS tmp
 WHERE NOT EXISTS (
     SELECT 'X'
     FROM bib_organismes AS bo
-    WHERE bo.nom_organisme = tmp.nom_organisme
+    WHERE bo.uuid_organisme = tmp.uuid_organisme
 ) ;
 
 

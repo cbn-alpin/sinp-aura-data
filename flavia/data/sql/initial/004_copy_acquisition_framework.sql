@@ -29,7 +29,8 @@ ALTER TABLE tmp_acquisition_frameworks OWNER TO :gnDbOwner ;
 \echo '-------------------------------------------------------------------------------'
 \echo 'Add new fields to tmp_acquisition_frameworks table to store infos about correspondence tables'
 ALTER TABLE tmp_acquisition_frameworks
-    ALTER COLUMN acquisition_framework_parent_id TYPE varchar(255),
+    ALTER COLUMN acquisition_framework_parent_id TYPE uuid USING (public.uuid_generate_v4()),
+    ALTER COLUMN acquisition_framework_parent_id SET DEFAULT NULL,
     ADD COLUMN cor_objectifs varchar(255) [],
     ADD COLUMN cor_voletsinp varchar(255) [],
     ADD COLUMN cor_publications jsonb,
@@ -60,13 +61,16 @@ COPY tmp_acquisition_frameworks (
     cor_voletsinp,
     cor_actors_organism,
     cor_actors_user,
-    cor_publications,
+    -- cor_publications, -- Champ abscent du fichier CSV.
     meta_create_date,
     meta_update_date
 )
 FROM :'csvFilePath'
 WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
 
+
+COMMIT;
+BEGIN;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Copy PARENT "tmp_acquisition_frameworks" data to "t_acquisition_frameworks" if not exist'
@@ -107,7 +111,7 @@ FROM tmp_acquisition_frameworks AS tmp
 WHERE NOT EXISTS (
         SELECT 'X'
         FROM t_acquisition_frameworks AS taf
-        WHERE taf.acquisition_framework_name = tmp.acquisition_framework_name
+        WHERE taf.unique_acquisition_framework_id = tmp.unique_acquisition_framework_id
     )
     AND tmp.is_parent = True;
 
@@ -143,7 +147,7 @@ SELECT
     (
         SELECT taf_parent.id_acquisition_framework
         FROM t_acquisition_frameworks AS taf_parent
-        WHERE taf_parent.acquisition_framework_name = tmp.parent_code
+        WHERE taf_parent.unique_acquisition_framework_id = tmp.parent_code
     ),
     is_parent,
     acquisition_framework_start_date,
@@ -154,7 +158,7 @@ FROM tmp_acquisition_frameworks AS tmp
 WHERE NOT EXISTS (
         SELECT 'X'
         FROM t_acquisition_frameworks AS taf
-        WHERE taf.acquisition_framework_name = tmp.acquisition_framework_name
+        WHERE taf.unique_acquisition_framework_id = tmp.unique_acquisition_framework_id
     )
     AND tmp.is_parent = False;
 
@@ -165,7 +169,7 @@ INSERT INTO cor_acquisition_framework_objectif (
     id_nomenclature_objectif
 )
     SELECT
-	    gn_meta.get_id_acquisition_framework_by_name(tmp.acquisition_framework_name),
+	    gn_meta.get_id_acquisition_framework_by_uuid(tmp.unique_acquisition_framework_id),
 	    ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', UNNEST(tmp.cor_objectifs))
     FROM gn_meta.tmp_acquisition_frameworks AS tmp
 ON CONFLICT ON CONSTRAINT pk_cor_acquisition_framework_objectif DO NOTHING ;
@@ -177,7 +181,7 @@ INSERT INTO cor_acquisition_framework_voletsinp (
     id_nomenclature_voletsinp
 )
     SELECT
-	    gn_meta.get_id_acquisition_framework_by_name(tmp.acquisition_framework_name),
+	    gn_meta.get_id_acquisition_framework_by_uuid(tmp.unique_acquisition_framework_id),
 	    ref_nomenclatures.get_id_nomenclature('VOLET_SINP', UNNEST(tmp.cor_voletsinp))
     FROM gn_meta.tmp_acquisition_frameworks AS tmp
 ON CONFLICT ON CONSTRAINT pk_cor_acquisition_framework_voletsinp DO NOTHING ;
@@ -192,8 +196,8 @@ INSERT INTO cor_acquisition_framework_actor (
     id_nomenclature_actor_role
 )
     SELECT
-        gn_meta.get_id_acquisition_framework_by_name(tmp.acquisition_framework_name),
-        utilisateurs.get_id_organism_by_name(elems ->> 0),
+        gn_meta.get_id_acquisition_framework_by_uuid(tmp.unique_acquisition_framework_id),
+        utilisateurs.get_id_organism_by_uuid(uuid(elems ->> 0)),
         ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', elems ->> 1)
     FROM gn_meta.tmp_acquisition_frameworks AS tmp,
         json_array_elements(array_to_json(tmp.cor_actors_organism)) elems
@@ -207,8 +211,8 @@ INSERT INTO cor_acquisition_framework_actor (
     id_nomenclature_actor_role
 )
     SELECT
-        gn_meta.get_id_acquisition_framework_by_name(tmp.acquisition_framework_name),
-        utilisateurs.get_id_role_by_identifier(elems ->> 0),
+        gn_meta.get_id_acquisition_framework_by_uuid(tmp.unique_acquisition_framework_id),
+        utilisateurs.get_id_role_by_uuid(uuid(elems ->> 0)),
         ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', elems ->> 1)
     FROM gn_meta.tmp_acquisition_frameworks AS tmp,
         json_array_elements(array_to_json(tmp.cor_actors_user)) elems

@@ -43,13 +43,15 @@ tar jcvf ../2021-03-31_sinp_aura_flavia.tar.bz2 .
 
 ### Fichier synthese.csv export 2021-03-31_sinp_aura_flavia
 
-Liste des corrections appliquées au fichier `synthese.csv` transmis :
+Liste des corrections appliquées au fichier `acquisition_framework.csv` transmis :
+- `['""""` remplacé par `{""`
+- `""""']` remplacé par `""}`
+- `"""",""""` remplacé par `"",""`
+- `""""', '""""` remplacer par `"",""`
+- Utilisation du format CSV séparé par des points-virgules avec guillemets doubles systèmatiques
 
-```shell
 
-```
-
-Liste des corrections appliquées au fichier `user.csv` transmis :
+Liste des corrections appliquées au fichier `.csv` transmis :
 ```shell
 
 ```

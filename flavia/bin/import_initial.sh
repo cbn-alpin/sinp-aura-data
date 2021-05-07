@@ -72,13 +72,13 @@ function main() {
     extractArchive
     prepareDb
     insertSource
-    # insertOrganism
-    # insertUser
-    # insertAcquisitionFramework
-    # insertDataset
-    # prepareSynthese
-    # insertSynthese
-    # maintainDb
+    insertOrganism
+    insertUser
+    insertAcquisitionFramework
+    insertDataset
+    prepareSynthese
+    insertSynthese
+    maintainDb
 
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
