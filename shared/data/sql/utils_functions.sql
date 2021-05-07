@@ -26,6 +26,27 @@ $function$ ;
 
 
 \echo '-------------------------------------------------------------------------------'
+\echo 'Set function "get_id_acquisition_framework_by_uuid()"'
+CREATE OR REPLACE FUNCTION gn_meta.get_id_acquisition_framework_by_uuid(afUuid uuid)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS
+$function$
+    -- Function which return the id_acquisition_framework from an unique_acquisition_framework_id
+    DECLARE idAcquisitionFramework integer;
+
+    BEGIN
+        SELECT INTO idAcquisitionFramework id_acquisition_framework
+        FROM gn_meta.t_acquisition_frameworks AS af
+        WHERE af.unique_acquisition_framework_id = afUuid ;
+
+        RETURN idAcquisitionFramework ;
+    END;
+$function$ ;
+
+
+\echo '-------------------------------------------------------------------------------'
 \echo 'Set function "get_id_dataset_by_shortname()"'
 CREATE OR REPLACE FUNCTION gn_meta.get_id_dataset_by_shortname(shortName character varying)
     RETURNS integer
@@ -47,6 +68,27 @@ $function$ ;
 
 
 \echo '-------------------------------------------------------------------------------'
+\echo 'Set function "get_id_dataset_by_uuid()"'
+CREATE OR REPLACE FUNCTION gn_meta.get_id_dataset_by_uuid(dUuid uuid)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS
+$function$
+    -- Function which return the id_dataset from an unique_dataset_id
+    DECLARE idDataset integer;
+
+    BEGIN
+        SELECT INTO idDataset id_dataset
+        FROM gn_meta.t_datasets AS td
+        WHERE td.unique_dataset_id = dUuid ;
+
+        RETURN idDataset ;
+    END;
+$function$ ;
+
+
+\echo '-------------------------------------------------------------------------------'
 \echo 'Set function "get_id_organism_by_name()"'
 CREATE OR REPLACE FUNCTION utilisateurs.get_id_organism_by_name(oName character varying)
     RETURNS integer
@@ -54,13 +96,34 @@ CREATE OR REPLACE FUNCTION utilisateurs.get_id_organism_by_name(oName character 
     IMMUTABLE
 AS
 $function$
-    -- Function which return the id_acquisition_framework from an acquition_framework_name
+    -- Function which return the id_organisme from an nom_organisme
     DECLARE idOrganism integer;
 
     BEGIN
         SELECT INTO idOrganism id_organisme
         FROM utilisateurs.bib_organismes AS bo
         WHERE bo.nom_organisme = oName ;
+
+        RETURN idOrganism ;
+    END;
+$function$ ;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Set function "get_id_organism_by_uuid()"'
+CREATE OR REPLACE FUNCTION utilisateurs.get_id_organism_by_uuid(oUuid uuid)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS
+$function$
+    -- Function which return the id_organisme from an uuid_organisme
+    DECLARE idOrganism integer;
+
+    BEGIN
+        SELECT INTO idOrganism id_organisme
+        FROM utilisateurs.bib_organismes AS bo
+        WHERE bo.uuid_organisme = oUuid ;
 
         RETURN idOrganism ;
     END;
@@ -75,13 +138,34 @@ CREATE OR REPLACE FUNCTION utilisateurs.get_id_role_by_identifier(identifier cha
     IMMUTABLE
 AS
 $function$
-    -- Function which return the id_acquisition_framework from an acquition_framework_name
+    -- Function which return the id_role from an identifiant
     DECLARE idRole integer;
 
     BEGIN
         SELECT INTO idRole id_role
         FROM utilisateurs.t_roles AS tr
         WHERE tr.identifiant = identifier ;
+
+        RETURN idRole ;
+    END;
+$function$ ;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Set function "get_id_role_by_uuid()"'
+CREATE OR REPLACE FUNCTION utilisateurs.get_id_role_by_uuid(rUuid uuid)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS
+$function$
+    -- Function which return the id_role from an uuid_role
+    DECLARE idRole integer;
+
+    BEGIN
+        SELECT INTO idRole id_role
+        FROM utilisateurs.t_roles AS tr
+        WHERE tr.uuid_role = rUuid ;
 
         RETURN idRole ;
     END;
