@@ -66,7 +66,7 @@ function main() {
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
-    printInfo "CBNA data import script started at: ${fmt_time_start}"
+    printInfo "FLAVIA data import script started at: ${fmt_time_start}"
 
     downloadDataArchive
     extractArchive
