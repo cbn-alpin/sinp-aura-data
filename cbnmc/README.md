@@ -31,7 +31,7 @@ L'archive au format d'échange doit être stocké sur Dropbox au niveau du dossi
 Elle doit être compressé au format `.tar.bz2` pour cela se placer dans le
 dossier contenant les fichiers `.csv` du format d'échange et lancer la commande :
 ```
-tar jcvf ../2021-04-09_sinp_aura_cbnmc.tar.bz2 .
+tar jcvf ../2021-05-12_sinp_aura_cbnmc.tar.bz2 .
 ```
 
 ## Commandes appliquées
