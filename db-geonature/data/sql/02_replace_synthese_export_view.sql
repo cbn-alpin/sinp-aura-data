@@ -4,9 +4,11 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Update VIEW gn_synthese.v_synthese_for_export'
+\echo 'Recreate VIEW gn_synthese.v_synthese_for_export'
 -- Ajout des colonnes id_nomenclature_sensitivity et id_nomenclature_diffusion_level (obligatoires)
 -- Suppression de toutes les colonnes inutiles
+DROP VIEW gn_synthese.v_synthese_for_export ;
+
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export
 AS SELECT s.id_synthese,
     s.unique_id_sinp AS uuid_perm_sinp,
@@ -39,7 +41,9 @@ FROM gn_synthese.synthese s
      LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature ;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Update VIEW gn_synthese.v_synthese_taxon_for_export_view'
+\echo 'Recreate VIEW gn_synthese.v_synthese_taxon_for_export_view'
+DROP VIEW gn_synthese.v_synthese_taxon_for_export_view ;
+
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_taxon_for_export_view
 AS WITH s AS (SELECT DISTINCT cd_nom FROM gn_synthese.synthese )
 	SELECT
