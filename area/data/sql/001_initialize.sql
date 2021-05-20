@@ -1,4 +1,5 @@
--- Droits d'éxecution nécessaire : SUPER UTILISATEUR
+-- Required rights: SUPER USER
+-- GeoNature database compatibility : v2.3.0+
 -- Initialize database before insert SINP area data
 BEGIN;
 

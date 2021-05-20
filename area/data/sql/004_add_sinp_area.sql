@@ -1,3 +1,5 @@
+-- Required rights: DB OWNER
+-- GeoNature database compatibility : v2.3.0+
 -- Add SINP area
 BEGIN;
 

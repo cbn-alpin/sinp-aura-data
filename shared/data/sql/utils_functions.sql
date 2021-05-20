@@ -1,7 +1,28 @@
 \echo 'Insert utils functions'
-\echo 'Rights: db owner'
+\echo 'Required rights: db owner'
 \echo 'GeoNature database compatibility : v2.3.0+'
 BEGIN;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Set function "get_id_area_type_by_code()"'
+CREATE OR REPLACE FUNCTION ref_geo.get_id_area_type_by_code(areaTypeCode character varying)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS
+$function$
+    -- Function which return the id_type from a bib_areas_types
+    DECLARE idType integer;
+
+    BEGIN
+        SELECT INTO idType id_type
+        FROM ref_geo.bib_areas_types AS bat
+        WHERE bat.type_code = areaTypeCode ;
+
+        RETURN idType ;
+    END;
+$function$ ;
 
 
 \echo '-------------------------------------------------------------------------------'

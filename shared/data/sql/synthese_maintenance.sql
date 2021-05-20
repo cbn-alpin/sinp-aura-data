@@ -1,5 +1,5 @@
 \echo 'Maintenance on gn_synthese tables after massive insert into synthese'
-\echo 'Rights: superuser'
+\echo 'Required rights: superuser'
 \echo 'GeoNature database compatibility : v2.3.0+'
 
 \echo '-------------------------------------------------------------------------------'

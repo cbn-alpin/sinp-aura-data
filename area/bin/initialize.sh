@@ -86,6 +86,7 @@ function main() {
 
     downloadFrenchAdminAreas
     createFrenchAdminRegionAreasSqlFile
+    prepareDb
     loadSinpArea
     removeAreasOutsideSinpArea
 
@@ -111,6 +112,7 @@ function downloadFrenchAdminAreas() {
         printVerbose "Uncompress archive file..."
         cd ${raw_shared_dir}/
         p7zip -d ${area_raw_file_path}
+        chmod -R 755 "${raw_shared_dir}/${ign_ae_first_dir}/"
     else
         printVerbose "Archive of french administrative areas was already downloaded !"
     fi
@@ -127,6 +129,14 @@ function createFrenchAdminRegionAreasSqlFile() {
         printVerbose "SQL file of french administrative areas already exists: ${Gre}${area_sql_file_path}"
     fi
 }
+
+function prepareDb() {
+    printMsg "Inserting utils functions into GeoNature database..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${sql_shared_dir}/utils_functions.sql"
+}
+
 
 function loadSinpArea() {
     printMsg "Loading SINP area in database '${area_table_name}'..."
@@ -166,8 +176,8 @@ function removePreviousSinpArea() {
     printMsg "Removing previous SINP area..."
 
     if [[ "${area_remove_previous_sinp}" = true ]]; then
-        sudo -n -u "${pg_admin_name}" -s \
-            psql -d "${db_name}" \
+        export PGPASSWORD="${db_pass}"; \
+            psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
                 -f "${sql_dir}/003_remove_sinp_area.sql"
     else
         local msg="Previous SINP area was NOT removed from database"
@@ -179,12 +189,42 @@ function removeAreasOutsideSinpArea() {
     printMsg "Removing areas outside SINP area..."
 
     if [[ "${area_remove_outside_areas}" = true ]]; then
-        sudo -n -u "${pg_admin_name}" -s \
-            psql -d "${db_name}" \
+
+        printMsg "Preparing GeoNature database before deleting areas into l_areas table ..."
+        export PGPASSWORD="${db_pass}"; \
+            psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+                -f "${sql_shared_dir}/l_areas_before_delete.sql"
+
+        printMsg "Deleting areas outside SINP area..."
+        export PGPASSWORD="${db_pass}"; \
+            psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
                 -v areasTmpTable="${area_table_name}" \
                 -v sinpRegId="${area_sinp_region_id}" \
                 -v areaSubdividedTableName="${area_subdivided_table_name}" \
                 -f "${sql_dir}/005_remove_outside_areas.sql"
+
+        if [[ "${area_remove_by_insee_code}" = true ]]; then
+            printMsg "Deleting areas outside SINP by Departements INSEE codes..."
+            export PGPASSWORD="${db_pass}"; \
+                psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+                    -v SinpDepRegexp="${area_departements_regexp}" \
+                    -v SinpComRegexp="${area_communes_regexp}" \
+                    -f "${sql_dir}/006_remove_areas_by_insee_code.sql"
+        else
+            local msg="Areas are't removed by INSEE Code."
+            printVerbose "${Blink}${Mag}INFO: ${RCol}${Gra}${msg}"
+        fi
+
+        printMsg "Restoring GeoNature database after deleting areas into l_areas table ..."
+        export PGPASSWORD="${db_pass}"; \
+            psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+                -f "${sql_shared_dir}/l_areas_after_delete.sql"
+
+        printMsg "Executing database maintenance on updated tables..."
+        checkSuperuser
+        sudo -n -u "${pg_admin_name}" -s \
+            psql -d "${db_name}" \
+                -f "${sql_shared_dir}/l_areas_maintenance.sql"
     else
         local msg="Areas are't intersecting with SINP area were NOT removed from database"
         printVerbose "${Blink}${Mag}INFO: ${RCol}${Gra}${msg}"

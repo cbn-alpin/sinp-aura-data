@@ -8,11 +8,13 @@ BEGIN;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Delete areas not intersect with SINP area'
-DELETE FROM ref_geo.l_areas AS a
-WHERE NOT EXISTS (
-   SELECT 'X' FROM :areaSubdividedTableName AS c
-   WHERE public.st_intersects(c.geom, a.geom)
-) ;
+DELETE FROM ref_geo.l_areas AS la
+WHERE (
+    la.area_code NOT SIMILAR TO :'SinpDepRegexp' AND la.id_type = ref_geo.get_id_area_type_by_code('DEP')
+) OR (
+    la.area_code NOT SIMILAR TO :'SinpComRegexp' AND la.id_type = ref_geo.get_id_area_type_by_code('COM')
+)
+;
 
 
 \echo '----------------------------------------------------------------------------'

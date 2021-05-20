@@ -1,5 +1,5 @@
 \echo 'Prepare database before inserting data into synthese'
-\echo 'Rights: superuser'
+\echo 'Required rights: superuser'
 \echo 'GeoNature database compatibility : v2.3.0+'
 BEGIN;
 

@@ -1,4 +1,5 @@
--- Droits d'éxecution nécessaire : DB OWNER
+-- Required rights: DB OWNER
+-- GeoNature database compatibility : v2.3.0+
 -- Subdivize territory geom with st_subdivide() to faster st_intersect()
 BEGIN;
 

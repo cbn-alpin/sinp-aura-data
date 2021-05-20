@@ -1,5 +1,5 @@
 \echo 'Prepare database before deleting data into synthese'
-\echo 'Rights: db owner'
+\echo 'Required rights: db owner'
 \echo 'GeoNature database compatibility : v2.3.0+'
 BEGIN;
 
