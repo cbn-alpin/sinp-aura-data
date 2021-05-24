@@ -81,14 +81,6 @@ WHERE id_source IN (
     FROM tmp_sources AS tmp
 ) ;
 
-\echo '-------------------------------------------------------------------------------'
-\echo 'Update id_module fields'
-UPDATE synthese SET
-    id_module = gn_commons.get_id_module_bycode('SYNTHESE')
-WHERE id_source IN (
-    SELECT get_id_source_by_name(tmp.name_source)
-    FROM tmp_sources AS tmp
-) ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
