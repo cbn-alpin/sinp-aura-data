@@ -66,7 +66,7 @@ function main() {
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
-    printInfo "CBNMC dataset import script started at: ${fmt_time_start}"
+    printInfo "${app_name} script started at: ${fmt_time_start}"
 
     downloadDataArchive
     extractArchive
@@ -87,13 +87,12 @@ function main() {
 }
 
 function downloadDataArchive() {
-    printMsg "Downloading CBNMC data archive..."
+    printMsg "Downloading ${app_code^^} data archive..."
 
     if [[ ! -f "${raw_dir}/${cm_filename_archive}" ]]; then
-        curl -X POST https://content.dropboxapi.com/2/files/download \
-            --header "Authorization: Bearer ${cm_dropbox_token}" \
-            --header "Dropbox-API-Arg: {\"path\": \"${cm_dropbox_dir}/${cm_filename_archive}\"}" \
-            > "${raw_dir}/${cm_filename_archive}"
+        downloadSftp "${sftp_user}" "${sftp_pwd}" \
+            "${sftp_host}" "${sftp_port}" \
+            "/${app_code}/${cm_filename_archive}" "${raw_dir}/${cm_filename_archive}"
      else
         printVerbose "Archive file \"${cm_filename_archive}\" already downloaded." ${Gra}
     fi
