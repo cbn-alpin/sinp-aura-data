@@ -26,6 +26,10 @@
 # shellcheck disable=SC2034
 # SOURCE: https://github.com/ralish/bash-script-template/blob/stable/source.sh
 function initScript() {
+    # App infos
+    app_name="SINP AURA Server Data"
+    app_code="sasd"
+
     # Script time
     readonly time_start="$(date +%s)"
     readonly fmt_time_start="$(date -d @${time_start} "+%Y-%m-%d %H:%M:%S")"
@@ -65,6 +69,7 @@ function initScript() {
     readonly Mag="\e[1;35m"; # Text Magenta
     readonly Gra="\e[1;30m"; # Text Dark Gray
     readonly Whi="\e[1;37m"; # Text Dark White
+    readonly Std="\e[0m"; # Text normal
     readonly Blink="\e[5m"; #Text blink
 
     #+----------------------------------------------------------------------------+
@@ -118,7 +123,7 @@ function printPretty() {
     if [[ -n ${2-} ]]; then
         echo -e "${2}${1}${RCol}"
     else
-        echo -e "${Yel}${1}${RCol}"
+        echo -e "${Std}${1}${RCol}"
     fi
 }
 
@@ -389,7 +394,7 @@ function displayProgressBar() {
 # DESC: Trim spaces at beginning and ending of a string
 # ARGS: $1 (required): string to trim spaces
 # OUTS: None
-# SOURCE:
+# SOURCE: -
 trim() {
     if [[ $# -lt 1 ]]; then
         exitScript 'Missing required argument to ${FUNCNAME}()!' 2
@@ -400,4 +405,54 @@ trim() {
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
     printf '%s' "$var"
+}
+
+# DESC: Download file with Wget
+# ARGS: $1 (required): URL where download the file
+# ARGS: $2 (required): path of file where download it locally
+# OUTS: None
+# SOURCE: -
+function downloadWeb() {
+    if [[ $# -lt 2 ]]; then
+        exitScript 'Missing required argument to download()!' 2
+    fi
+    local readonly commands=("wget" "grep" "uniq")
+    checkBinary "${commands[@]}"
+
+	local readonly url="${1}"
+	local readonly file="${2}"
+	wget --no-check-certificate --progress=dot "${url}" -O "${file}" 2>&1 | grep --line-buffered -E -o "100%|[1-9]0%|^[^%]+$" | uniq
+	printVerbose "Download ${file}: ${Gre}DONE${RCol}"
+}
+
+# DESC: Download file with Sftp
+# ARGS: $1 (required): user name
+# ARGS: $2 (required): user password
+# ARGS: $3 (required): sftp host server IP address
+# ARGS: $4 (required): sftp host server if not equal to 22
+# ARGS: $5 (required): remote file path to dowload
+# ARGS: $6 (required): local file path for the downloaded file
+# OUTS: None
+# SOURCE: -
+function downloadSftp() {
+    if [[ $# -lt 6 ]]; then
+        exitScript 'Missing required argument to download()!' 6
+    fi
+    local readonly commands=("sshpass" "sftp")
+    checkBinary "${commands[@]}"
+
+    local readonly user="${1}"
+    local readonly pwd="${2:-22}"
+    local readonly host="${3}"
+    local readonly port="${4}"
+	local readonly remote_file="${5}"
+	local readonly local_file="${6}"
+    sshpass -p "${pwd}" sftp -oStrictHostKeyChecking=no -oPort="${port}" "${user}@${host}:${remote_file}" "${local_file}"
+
+    if [[ -f "${local_file}" ]]; then
+	    printVerbose "SFTP Download ${local_file}: ${Gre}DONE${RCol}"
+    else
+        printVerbose "SFTP download: ${Red}something wrong with ${remote_file} ${RCol}"
+    fi
+
 }
