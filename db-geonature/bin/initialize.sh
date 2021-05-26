@@ -135,8 +135,14 @@ function executeSql() {
     printMsg "Adding SINP area type and geom..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -v sinpRegCode="${dbgb_sinp_reg_code}" \
+            -v sinpRegCode="${dbgn_sinp_reg_code}" \
             -f "${sql_dir}/05_add_sinp_area.sql"
+
+    printMsg "Creating subdivided SINP and DEP areas..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${sql_dir}/06_fix_geo_ref.sql"
+            
 }
 
 main "${@}"
