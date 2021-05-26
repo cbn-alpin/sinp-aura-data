@@ -14,6 +14,7 @@ COPY synthese (
     -- entity_source_pk_value, -- Missing field !
     id_source,
     id_dataset,
+    id_module,
     id_nomenclature_geo_object_nature,
     id_nomenclature_grp_typ,
     -- grp_method, -- Missing field !
@@ -41,6 +42,7 @@ COPY synthese (
     cd_nom,
     cd_hab,
     nom_cite,
+    meta_v_taxref,
     --sample_number_proof, -- Missing field !
     digital_proof,
     non_digital_proof,
