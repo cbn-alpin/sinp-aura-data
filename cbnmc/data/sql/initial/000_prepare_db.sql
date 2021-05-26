@@ -10,6 +10,6 @@ SET client_encoding = 'UTF8';
 
 \echo 'NOTHING TO DO FOR NOW !'
 
-\echo '----------------------------------------------------------------------------'
-\echo 'COMMIT if all is ok:'
+-- \echo '----------------------------------------------------------------------------'
+-- \echo 'COMMIT if all is ok:'
 -- COMMIT;
