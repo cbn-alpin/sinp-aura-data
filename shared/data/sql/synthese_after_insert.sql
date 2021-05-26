@@ -470,6 +470,33 @@ $$ ;
 -- UPDATE synthese SET meta_create_date = NOW() WHERE meta_create_date IS NULL ;
 -- UPDATE synthese SET meta_update_date = NOW() WHERE meta_update_date IS NULL ;
 
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create subdivided areas table for SINP, DEP and COM'
+
+\echo ' Remove subdivided areas table if necessary'
+DROP TABLE IF EXISTS ref_geo.tmp_subdivided_area ;
+
+\echo ' Add subdivided areas table'
+CREATE TABLE ref_geo.tmp_subdivided_area AS
+    SELECT
+        random() AS gid,
+        la.id_type AS id_type,
+        la.id_area AS id_area,
+        st_subdivide(geom, 255) AS geom
+    FROM ref_geo.l_areas AS la
+    WHERE la.id_type IN (
+        ref_geo.get_id_area_type('SINP'),
+        ref_geo.get_id_area_type('DEP'),
+        ref_geo.get_id_area_type('COM')
+    ) ;
+
+\echo 'Create indexes on subdivided areas table'
+CREATE INDEX idx_subdivided_sinp_area_geom ON ref_geo.tmp_subdivided_area USING gist (geom);
+
+CREATE INDEX idx_subdivided_sinp_area_id_area_id_type ON ref_geo.tmp_subdivided_area USING btree(id_area, id_type);
+
+
 \echo '-------------------------------------------------------------------------------'
 \echo 'Replay actions on table "cor_area_synthese" (triggers on it must be disabled !)'
 
@@ -477,19 +504,20 @@ $$ ;
 TRUNCATE TABLE cor_area_synthese ;
 -- TO AVOID TRUNCATE : add condition on id_source or id_dataset to reduce synthese table entries in below inserts
 
-\echo ' Reinsert all data in cor_area_synthese for Départements and Communes'
--- ~35mn for ~1,000 areas and ~6,000,000 of rows in synthese table on SSD NVME disk
+\echo ' Reinsert all data in cor_area_synthese for SINP area, Départements and Communes'
 INSERT INTO cor_area_synthese
     SELECT
         s.id_synthese,
         a.id_area
-    FROM ref_geo.l_areas AS a
+    FROM ref_geo.tmp_subdivided_area AS a
         JOIN synthese AS s
             ON public.st_intersects(s.the_geom_local, a.geom)
     WHERE a.id_type IN (
+        ref_geo.get_id_area_type('SINP'), -- SINP area
         ref_geo.get_id_area_type('DEP'), -- Départements
         ref_geo.get_id_area_type('COM') -- Communes
-    ) ;
+    ) 
+ON CONFLICT ON CONSTRAINT pk_cor_area_synthese DO NOTHING ;
 
 \echo ' Reinsert all data in cor_area_synthese for meshes'
 -- ~3mn for ~35,000 areas and ~6,000,000 of rows in synthese table on SSD NVME disk
@@ -537,7 +565,7 @@ $$ ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'For GeoNature > v2.5.5, replay action calculate sensitivity'
-\echo 'WARNING : not replay for SINP PACA !'
+\echo 'WARNING : not replay for SINP AURA !'
 -- DO $$
 --     BEGIN
 --         IF EXISTS (
