@@ -1,3 +1,8 @@
+-- Droits d'éxecution nécessaire : DB OWNER
+-- Script to recreate atlas.vm_observations Materialized View.
+-- Use: psql -h localhost -U geonatadmin -d gnatlas -f ./db-atlas/data/sql/011_update_vm_observations.sql
+-- For original content of this script see: https://github.com/PnX-SI/GeoNature-atlas/blob/master/data/update_vm_observations.sql
+-- This script use branch and feat/sinp and atlas.t_subdivided_territory Materialized View.
 --------------
 -- IMPORTANT--
 --------------
@@ -370,4 +375,6 @@ GRANT SELECT ON TABLE atlas.vm_altitudes TO geonatatlas;
 GRANT SELECT ON TABLE atlas.vm_observations_mailles TO geonatatlas;
 GRANT SELECT ON TABLE atlas.vm_stats TO geonatatlas;
 
+\echo '----------------------------------------------------------------------------'
+\echo 'COMMIT if all is OK:'
 COMMIT;
