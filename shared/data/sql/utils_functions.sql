@@ -214,6 +214,27 @@ $function$
 $function$ ;
 
 
+\echo '-------------------------------------------------------------------------------'
+\echo 'Set function"get_id_group_by_name()"'
+CREATE OR REPLACE FUNCTION utilisateurs.get_id_group_by_name(groupName character varying)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS $function$
+    -- Function which return the id_role of a group by its name
+    DECLARE idRole integer;
+
+    BEGIN
+        SELECT INTO idRole tr.id_role
+        FROM utilisateurs.t_roles AS tr
+        WHERE tr.nom_role = groupName
+            AND tr.groupe = true ;
+
+        RETURN idRole ;
+    END;
+$function$ ;
+
+
 \echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;
