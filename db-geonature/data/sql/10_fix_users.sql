@@ -63,7 +63,7 @@ INSERT INTO utilisateurs.cor_roles (id_role_groupe, id_role_utilisateur)
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Remove inactive users from "Grp_utilisateurs" group .'
+\echo 'Remove inactive users from "Grp_utilisateurs" group.'
 DELETE FROM utilisateurs.cor_roles
 WHERE id_role_groupe = utilisateurs.get_id_group_by_name('Grp_utilisateurs')
     AND id_role_utilisateur IN (
