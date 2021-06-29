@@ -4,14 +4,14 @@
 BEGIN;
 
 
-\echo '-------------------------------------------------------------------------------'
-\echo 'Drop "tmp_outside_all" table if exists'
-DROP TABLE IF EXISTS gn_synthese.tmp_outside_all ;
+-- \echo '-------------------------------------------------------------------------------'
+-- \echo 'Drop "tmp_outside_all" table if exists'
+-- DROP TABLE IF EXISTS gn_synthese.tmp_outside_all ;
 
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Create "tmp_outside_all" table'
-CREATE TABLE gn_synthese.tmp_outside_all
+CREATE TABLE IF NOT EXISTS gn_synthese.tmp_outside_all
 AS
 	SELECT DISTINCT
 		s.id_synthese,
@@ -26,8 +26,9 @@ AS
 	FROM gn_synthese.synthese s
 	WHERE NOT EXISTS(
 		SELECT 'X'::text
-		FROM gn_synthese.cor_area_synthese AS cas
-		WHERE cas.id_synthese = s.id_synthese
+		FROM :areaSubdividedTableName AS c
+        WHERE c.id_type = ref_geo.get_id_area_type_by_code('SINP')
+            AND public.st_intersects(c.geom, s.the_geom_local)
 	)
 WITH DATA ;
 
@@ -38,6 +39,36 @@ CREATE INDEX tmp_outside_all_id_synthese_idx ON gn_synthese.tmp_outside_all (id_
 CREATE INDEX tmp_outside_all_unique_id_sinp_idx ON gn_synthese.tmp_outside_all (unique_id_sinp) ;
 CREATE INDEX tmp_outside_all_id_source_idx ON gn_synthese.tmp_outside_all (id_source) ;
 CREATE INDEX tmp_outside_all_the_geom_local_idx ON gn_synthese.tmp_outside_all USING gist (the_geom_local) ;
+
+
+-- \echo '-------------------------------------------------------------------------------'
+-- \echo 'Drop "tmp_outside_with_geom" table if exists'
+-- DROP TABLE IF EXISTS gn_synthese.tmp_outside_with_geom ;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Create "tmp_outside_with_geom" table'
+CREATE TABLE IF NOT EXISTS gn_synthese.tmp_outside_with_geom
+AS
+	SELECT DISTINCT
+		toa.*
+	FROM gn_synthese.tmp_outside_all AS toa
+	WHERE toa.the_geom_local IS NOT NULL
+        AND NOT EXISTS(
+            SELECT 'X'::text
+            FROM :areaSubdividedTableName AS c
+            WHERE c.id_type = ref_geo.get_id_area_type_by_code('SINP')
+                AND public.st_intersects(c.geom, toa.the_geom_local)
+        )
+WITH DATA ;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Create indexes on tmp_outside_all'
+CREATE INDEX tmp_outside_with_geom_id_synthese_idx ON gn_synthese.tmp_outside_with_geom (id_synthese) ;
+CREATE INDEX tmp_outside_with_geom_unique_id_sinp_idx ON gn_synthese.tmp_outside_with_geom (unique_id_sinp) ;
+CREATE INDEX tmp_outside_with_geom_id_source_idx ON gn_synthese.tmp_outside_with_geom (id_source) ;
+CREATE INDEX tmp_outside_with_geom_the_geom_local_idx ON gn_synthese.tmp_outside_with_geom USING gist (the_geom_local) ;
 
 
 \echo '-------------------------------------------------------------------------------'
