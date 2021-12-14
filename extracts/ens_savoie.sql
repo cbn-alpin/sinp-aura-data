@@ -1,4 +1,7 @@
 -- Query to extracts data for Savoie ENS
+-- Usage (from local computer): cat ./ens_savoie.sql | ssh <user>@<ip-server> 'export PGPASSWORD="<db-user-password>" ; psql -h localhost -p <db-port> -U <db-user> -d <db-name>' > ./$(date +'%F')_extracts.csv
+-- The CSV file should contain 1,053,704 lines.
+
 WITH PLANTAE_SENSITIVE_TAXONS AS (
 	SELECT cd_nom 
 	FROM taxonomie.taxref
