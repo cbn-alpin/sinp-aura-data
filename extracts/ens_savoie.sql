@@ -86,23 +86,24 @@ COPY (
         WHERE s.id_synthese IN (SELECT id_synthese FROM ALL_TAXA_NON_SENSITIVE_OBS_IN_SAVOIE)
     )
     SELECT
-        s.unique_id_sinp AS observation_uuid,
-        s.unique_id_sinp_grp AS observation_group_uuid,
-        j.unique_dataset_id AS dataset_uuid,
-        j.dataset_name AS dataset_name,
-        c.unique_acquisition_framework_id AS acquisition_framework_uuid,
-        c.acquisition_framework_name AS acquisition_framework_name,
-        s.date_min,
-        s.date_max,
-        s.observers,
-        s."validator",
-        t.cd_ref AS taxref_cd_ref,
-        t.nom_valide AS taxref_valid_name,
-        s.count_min,
-        s.count_max,
-        n.label_default AS sensitive_level,
+        s.unique_id_sinp AS uuid_perm_sinp,
+        s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
+        c.unique_acquisition_framework_id AS ca_uuid,
+        c.acquisition_framework_name AS ca_nom,
+        j.unique_dataset_id AS jdd_uuid,
+        j.dataset_name AS jdd_nom,
+        n.label_default AS niveau_validation,
+        s."validator" AS validateur,
+        s.observers AS observateurs,
+        t.cd_ref,
+        t.nom_valide,
+        s.count_min AS nombre_min,
+        s.count_max AS nombre_max,
+        s.date_min AS date_debut,
+        s.date_max AS date_fin,
+        s."precision" As precision_geographique,
         o.niveau_precision AS precision_level,
-        o.geom
+        o.geom AS geometrie
     FROM gn_synthese.synthese AS s 
         JOIN obs_in_savoie AS o
             ON s.id_synthese = o.id_synthese
