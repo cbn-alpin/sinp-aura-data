@@ -99,11 +99,11 @@ COPY (
         t.nom_valide,
         s.count_min AS nombre_min,
         s.count_max AS nombre_max,
-        s.date_min AS date_debut,
-        s.date_max AS date_fin,
+        s.date_min::TIMESTAMP::DATE AS date_debut,
+        s.date_max::TIMESTAMP::DATE AS date_fin,
         s."precision" As precision_geographique,
         o.niveau_precision AS niveau_precision_diffusion,
-        o.geom AS geometrie
+        o.geom AS geometrie_2154
     FROM gn_synthese.synthese AS s 
         JOIN obs_in_savoie AS o
             ON s.id_synthese = o.id_synthese
