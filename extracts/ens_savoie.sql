@@ -102,7 +102,7 @@ COPY (
         s.date_min AS date_debut,
         s.date_max AS date_fin,
         s."precision" As precision_geographique,
-        o.niveau_precision AS precision_level,
+        o.niveau_precision AS niveau_precision_diffusion,
         o.geom AS geometrie
     FROM gn_synthese.synthese AS s 
         JOIN obs_in_savoie AS o
