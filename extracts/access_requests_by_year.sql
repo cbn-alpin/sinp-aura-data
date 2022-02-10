@@ -12,6 +12,8 @@ COPY (
         re.additional_data ->> 'projectType' AS type_etude,
         re.additional_data ->> 'projectDescription' AS desc_etude,
         re.additional_data ->> 'kingdom' AS regne_concerne,
+        re.processed_state AS decision,
+        re.refusal_reason AS raison_si_refus,
         to_char(re.meta_create_date, 'DD/MM/YYYY') AS date_demande
     FROM gn_permissions.t_requests AS re
         LEFT JOIN utilisateurs.t_roles AS ro
@@ -20,7 +22,6 @@ COPY (
             ON ro.id_organisme = o.id_organisme
     WHERE re.meta_create_date > '${year}-01-01 00:00:00'
         AND re.meta_create_date < '${year}-12-31 23:59:59.999999'
-        AND re.processed_state = 'accepted'
     ORDER BY re.processed_date ASC
 ) TO stdout
 WITH (format csv, header, delimiter E'\t') ;
