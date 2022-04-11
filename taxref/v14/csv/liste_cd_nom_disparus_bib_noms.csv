@@ -1,0 +1,3 @@
+id_nom;cd_nom;cd_ref;nom_francais;comments;commentaire_disparition;cd_nom_remplacement;deleted;tmp_import
+2318;29364;29364;;;cd_nom de remplacement à utiliser. nouveau cd_nom :29492;29492;t;
+9614;101747;101747;;;cd_nom à supprimer : enregistrement ambigü à revoir dans les données.;;t;

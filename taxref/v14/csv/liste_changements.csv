@@ -1,0 +1,435 @@
+i_cd_ref;i_array_agg;i_count;f_cd_ref;f_array_agg;f_count;att_list;att_nb;media_nb;grappe_change;action;cas
+3931;{3931,5373,435854};3;435854;{3931,5373,435854};3;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+3945;{3945};1;961306;{3945};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+3864;{3864};1;3864;{3864,433984};2;;;3;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+4400;{4380,4400};2;4400;{4380,4400,434561};3;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+4397;{4397};1;4397;{4397,4398,4399};3;;;2;cas3: f_cd_ref;Merge attributes if exists;merge
+4398;{4398};1;4397;{4397,4398,4399};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+4399;{4399};1;4397;{4397,4398,4399};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+4776;{4776};1;4776;{4776,434564};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+4849;{4849};1;4849;{4849,434535};2;;;7;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5013;{5013};1;839011;{5013};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5014;{5014};1;839012;{5014};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5025;{5025};1;963550;{5025};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5037;{5037};1;839014;{5037};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5041;{5041};1;839016;{5041};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5045;{5045};1;839017;{5045};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5065;{5065};1;435952;{5065};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5167;{5167};1;5167;{5167,434669,434670};3;;;2;cas3: f_cd_ref;Merge attributes if exists;merge
+5072;{5072};1;5072;{5072,434611};2;;;4;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5090;{5090};1;5090;{5090,434641};2;;;5;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5228;{5228};1;786509;{5228,786509};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5253;{5253,434584,435796};3;435796;{5253,435796};2;;;;cas2;Loose attributes and medium now attach to No one;split
+5253;{5253,434584,435796};3;786528;{434584};1;;;;cas2;Loose attributes and medium now attach to No one;split
+5325;{5325};1;5325;{5325,786539};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5347;{5347};1;5347;{5347,434576};2;;;7;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5637;{5637};1;435566;{5637};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5738;{5738};1;956735;{5738};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5742;{5742};1;963836;{5742};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5748;{5748};1;963846;{5748};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5751;{5751};1;967395;{5751};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5768;{5768};1;956740;{5768};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5770;{5770};1;956667;{5770};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5771;{5771};1;956668;{5771};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+6029;{6029};1;436226;{6029};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+6053;{6053};1;963812;{6053};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5892;{5892};1;5892;{5892,434677};2;;;1;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+5903;{5903};1;5903;{5903,434645};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+6246;{6246};1;655656;{6246};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+6279;{6279};1;719571;{6279};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+6302;{6302};1;786836;{6302};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+6373;{6373};1;786421;{6373};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+6565;{6565};1;966763;{6565};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29377;{29377};1;971178;{29377,469175};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+29392;{29392};1;967890;{29392,469182};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+29468;{29468};1;971198;{29468,469196};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+29418;{29418};1;968047;{29418,469183,469184};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+29450;{29450};1;967886;{29450,29457,469190};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+29457;{29457};1;967886;{29450,29457,469190};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+29364;{29492};1;968158;{29492};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29384;{29384};1;508948;{29384};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29387;{29387};1;967900;{29387};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29396;{29396};1;968166;{29396};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29399;{29399};1;971201;{29399};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29773;{29773};1;971168;{29773};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29779;{29779};1;971206;{29779};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29783;{29783};1;520743;{29783};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29814;{29814};1;520774;{29814};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29817;{29817};1;520781;{29817};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29825;{29825};1;967881;{29825};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29827;{29827};1;971423;{29827};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+30551;{30551};1;971732;{30551};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+30658;{30658};1;510089;{30658};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+30673;{30673};1;510065;{30673,469262};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+30878;{30878};1;972007;{30878,31726};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+31726;{31726};1;972007;{30878,31726};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+32855;{32855};1;971427;{32855};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+32860;{32860};1;971476;{32860};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+32901;{32901};1;972016;{32901,32911};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+32911;{32911};1;972016;{32901,32911};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+33087;{33087};1;33087;{33087,469621};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+34577;{34577};1;34581;{34577};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+37569;{37569};1;972034;{37569};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+37821;{37821};1;971482;{37821};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+39199;{39199};1;971138;{39199};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+39516;{39516};1;969743;{39516};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+42982;{42982};1;970232;{42982};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+46608;{46608};1;945104;{46608};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+53294;{53294};1;956889;{53294};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+56413;{56413};1;954903;{56413};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+56476;{56476};1;955004;{56476};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+56511;{56511};1;954991;{56511};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+56516;{56516};1;955020;{56516};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+58224;{58224};1;955037;{58224};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+58989;{58989};1;954522;{58989};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+59387;{59387};1;954159;{59387};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66145;{66145};1;962302;{66145,66146};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+66146;{66146};1;962302;{66145,66146};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+66130;{66130};1;971744;{66130};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66133;{66133};1;971762;{66133};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66134;{66134};1;971768;{66134};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66136;{66136};1;971800;{66136};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66138;{66138};1;971791;{66138};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66140;{66140};1;971792;{66140};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66141;{66141};1;913804;{66141};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+66142;{66142};1;971798;{66142};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+80955;{80955};1;971406;{80955};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+81027;{81027};1;81027;{81027,718638};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+81992;{81992};1;81992;{81992,613632};2;;;5;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+82498;{82498};1;82498;{82498,131373};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+82656;{82656};1;82656;{82656,131410};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+83195;{83195};1;83195;{83195,143682};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+83832;{83832};1;83832;{83832,131662};2;;;3;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+85714;{85714};1;945634;{85714};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+85904;{85904};1;85904;{85904,612202,718653};3;;;1;cas3: f_cd_ref;Merge attributes if exists;merge
+85357;{85357};1;85357;{85357,161543};2;;;1;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+86101;{86101};1;125238;{86101};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+86894;{86894};1;80317;{86894};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+87106;{87106};1;87106;{87106,132363};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+87577;{87577};1;87577;{87577,132462};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+88463;{88463};1;771637;{88463};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+87849;{87849};1;87849;{87849,132541};2;;;7;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+87964;{87964};1;87964;{87964,132568};2;;;14;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+88467;{88467};1;88467;{88467,132676};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+88741;{88741};1;88741;{88741,789027};2;;;4;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+88949;{88949};1;88949;{88949,145240};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+91803;{91803};1;966887;{91803};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+91898;{91898};1;970955;{91898};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+91900;{91900};1;970963;{91900,612442};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+93613;{93613};1;93613;{93613,133577};2;;;5;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+96584;{96584};1;96591;{96584,96591};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+96591;{96591};1;96591;{96584,96591};2;;;2;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+96612;{96612};1;96612;{96612,96615};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+96615;{96615};1;96612;{96612,96615};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+97960;{97960};1;97961;{97960,97961};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+97961;{97961};1;97961;{97960,97961};2;;;2;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+98054;{98054};1;98054;{98054,134480};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+98079;{98079};1;98079;{98079,134495};2;;;5;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+99805;{99805};1;99805;{99805,718232};2;;;3;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+100677;{100677};1;116185;{100677};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+100757;{100757};1;945605;{100757};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+100288;{100288,135088};2;100288;{100288};1;;;;cas2;Keep attributes and medium;split
+100288;{100288,135088};2;135088;{135088};1;;;;cas2;Loose attributes and medium now attach to 100288;split
+101742;{101742,102657};2;101742;{101742};1;;;;cas2;Keep attributes and medium;split
+101813;{101813,102361,102429};3;101813;{101813};1;;;;cas2;Keep attributes and medium;split
+101742;{101742,102657};2;102657;{102657};1;;;;cas2;Loose attributes and medium now attach to 101742;split
+101864;{102570};1;102570;{102570};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+102078;{101605,102078};2;102078;{102078};1;;;9;cas2;Keep attributes and medium;split
+101813;{101813,102361,102429};3;102429;{102429};1;;;;cas2;Loose attributes and medium now attach to 101813;split
+101813;{101813,102361,102429};3;968757;{102361};1;;;;cas2;Loose attributes and medium now attach to 101813;split
+102078;{101605,102078};2;101605;{101605};1;;;9;cas2;Loose attributes and medium now attach to 102078;split
+102296;{102068};1;102068;{102068};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+102304;{102304};1;968717;{102304};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+102675;{102675};1;619691;{102675};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+102345;{102345,102542};2;102345;{102345};1;;;;cas2;Keep attributes and medium;split
+102350;{102154,102350};2;102350;{102350};1;;;3;cas2;Keep attributes and medium;split
+102519;{101809,102519};2;102519;{102519};1;;;;cas2;Keep attributes and medium;split
+102345;{102345,102542};2;102542;{102542};1;;;;cas2;Loose attributes and medium now attach to 102345;split
+102350;{102154,102350};2;102154;{102154};1;;;3;cas2;Loose attributes and medium now attach to 102350;split
+102519;{101809,102519};2;101809;{101809};1;;;;cas2;Loose attributes and medium now attach to 102519;split
+102294;{102294};1;102294;{102294,102453};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+102453;{102453};1;102294;{102294,102453};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+102715;{102715};1;788791;{102715,788791};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+103007;{103007};1;966497;{103007};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+103608;{103608};1;945856;{103608};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+103406;{103406};1;103406;{103406,136789,136793};3;;;4;cas3: f_cd_ref;Merge attributes if exists;merge
+104457;{104457};1;91852;{104457};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+105214;{105214};1;105214;{105214,613082};2;;;10;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+106144;{106144};1;106144;{106144,137323};2;;;5;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+106226;{106226};1;106226;{106226,137343};2;;;7;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+106998;{106998};1;95056;{106998};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+107000;{107000};1;719157;{107000};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+107013;{107013};1;95058;{107013};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+107024;{107024};1;95060;{107024};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+107003;{107003};1;107003;{107003,161017};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+107207;{107207};1;107207;{107207,107213};2;;;2;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+107213;{107213};1;107207;{107207,107213};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+109309;{109309};1;109309;{109309,138027};2;;;2;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+111886;{111886};1;111921;{111886};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+112831;{112831};1;717832;{112831};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+112833;{112833};1;112832;{112833};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+113421;{113421};1;113417;{113421};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+113874;{113874};1;113825;{113874};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+113748;{113748};1;113748;{113748,138859};2;;;4;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+115017;{115017};1;959191;{115017};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+114297;{114297};1;114297;{114297,149732};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+116162;{116162};1;150303;{116162};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+116411;{116411};1;116412;{116411};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+116112;{116112};1;116112;{116112,150292};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+116847;{116847};1;964676;{116847};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+116952;{116952};1;116952;{116952,150441};2;;;6;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+118173;{118173};1;118204;{118173};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+118821;{118821};1;952513;{118821};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+118823;{118823};1;952514;{118823};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+119276;{119276};1;119284;{119276};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+119915;{119915};1;119915;{119915,617262};2;;;5;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+120717;{120717};1;120717;{120717,718856};2;;;4;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+121047;{121047};1;121047;{121047,140624};2;;;7;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+122293;{122293};1;811173;{122293};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+124682;{124682};1;124682;{124682,124692};2;;;2;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+125150;{125150};1;969360;{125150};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+124692;{124692};1;124682;{124682,124692};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+126650;{126650};1;126650;{126650,141766,141769};3;;;4;cas3: f_cd_ref;Merge attributes if exists;merge
+128330;{128330};1;100694;{128330};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+128512;{128512};1;970234;{128512};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+128998;{128998};1;128996;{128998};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+129000;{129000};1;129000;{129000,152410};2;;;10;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+129265;{129265};1;129265;{129265,142220,152461};3;;;10;cas3: f_cd_ref;Merge attributes if exists;merge
+130650;{130650};1;670749;{130650};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+130873;{130873};1;130873;{130873,613836};2;;;1;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131294;{131294};1;961575;{131294};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+131779;{131779};1;131784;{131779};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+131830;{131830};1;131829;{131830};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+131296;{131296};1;131296;{131296,143448};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131307;{131307};1;131308;{131307,131308};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131308;{131308};1;131308;{131307,131308};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131373;{131373};1;82498;{82498,131373};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131410;{131410};1;82656;{82656,131410};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131467;{131467};1;131467;{131467,131491};2;;;4;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131491;{131491};1;131467;{131467,131491};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+131662;{131662};1;83832;{83832,131662};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+132201;{132201};1;144382;{132201};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+132542;{132542};1;87872;{132542};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+132569;{132569};1;87971;{132569};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+132363;{132363};1;87106;{87106,132363};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+132462;{132462};1;87577;{87577,132462};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+132541;{132541};1;87849;{87849,132541};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+132568;{132568};1;87964;{87964,132568};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+132676;{132676};1;88467;{88467,132676};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+133577;{133577};1;93613;{93613,133577};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+134362;{134362};1;967227;{134362};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+134141;{134141};1;134141;{134141,134143};2;;;1;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+134143;{134143};1;134141;{134141,134143};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+134480;{134480};1;98054;{98054,134480};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+134495;{134495};1;98079;{98079,134495};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+136991;{136991};1;612437;{136991};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+136789;{136789};1;103406;{103406,136789,136793};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+136793;{136793};1;103406;{103406,136789,136793};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+137531;{137531};1;939840;{137531};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+137665;{137665};1;137671;{137665};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+137323;{137323};1;106144;{106144,137323};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+137343;{137343};1;106226;{106226,137343};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+138027;{138027};1;109309;{109309,138027};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+138751;{138751};1;113378;{138751};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+138682;{138682};1;138682;{138682,149336};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+138859;{138859};1;113748;{113748,138859};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+139432;{139432};1;965168;{139432};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+139433;{139433};1;965160;{139433};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+138998;{138998};1;138998;{138998,149743};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+139008;{139008};1;139008;{139008,612546};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+139846;{139846};1;139849;{139846,139849};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+139849;{139849};1;139849;{139846,139849};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+140630;{140630};1;952591;{140630};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+140624;{140624};1;121047;{121047,140624};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+141110;{141110};1;141110;{141110,141113};2;;;4;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+141113;{141113};1;141110;{141110,141113};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+141182;{141182};1;141182;{141182,151823};2;;;10;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+141766;{141766};1;126650;{126650,141766,141769};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+141769;{141769};1;126650;{126650,141766,141769};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+142220;{142220};1;129265;{129265,142220,152461};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+143447;{143447};1;81994;{143447};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+143449;{143449};1;82015;{143449};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+148083;{148083};1;148085;{148083};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+143448;{143448};1;131296;{131296,143448};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+143682;{143682};1;83195;{83195,143682};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+145240;{145240};1;88949;{88949,145240};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+149336;{149336};1;138682;{138682,149336};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+149732;{149732};1;114297;{114297,149732};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+149743;{149743};1;138998;{138998,149743};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+150292;{150292};1;116112;{116112,150292};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+150441;{150441};1;116952;{116952,150441};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+155066;{155066};1;159777;{155066};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+152461;{152461};1;129265;{129265,142220,152461};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+151823;{151823};1;141182;{141182,151823};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+152410;{152410};1;129000;{129000,152410};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+161017;{161017};1;107003;{107003,161017};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+161543;{161543};1;85357;{85357,161543};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+162902;{162902};1;972076;{162902};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+163109;{163109};1;953002;{163109};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+163110;{163110};1;521613;{163110};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+188987;{188987};1;939298;{188987};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+191508;{191508};1;191507;{191508};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+192619;{192619};1;948713;{192619};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+193132;{193132};1;939319;{193132};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+195449;{195449};1;939386;{195449};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+196001;{196001};1;939388;{196001};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+226904;{226904};1;226976;{226904};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+236638;{236638};1;967688;{236638};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+238332;{238332};1;829029;{238332};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+238459;{238459,699552};2;937893;{238459,699552};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+240287;{240287};1;240287;{66172,240287,535850,535851};4;;;1;cas3: f_cd_ref;Merge attributes if exists;merge
+242257;{242257};1;956573;{242257};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+245971;{245971};1;964264;{245971};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+246688;{246688};1;946857;{246688};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+246692;{246692};1;946860;{246692};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+247904;{247904};1;937107;{247904};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+248040;{248040};1;415963;{248040};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+248365;{54737,248365};2;54737;{54737,248365};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+248366;{54739};1;54739;{54739};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+249060;{249060};1;939795;{249060};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+249084;{249084};1;941013;{249084};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+249838;{249838};1;943799;{249838};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+432552;{432552};1;971801;{432552};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+433984;{433984};1;3864;{3864,433984};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434112;{434112};1;435705;{434112};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434207;{434207};1;435838;{434207};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434153;{434153};1;434151;{434153,434155};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434155;{434155};1;434151;{434153,434155};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434290;{434290};1;839013;{434290};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434291;{434291};1;839015;{434291};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434483;{434483};1;970669;{434483};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434459;{434459};1;434459;{434459,434655,434656};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+434387;{434387};1;434387;{434387,786522};2;;;2;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434466;{434466};1;434466;{434466,434659};2;;;10;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434655;{434655};1;434459;{434459,434655,434656};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+434656;{434656};1;434459;{434459,434655,434656};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+434535;{434535};1;4849;{4849,434535};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434561;{434561};1;4400;{4380,4400,434561};3;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434564;{434564};1;4776;{4776,434564};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434576;{434576};1;5347;{5347,434576};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434611;{434611};1;5072;{5072,434611};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434641;{434641};1;5090;{5090,434641};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434645;{434645};1;5903;{5903,434645};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434659;{434659};1;434466;{434466,434659};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434560;{434560};1;4379;{434560};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434575;{434575};1;435781;{434575};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434601;{434601};1;435912;{434601};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434612;{434612};1;963689;{434612};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434654;{434654};1;962117;{434654};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434657;{434657};1;809935;{434657};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+436220;{434469,436220};2;960102;{434469,436220};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+434669;{434669};1;5167;{5167,434669,434670};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+434670;{434670};1;5167;{5167,434669,434670};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+434668;{434668};1;904296;{6074,434668,904296};3;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+434677;{434677};1;5892;{5892,434677};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+445260;{445260};1;971766;{445260};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+462405;{462405};1;510211;{462405};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+462688;{462688};1;967902;{462688};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+463021;{463021};1;510477;{463021};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+463934;{463934};1;971417;{463934};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+463935;{463935};1;520784;{463935};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+463960;{463960};1;971210;{463960};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+463962;{463962};1;971414;{463962};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+464852;{464852};1;972324;{464852};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+465265;{465265};1;966674;{465265};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+469181;{469181};1;967892;{469181};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+469186;{469186};1;968063;{469186};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+469183;{469183};1;968047;{29418,469183,469184};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+469184;{469184};1;968047;{29418,469183,469184};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+469190;{469190};1;967886;{29450,29457,469190};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+469175;{469175};1;971178;{29377,469175};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+469182;{469182};1;967890;{29392,469182};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+469196;{469196};1;971198;{29468,469196};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+469621;{469621};1;33087;{33087,469621};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+470018;{470018};1;966675;{470018};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+608240;{53296,608240};2;956887;{53296,608240};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+608241;{53300,219749,608241};3;956888;{53300,219749,608241};3;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+535850;{535850};1;240287;{66172,240287,535850,535851};4;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+535851;{66172,535851};2;240287;{66172,240287,535850,535851};4;;;;cas3: f_cd_ref;Loose attributes and medium now attach to No one;split and merge
+608803;{608803};1;115397;{608803};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+610002;{610002};1;129875;{610002};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+610917;{610917};1;610917;{610917,613696};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+611983;{611983};1;969492;{611983};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+612202;{612202};1;85904;{85904,612202,718653};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+613128;{142144};1;142144;{142144};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+612442;{612442};1;970963;{91900,612442};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+612546;{612546};1;139008;{139008,612546};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+613082;{613082};1;105214;{105214,613082};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+613448;{613448};1;610794;{613448};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+619752;{103562,619752};2;103562;{103562,619752};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+620975;{620975};1;128066;{620975};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+613632;{613632};1;81992;{81992,613632};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+613696;{613696};1;610917;{610917,613696};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+613836;{613836};1;130873;{130873,613836};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+617262;{617262};1;119915;{119915,617262};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+659411;{659411};1;954576;{659411};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+659498;{659498};1;955002;{659498};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+659503;{659503};1;954984;{659503};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+659954;{659954};1;954276;{659954};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+660547;{660547};1;953524;{660547};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+717780;{717780};1;966398;{717780};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+718232;{718232};1;99805;{99805,718232};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+718421;{718421};1;935804;{718421};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+718653;{718653};1;85904;{85904,612202,718653};3;;;;cas3: f_cd_ref;Merge attributes if exists;merge
+718638;{718638};1;81027;{81027,718638};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+719047;{719047};1;95059;{719047};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+721722;{249796,721722};2;961903;{249796,721722};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+718856;{718856};1;120717;{120717,718856};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+770938;{5757,770938};2;963539;{5757,770938};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+770995;{434320,770995};2;963845;{434320,770995};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+774051;{780287};1;938211;{780287};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+778930;{6417,778930};2;6417;{6417,778930};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+786423;{786423};1;963661;{786423};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+786493;{786493};1;962102;{786493};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+786514;{786514};1;786995;{786514};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+786520;{786520};1;434083;{786520};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+788317;{788317};1;434386;{788317};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+788870;{788870};1;97085;{788870};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+789136;{113525,789136};2;113525;{113525,789136};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+792229;{792229};1;970905;{792229};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+786509;{786509};1;786509;{5228,786509};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+786522;{786522};1;434387;{434387,786522};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+786539;{786539};1;5325;{5325,786539};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+788791;{788791};1;788791;{102715,788791};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+789027;{789027};1;88741;{88741,789027};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+794764;{306028};1;954248;{306028};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+819640;{5579,819640};2;5579;{5579,819640};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+823613;{163352,535262};2;823614;{163352,535262};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+837985;{837985};1;971811;{837985};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+855639;{855639};1;969655;{855639};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+869516;{869516};1;970943;{869516};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+902013;{434208,902013};2;434208;{434208,902013};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+903074;{6352,903074};2;6352;{6352,903074};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+904296;{6074,904296};2;904296;{6074,434668,904296};3;;;7;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge
+906443;{2039};1;965228;{2039};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+906445;{2040};1;965231;{2040};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+906454;{2038};1;965159;{2038};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+919053;{249596};1;249596;{249596};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5773;{5773};1;963854;{5773};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5778;{5778};1;963858;{5778};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5790;{5790};1;963749;{5790};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5792;{5792};1;963785;{5792};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5793;{5793};1;963515;{5793};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5795;{5795};1;436115;{5795};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5797;{5797};1;963521;{5797};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5798;{5798};1;436120;{5798};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5799;{5799};1;436121;{5799};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+5800;{5800};1;963793;{5800};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+930229;{930229};1;715557;{930229};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+930620;{5180};1;5180;{5180};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+930623;{5182};1;5182;{5182};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+931023;{434666,931023};2;434666;{434666,931023};2;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+931252;{434474};1;963720;{434474};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29476;{29476};1;942438;{29476};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29487;{29487};1;968009;{29487};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29491;{29491};1;968171;{29491};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29495;{29495};1;971200;{29495};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29403;{29403};1;508990;{29403};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29411;{29411};1;967901;{29411};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29425;{29425};1;971196;{29425};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29443;{29443};1;968167;{29443};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29447;{29447};1;967997;{29447};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29461;{29461};1;971180;{29461};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29465;{29465};1;968170;{29465};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+29473;{29473};1;968004;{29473};1;;;;cas1;Update cd_ref no changes for attributes and medium;update cd_ref
+469262;{469262};1;510065;{30673,469262};2;;;;cas3: 2 grappes, cas3: f_cd_ref;Merge attributes if exists;merge

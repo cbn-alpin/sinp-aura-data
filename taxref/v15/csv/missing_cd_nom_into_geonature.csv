@@ -1,0 +1,9 @@
+table_name,cd_nom,nom_complet,nb_occurence,plus_recente_diffusion,cd_nom_remplacement,cd_raison_suppression
+gn_synthese.synthese,59457,"Lepraria neglecta (Nyl.) Erichsen, 1957",1,9.0,659518,1
+gn_synthese.synthese,125493,"Taraxacum alpinum (Hoppe) Hegetschw., 1839",1,9.0,,2
+gn_synthese.synthese,810958,"Hieracium pesianum Arv.-Touv. & Belli, 1913",1,9.0,,2
+taxonomie.bib_noms,59457,"Lepraria neglecta (Nyl.) Erichsen, 1957",1,9.0,659518,1
+taxonomie.bib_noms,125493,"Taraxacum alpinum (Hoppe) Hegetschw., 1839",1,9.0,,2
+taxonomie.bib_noms,653233,Clauzadea monticola (Schaer.) Hafellner & Bellem.,1,9.0,57226,1
+taxonomie.bib_noms,660311,Aspicilia aquatica (Fr.) Körb. [nom cons.],1,9.0,58440,1
+taxonomie.bib_noms,810958,"Hieracium pesianum Arv.-Touv. & Belli, 1913",1,9.0,,2
