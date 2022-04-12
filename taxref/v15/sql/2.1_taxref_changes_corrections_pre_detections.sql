@@ -1,4 +1,4 @@
--- Mise à jour TaxRef v14 vers v15 pour le SINP PACA
+-- Mise à jour TaxRef v14 vers v15 pour le SINP AURA
 BEGIN;
 
 -- Drop constraint on "cd_nom" field of  "synthese" table because we update cd_nom not yet in "taxref" table.
@@ -17,11 +17,6 @@ WHERE cd_nom IN (125493, 810958);
 --Number of row updated by cd_nom :
 
 -- Update rows with replacement cd_nom in synthese:
-UPDATE gn_synthese.synthese
-SET cd_nom = 659518
-WHERE cd_nom = 59457 ;
---Number of row updated by cd_nom : ?
-
 UPDATE gn_synthese.synthese
 SET cd_nom = 659518
 WHERE cd_nom = 59457 ;

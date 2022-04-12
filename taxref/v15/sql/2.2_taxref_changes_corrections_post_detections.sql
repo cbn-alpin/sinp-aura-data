@@ -1,4 +1,4 @@
--- Mise à jour TaxRef v14 vers v15 pour le SINP PACA
+-- Mise à jour TaxRef v14 vers v15 pour le SINP AURA
 BEGIN;
 
 -- Enable check constraint on cd_nom
