@@ -1,5 +1,5 @@
--- Droits d'éxecution nécessaire : DB SUPER USER
 -- Create index to improve some GeoNature queries
+-- Required rights: DB SUPER USER
 BEGIN;
 
 

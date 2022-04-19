@@ -1,6 +1,7 @@
+-- Fix constraints after replacement of ref_geo schema
 -- Required rights: SUPER USER
 -- GeoNature database compatibility : v2.6.0+
--- Fix replacement of reg_geo schema
+
 BEGIN;
 
 

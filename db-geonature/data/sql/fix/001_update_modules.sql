@@ -1,5 +1,6 @@
--- Droits d'éxecution nécessaire : DB OWBER
 -- Update modules infos
+-- Required rights: DB OWNER
+
 BEGIN;
 
 

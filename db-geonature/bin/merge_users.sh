@@ -84,7 +84,7 @@ function mergeUsers() {
         export PGPASSWORD="${db_pass}"; \
             psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
                 -v "oldIdRole=${old_id_role}" -v "newIdRole=${new_id_role}" \
-                -f "${sql_dir}/13_delete_duplicate_user.sql"
+                -f "${sql_dir}/fix/011_delete_duplicate_user.sql"
     done
 }
 

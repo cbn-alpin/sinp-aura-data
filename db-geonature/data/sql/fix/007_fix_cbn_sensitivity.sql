@@ -1,6 +1,7 @@
+-- Fix sensitivity for CBNs data.
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.0+
--- Fix sensitivity for CBNs data.
+
 BEGIN;
 
 

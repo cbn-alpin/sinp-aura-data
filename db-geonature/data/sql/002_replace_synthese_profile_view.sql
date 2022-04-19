@@ -1,8 +1,8 @@
--- Required rights: DB OWNER
 -- Replace synthese profile view to avoid sensitive and private observations
+-- Required rights: DB OWNER
 -- Transfert this script on server this way:
--- rsync -av ./15_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
--- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db -f ~/data/db-geonature/data/sql/15_*
+-- rsync -av ./002_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
+-- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db -f ~/data/db-geonature/data/sql/002_*
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'

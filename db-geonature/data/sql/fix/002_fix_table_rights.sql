@@ -1,5 +1,6 @@
--- Droits d'éxecution nécessaire : DB SUPER USER
 -- Change tables wrong owner
+-- Required rights: DB SUPER USER
+
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'

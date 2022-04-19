@@ -1,5 +1,3 @@
--- Required rights: DB OWNER
--- GeoNature database compatibility : v2.6.0+
 -- Add unique constraints on identifiant and email fields of t_roles table.
 -- WARNING: to run this script you must have zero query locking the t_roles table.
 -- Use this query to see :
@@ -8,6 +6,9 @@
 --  JOIN pg_stat_all_tables t ON l.relation = t.relid
 -- WHERE t.schemaname <> 'utilisateur'::name AND t.schemaname <> 'pg_catalog'::name
 -- ORDER BY t.schemaname, t.relname ;
+-- Required rights: DB OWNER
+-- GeoNature database compatibility : v2.6.0+
+
 BEGIN;
 
 

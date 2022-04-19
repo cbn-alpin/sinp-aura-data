@@ -2,10 +2,10 @@
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.2+
 -- Transfert this script on server this way:
--- rsync -av ./16_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
+-- rsync -av ./003_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
 -- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db \
---      -f ~/data/db-geonature/data/sql/16_*
--- See: https://github.com/cbn-alpin/sinp-paca-tickets/issues/182
+--      -f ~/data/db-geonature/data/sql/003_*
+-- See: https://github.com/cbn-alpin/sinp-aura-tickets/issues/55
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'

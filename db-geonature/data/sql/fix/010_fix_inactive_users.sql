@@ -1,6 +1,7 @@
+-- Fix inactive users with email.
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.0+
--- Fix inactive users with email.
+
 BEGIN;
 
 

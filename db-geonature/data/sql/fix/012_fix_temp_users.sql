@@ -1,6 +1,6 @@
+-- Increase/Fix utilisateurs.temp_users "organisme" field size.
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.0+
--- Increase/Fix utilisateurs.temp_users "organisme" field size.
 
 BEGIN;
 

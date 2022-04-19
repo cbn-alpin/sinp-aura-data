@@ -1,9 +1,10 @@
+-- Delete properly duplicate users.
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.0+
--- Delete properly duplicate users.
--- Use this scirpt this way: psql -h localhost -U geonatadmin -d geonature2db \
+-- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db \
 --      -v 'oldIdRole=<old_id_role>' -v 'newIdRole=<new_id_role>' \
 --      -f ~/data/db-geonature/data/sql/13_delete_duplicate_user.sql
+--
 -- Tables qui ne seront pas traitées :
 --      utilisateurs.cor_roles_app_profil => ne semble gérer que des groupes !
 --      utilisateurs.cor_role_token => uniquement pour les utilisateurs temporaire (création de compte)

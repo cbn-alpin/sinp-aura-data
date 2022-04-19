@@ -1,6 +1,7 @@
+-- Fix integrated users by scripts.
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.0+
--- Fix integrated users by scripts.
+
 BEGIN;
 
 \echo '-------------------------------------------------------------------------------'

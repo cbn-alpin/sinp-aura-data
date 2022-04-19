@@ -1,7 +1,8 @@
--- Required rights: DB OWNER
--- GeoNature database compatibility : v2.6.0+
 -- Export observations in synthese where sensitivity was fixed to level 2 for CBNs data.
 -- Used list of 129 sensitive taxa of AURA.
+-- Required rights: DB OWNER
+-- GeoNature database compatibility : v2.6.0+
+
 BEGIN;
 
 

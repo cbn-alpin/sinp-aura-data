@@ -93,7 +93,7 @@ function downloadGeoRef() {
     fi
 
     printMsg "Uncompressing archive file..."
-    if ! [[ -f "${dbgn_geo_ref_sql_path_local}" ]]; then    
+    if ! [[ -f "${dbgn_geo_ref_sql_path_local}" ]]; then
         cd ${raw_dir}/
         tar -xf ${dbgn_geo_ref_archive_path_local}
         chmod 644 "${dbgn_geo_ref_sql_path_local}"
@@ -111,38 +111,38 @@ function updateGeoRef() {
 }
 
 function executeSql() {
-    printMsg "Updating modules..."
-    export PGPASSWORD="${db_pass}"; \
-        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_dir}/01_update_modules.sql"
-
     printMsg "Replace Synthese export view..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_dir}/02_replace_synthese_export_view.sql"
+            -f "${sql_dir}/001_replace_synthese_export_view.sql"
 
-    printMsg "Fixing GN database with superuser rights..."
+    printMsg "Updating modules..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${sql_dir}/fix/001_update_modules.sql"
+
+    printMsg "Fixing tables rights..."
     checkSuperuser
     sudo -n -u "${pg_admin_name}" -s \
         psql -d "${db_name}" \
-            -f "${sql_dir}/03_fix_as_superuser.sql"
+            -f "${sql_dir}/fix/002_fix_table_rights.sql"
 
-    printMsg "Fixing GN database with owner rights..."
+    printMsg "Fixing add observer index..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_dir}/04_fix_as_user.sql"
-    
+            -f "${sql_dir}/fix/003_add_observer_index.sql"
+
     printMsg "Adding SINP area type and geom..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -v sinpRegCode="${dbgn_sinp_reg_code}" \
-            -f "${sql_dir}/05_add_sinp_area.sql"
+            -f "${sql_dir}/fix/004_add_sinp_area.sql"
 
     printMsg "Creating subdivided SINP and DEP areas..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_dir}/06_fix_geo_ref.sql"
-            
+            -f "${sql_dir}/fix/005_fix_geo_ref.sql"
+
 }
 
 main "${@}"
