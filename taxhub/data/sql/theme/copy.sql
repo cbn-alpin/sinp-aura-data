@@ -9,12 +9,12 @@ SET client_encoding = 'UTF8';
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Remove imports organisms table if already exists'
+\echo 'Remove imports themes table if already exists'
 DROP TABLE IF EXISTS gn_imports.:themeImportTable ;
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Create imports organisms table from "bib_organismes" with additional fields'
+\echo 'Create imports themes table from "bib_themes" with additional fields'
 CREATE TABLE gn_imports.:themeImportTable AS
     SELECT
         NULL::INT AS gid,
@@ -25,7 +25,7 @@ WITH NO DATA ;
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Add primary key on imports organisms table'
+\echo 'Add primary key on imports themes table'
 \set importTablePk 'pk_':themeImportTable
 ALTER TABLE gn_imports.:themeImportTable
 	ALTER COLUMN gid ADD GENERATED ALWAYS AS IDENTITY,
@@ -33,19 +33,19 @@ ALTER TABLE gn_imports.:themeImportTable
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Create indexes on imports organisms table'
+\echo 'Create indexes on imports themes table'
 \set codeIdx 'idx_unique_':themeImportTable'_code'
 CREATE UNIQUE INDEX :codeIdx
     ON gn_imports.:themeImportTable USING btree (code);
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Attribute imports organisms to GeoNature DB owner'
+\echo 'Attribute imports themes to GeoNature DB owner'
 ALTER TABLE gn_imports.:themeImportTable OWNER TO :gnDbOwner ;
 
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Copy CVS file to import organisms table'
+\echo 'Copy CVS file to import themes table'
 COPY gn_imports.:themeImportTable (
     code,
     "description"
