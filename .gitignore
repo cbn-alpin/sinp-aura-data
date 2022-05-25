@@ -3,6 +3,8 @@ venv/
 
 var/
 logs/
+log/
 settings.ini
 *.log
 *.tmp.sql
+gn2pg/config/*_config.toml
