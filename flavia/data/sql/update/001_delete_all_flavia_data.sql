@@ -1,8 +1,8 @@
--- Suppression de toutes les données de la LPO + l'utilisateur importé lors de
+-- Suppression de toutes les données de Flavia importées lors de
 -- la transmission de données de 2021.
 -- Si la table `gn2pg_flavia.data_json` existe, les triggers sont déclenchés.
 -- Usage: psql -h "localhost" -U "<db-owner-name>" -d "<db-name>" -f <path-to-this-sql-file>
--- Ex.: psql -h "localhost" -U "geonatadmin" -d "geonature2db" -f ~/data/lpo/data/sql/update/001_*
+-- Ex.: psql -h "localhost" -U "geonatadmin" -d "geonature2db" -f ~/data/flavia/data/sql/update/001_*
 
 BEGIN ;
 
@@ -504,7 +504,25 @@ DELETE FROM utilisateurs.t_roles
 WHERE uuid_role IN (SELECT role_uuid FROM delete_roles);
 
 DELETE FROM utilisateurs.bib_organismes
-WHERE uuid_organisme IN (SELECT organism_uuid FROM delete_organisms);
+WHERE uuid_organisme IN (SELECT organism_uuid FROM delete_organisms)
+    AND uuid_organisme NOT IN (
+        SELECT DISTINCT o.uuid_organisme
+        FROM utilisateurs.t_roles AS r
+            JOIN utilisateurs.bib_organismes AS o
+                ON r.id_organisme = o.id_organisme
+    )
+    AND uuid_organisme NOT IN (
+        SELECT DISTINCT o.uuid_organisme
+        FROM gn_meta.cor_dataset_actor AS da
+            JOIN utilisateurs.bib_organismes AS o
+                ON da.id_organism = o.id_organisme
+    )
+    AND uuid_organisme NOT IN (
+        SELECT DISTINCT o.uuid_organisme
+        FROM gn_meta.cor_acquisition_framework_actor AS afa
+            JOIN utilisateurs.bib_organismes AS o
+                ON afa.id_organism = o.id_organisme
+    );
 
 DO $$
     BEGIN
