@@ -93,6 +93,22 @@ psql -h localhost -U geonatadmin -d geonature2db -f ~/data/lpo/data/sql/update/0
   - Pour désactiver l'environnement virtuel :
   `exit` (`deactivate` ne fonctionne pas avec `pipenv`)
 
+### Relancer une récupération compléte des données depuis un id_synthese spécifique
+
+- Ajouter un paramètre dans le fichier de config dans `[[source]]` au niveau de la sous-section `[source.query_strings]`. Ex. :
+    ```ini
+    [source.query_strings]
+    orderby = "id_synthese"
+    filter_n_up_id_synthese = 5840000
+    ```
+- Note : il faut utiliser le paramètre "`filter_n_up_id_synthese`" avec "`..._n_...`" car "`..._d_...`" c'est pour les champs de type "datetime". Ici, l'id_synthese étant un entier, il faut utiliser le type numérique "`..._n_...`".
+- Dans l'exemple ci-dessus, nous repartons depuis l'id_synthese `5840000`. Grâce aux log, nous pouvons trouver l'offset 179 et l'incrément (=limit) de 10 000.
+- La requête suivante permet de trouver l'id_synthese supérieur à la 1 790 000ème observations :
+    ```sql
+    SELECT * FROM gn2pg_flavia.data_json ORDER BY id_data ASC OFFSET 1790000 LIMIT 10000 ;
+    ```
+
+
 ## Tansfert d'un schéma gn2pg en production
 
 Exemple avec LPO :
@@ -127,6 +143,9 @@ ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_insert_calculate_sensitivit
 
 CREATE UNIQUE INDEX IF NOT EXISTS uidx_synthese_id_source_id_entity_source_pk_value
     ON gn_synthese.synthese (id_source, entity_source_pk_value) ;
+
+CREATE UNIQUE INDEX IF NOT EXISTS uidx_t_roles_uuid_role
+    ON utilisateurs.t_roles (uuid_role) ;
 ```
 - Lancer une session Screen : `screen -S gn2pg-lpo`
 - Supprimer les données LPO en production et lancer la mise à jour des triggers :
@@ -143,5 +162,5 @@ psql -U geonatadmin -h localhost -d geonature2db -c "BEGIN; UPDATE gn2pg_lpo.dat
 Pour transférer uniquement le dossier `gn2pg/` sur le serveur, se placer dans le dossier puis utiliser `rsync` en testant avec l'option `--dry-run` (à supprimer quand tout est ok):
 
 ```bash
-rsync -av --copy-unsafe-links --exclude .venv  ./ geonat@<ip-serveur>:~/data/gn2pg/ --dry-run
+rsync -av --copy-unsafe-links --exclude .venv --exclude data/raw/  --exclude config/log/ --exclude *_config.toml --exclude .gitignore ./ geonat@<ip-serveur>:~/data/gn2pg/ --dry-run
 ```

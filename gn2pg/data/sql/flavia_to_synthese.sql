@@ -21,19 +21,31 @@ CREATE SCHEMA IF NOT EXISTS gn2pg_flavia ;
 
 
 -- -------------------------------------------------------------------------------------------------
+-- DISABLE TRIGGERS
+
 -- Disable trigger "tri_meta_dates_change_synthese"
 -- ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese ;
 -- NOTES: wee need this triggers because dates were not downloaded !
 
 
--- -------------------------------------------------------------------------------------------------
 -- Disable trigger "tri_update_calculate_sensitivity"
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_update_calculate_sensitivity ;
 
 
--- -------------------------------------------------------------------------------------------------
 -- Disable trigger "tri_insert_calculate_sensitivity"
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_insert_calculate_sensitivity ;
+
+
+-- -------------------------------------------------------------------------------------------------
+--  INDEX
+-- Add unique constraint to synthese on id_source and entity_source_pk_value
+CREATE UNIQUE INDEX IF NOT EXISTS uidx_synthese_id_source_id_entity_source_pk_value
+    ON gn_synthese.synthese (id_source, entity_source_pk_value) ;
+
+
+-- Add unique constraint to utilisateurs.t_roles on uuid_role
+CREATE UNIQUE INDEX IF NOT EXISTS uidx_t_roles_uuid_role
+    ON utilisateurs.t_roles (uuid_role) ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -189,12 +201,6 @@ $func$
 
 COMMENT ON FUNCTION gn2pg_flavia.fct_c_get_id_nomenclature_from_label (_type TEXT, _label TEXT)
     IS 'Function to retrieve nomenclature ID from label.' ;
-
--- -------------------------------------------------------------------------------------------------
---  INDEX
--- Add unique constraint to synthese on id_source and entity_source_pk_value
-CREATE UNIQUE INDEX IF NOT EXISTS uidx_synthese_id_source_id_entity_source_pk_value
-    ON gn_synthese.synthese (id_source, entity_source_pk_value) ;
 
 
 -- -------------------------------------------------------------------------------------------------

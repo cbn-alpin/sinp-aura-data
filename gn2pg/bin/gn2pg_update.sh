@@ -67,7 +67,7 @@ function main() {
 
     # Run Gn2Pg update
     printMsg "Running Gn2Pg updates with ${setting_file_name} config..."
-    cd /home/admin/data/gn2pg/
+    cd ~/data/gn2pg/
     pipenv run gn2pg_cli --update "${setting_file_name}"
 
     #+----------------------------------------------------------------------------------------------------------+
