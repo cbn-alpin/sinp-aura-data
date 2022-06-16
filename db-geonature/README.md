@@ -1,16 +1,16 @@
 # Gestion de la mise à jour / adaptation de GeoNature
 
-Contient les fichiers SQL à éxecuter sur l'instance `db-srv` pour adapter 
-la base de données de GeoNature vis à vis de l'instalation pour le 
+Contient les fichiers SQL à éxecuter sur l'instance `db-srv` pour adapter
+la base de données de GeoNature vis à vis de l'instalation pour le
 SINP AURA.
 
 ## Synchronisation serveur
 
-Pour transférer uniquement le dossier `db-geonature/` sur le serveur, utiliser `rsync` 
+Pour transférer uniquement le dossier `db-geonature/` sur le serveur, utiliser `rsync`
 en testant avec l'option `--dry-run` (à supprimer quand tout est ok):
 
-```bash 
-rsync -av --copy-unsafe-links ./ geonat@db-paca-sinp:~/data/db-geonature/ --dry-run
+```bash
+rsync -av --copy-unsafe-links --exclude data/raw/* --exclude var ./ geonat@db-aura-sinp:~/data/db-geonature/
 ```
 
 ## Exécution du SQL
