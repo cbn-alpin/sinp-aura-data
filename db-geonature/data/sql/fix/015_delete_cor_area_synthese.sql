@@ -11,7 +11,11 @@ BEGIN;
 \echo 'Remove unused cor_area_synthese entries'
 
 DELETE FROM gn_synthese.cor_area_synthese AS cas
-WHERE cas.id_synthese NOT IN (SELECT id_synthese FROM gn_synthese.synthese) ;
+WHERE NOT EXISTS (
+    SELECT 'X'
+    FROM gn_synthese.synthese AS s
+    WHERE s.id_synthese = cas.id_synthese
+) ;
 
 
 \echo '-------------------------------------------------------------------------------'
