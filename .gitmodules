@@ -4,3 +4,6 @@
 [submodule "shared"]
 	path = shared
 	url = git@github.com:cbn-alpin/sinp-shared-data.git
+[submodule "taxhub"]
+	path = taxhub
+	url = https://github.com/cbn-alpin/geonature-taxhub-import.git
