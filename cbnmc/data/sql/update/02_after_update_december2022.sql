@@ -1,5 +1,8 @@
 -- Maj vers les nouveaux identifiants des organismes.
 -- Script à lancer après la maj des données du CBNMC.
+-- Change orgnism UUID after update (december 2022)
+-- psql -U geonatadmin -h localhost -d geonature2db -f ~/data/cbnmc/data/sql/update/02_*
+
 WITH cor_organisme AS (
     SELECT
         ((orgs.json_org) ->> 'uuid_organisme')::uuid uuid_organisme,
