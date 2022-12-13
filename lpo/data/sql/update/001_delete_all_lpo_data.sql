@@ -5,13 +5,15 @@
 -- Ex.: psql -h "localhost" -U "geonatadmin" -d "geonature2db" -f ~/data/lpo/data/sql/update/001_*
 
 BEGIN ;
-
 CREATE TEMPORARY TABLE delete_acquisition_frameworks (
     unique_acquisition_framework uuid,
     primary key (unique_acquisition_framework)
 ) ;
 INSERT INTO delete_acquisition_frameworks (unique_acquisition_framework)
-VALUES ('e7935970-de15-4db4-a723-466f68844a67');
+select distinct taf.unique_acquisition_framework_id  from gn_synthese.synthese s 
+left join gn_meta.t_datasets td on s.id_dataset = td.id_dataset 
+left join gn_meta.t_acquisition_frameworks taf on td.id_acquisition_framework = taf.id_acquisition_framework 
+where s.id_source = gn_synthese.get_id_source_by_name('lpo')
 
 DELETE FROM gn_synthese.cor_area_synthese AS a
 USING gn_synthese.synthese AS s,
@@ -31,10 +33,7 @@ WHERE s.id_dataset = td.id_dataset
     AND td.id_acquisition_framework = af.id_acquisition_framework
     AND af.unique_acquisition_framework_id = df.unique_acquisition_framework ;
 
-DELETE FROM gn_synthese.t_sources AS sou
-USING gn_synthese.synthese AS s
-WHERE sou.id_source = s.id_source
-    AND s.id_synthese IS NULL;
+
 
 DELETE FROM gn_meta.cor_dataset_actor AS ac
 USING  gn_meta.t_datasets AS td,
@@ -89,6 +88,12 @@ DELETE FROM gn_meta.t_acquisition_frameworks AS af
 USING delete_acquisition_frameworks AS df
 WHERE af.unique_acquisition_framework_id = df.unique_acquisition_framework ;
 
+DELETE FROM gn_synthese.t_sources AS sou
+WHERE sou.id_source = gn_synthese.get_id_source_by_name('lpo')
+   
+   select * from gn_synthese.synthese s where s.id_source = gn_synthese.get_id_source_by_name('lpo')
+
+
 DELETE FROM utilisateurs.cor_roles AS cr
 USING utilisateurs.t_roles AS r
 WHERE cr.id_role_utilisateur = r.id_role
@@ -112,3 +117,29 @@ DO $$
 $$ ;
 
 COMMIT;
+
+/*select * from gn_meta.cor_acquisition_framework_actor
+
+select * from utilisateurs.t_roles tr where pass is null and pass_plus is null and not groupe 
+
+
+
+select distinct tr.* 
+FROM delete_acquisition_frameworks dac 
+left join gn_meta.t_acquisition_frameworks ac on ac.unique_acquisition_framework_id = dac.unique_acquisition_framework
+left join gn_meta.t_datasets td on td.id_acquisition_framework = ac.id_acquisition_framework
+left join gn_meta.cor_dataset_actor coa  on coa.id_dataset = td.id_dataset
+left join utilisateurs.t_roles tr on tr.id_role = coa.id_role 
+
+
+DELETE FROM gn_meta.cor_acquisition_framework_actor AS ac
+USING  gn_meta.t_acquisition_frameworks AS af, delete_acquisition_frameworks AS df
+WHERE ac.id_acquisition_framework = af.id_acquisition_framework
+    AND af.unique_acquisition_framework_id = df.unique_acquisition_framework ;
+   
+   
+   select distinct tr.* 
+FROM delete_acquisition_frameworks dac 
+left join gn_meta.t_acquisition_frameworks ac on ac.unique_acquisition_framework_id = dac.unique_acquisition_framework
+left join gn_meta.cor_acquisition_framework_actor cafa on cafa.id_acquisition_framework  = ac.id_acquisition_framework
+left join utilisateurs.t_roles tr on tr.id_role = cafa.id_role */
