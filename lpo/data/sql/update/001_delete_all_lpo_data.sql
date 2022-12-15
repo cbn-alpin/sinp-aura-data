@@ -24,7 +24,7 @@ FROM gn_meta.t_datasets d
 	LEFT JOIN gn_synthese.synthese s ON d.id_dataset = s.id_dataset
 WHERE s.id_synthese IS NULL; 
 
---exécution stopper ici
+---exécution stopper ici
 CREATE TEMPORARY TABLE delete_role (
 	id_role int
 );
@@ -124,10 +124,25 @@ WHERE df.id_acquisition_framework = df.id_acquisition_framework;
 DELETE FROM gn_synthese.t_sources AS sou
 WHERE sou.id_source = gn_synthese.get_id_source_by_name('lpo');
 
-DELETE FROM utilisateurs.t_roles r
-USING delete_role dr
-WHERE r.id_role = dr.id_role AND pass_plus IS NULL 
-
+DO $$
+DECLARE
+    delete_id_role int;
+BEGIN
+      FOR delete_id_role IN 
+      SELECT DISTINCT dr.id_role FROM utilisateurs.t_roles r INNER JOIN delete_role dr ON dr.id_role = r.id_role 
+		WHERE r.id_role = dr.id_role AND pass_plus IS NULL 
+      LOOP
+        RAISE NOTICE 'trying to delete role id  %',pr.id;
+          BEGIN
+              DELETE FROM utilisateurs.t_roles r WHERE r;
+              RAISE NOTICE 
+              'Deleted role id: %',pr.id;
+          EXCEPTION
+              WHEN others THEN 
+                  -- we ignore the error
+              END;
+      END LOOP;
+END $$;
 COMMIT;
 /*
 select * from gn_meta.cor_acquisition_framework_actor
