@@ -102,11 +102,11 @@ psql -h localhost -U geonatadmin -d geonature2db -f ~/data/lpo/data/sql/update/0
     filter_n_up_id_synthese = 5840000
     ```
 - Note : il faut utiliser le paramètre "`filter_n_up_id_synthese`" avec "`..._n_...`" car "`..._d_...`" c'est pour les champs de type "datetime". Ici, l'id_synthese étant un entier, il faut utiliser le type numérique "`..._n_...`".
-- Dans l'exemple ci-dessus, nous repartons depuis l'id_synthese `5840000`. Grâce aux log, nous pouvons trouver l'offset 179 et l'incrément (=limit) de 10 000.
-- La requête suivante permet de trouver l'id_synthese supérieur à la 1 790 000ème observations :
+- Dans l'exemple ci-dessus, nous repartons depuis l'id_synthese `5840000`. Il suffit d'utiliser la requête suivante (penser à adapter le schéma) pour déterminer le plus grand `id_synthese` déjà récupéré :
     ```sql
-    SELECT * FROM gn2pg_flavia.data_json ORDER BY id_data ASC OFFSET 1790000 LIMIT 10000 ;
+    SELECT MAX(id_data) FROM gn2pg_lpo.data_json ;
     ```
+- Une fois la récupération des données finalisé, il faut penser à supprimer le paramètre `filter_n_up_id_synthese` de la config.
 
 
 ## Tansfert d'un schéma gn2pg en production
