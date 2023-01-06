@@ -54,7 +54,8 @@ function parseScriptOptions() {
 function main() {
     #+----------------------------------------------------------------------------------------------------------+
     # Load utils
-    source "$(dirname "${BASH_SOURCE[0]}")/../../shared/lib/utils.bash"
+    current_dir=$(dirname "${BASH_SOURCE[0]}")
+    source "${current_dir}/../../shared/lib/utils.bash"
 
     #+----------------------------------------------------------------------------------------------------------+
     # Init script
@@ -67,7 +68,7 @@ function main() {
 
     # Run Gn2Pg update
     printMsg "Running Gn2Pg updates with ${setting_file_name} config..."
-    cd ~/data/gn2pg/
+    cd "${current_dir}/../"
     pipenv run gn2pg_cli --update "${setting_file_name}"
 
     #+----------------------------------------------------------------------------------------------------------+
