@@ -10,17 +10,17 @@ ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese 
 -- Disable trigger "tri_update_calculate_sensitivity"
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_update_calculate_sensitivity ;
 
--- Set cd_nom to NULL for removing TaxRef cd_nom
+-- Set cd_nom to NULL for removing TaxRef cd_nom (cd_raison_suppression = 2 or 3)
 UPDATE gn_synthese.synthese
 SET cd_nom = NULL
-WHERE cd_nom IN (125493, 810958);
---Number of row updated by cd_nom :
+WHERE cd_nom IN (124358, 125493, 131349, 134390, 312081, 717144, 810958, 811202);
 
 -- Update rows with replacement cd_nom in synthese:
-UPDATE gn_synthese.synthese
-SET cd_nom = 659518
-WHERE cd_nom = 59457 ;
---Number of row updated by cd_nom : ?
+UPDATE gn_synthese.synthese SET cd_nom = 45589 WHERE cd_nom = 55448 ;
+UPDATE gn_synthese.synthese SET cd_nom = 659518 WHERE cd_nom = 59457 ;
+UPDATE gn_synthese.synthese SET cd_nom = 618756 WHERE cd_nom = 82371 ;
+UPDATE gn_synthese.synthese SET cd_nom = 447838 WHERE cd_nom = 110314 ;
+
 
 -- Deleting rows in "cor_nom_liste" for:
 -- - cd_nom with no replacement: 125493, 810958
@@ -29,17 +29,43 @@ DELETE FROM taxonomie.cor_nom_liste AS l
 WHERE l.id_nom IN (
     SELECT id_nom
     FROM taxonomie.bib_noms
-    WHERE cd_nom IN (125493, 810958, 59457, 57226, 58440)
+    WHERE cd_nom IN (
+        57226,
+        58440,
+        59457,
+        82371,
+        110314,
+        124358,
+        125493,
+        134390,
+        653233,
+        660311,
+        810958,
+        811202
+    ) ;
+
+
+-- Deleting rows in "taxonomie.bib_noms" for all kinds of conflicts.
+-- "taxonomie.bib_noms" is only used in SINP for Taxhub INPN medias dowload script.
+-- "taxonomie.bib_noms" must be recreated from gn_synthese.synthese if necessary.
+DELETE FROM taxonomie.bib_noms
+WHERE cd_nom IN (
+    57226,
+    58440,
+    59457,
+    82371,
+    110314,
+    124358,
+    125493,
+    134390,
+    653233,
+    660311,
+    810958,
+    811202
 ) ;
 
--- Deleting rows in "taxonomie.bib_noms" for:
--- - cd_nom with no replacement: 125493, 810958
--- - cd_nom with replacement already existing in bib_noms: 59457, 57226, 58440
-DELETE FROM taxonomie.bib_noms
-WHERE cd_nom IN (125493, 810958, 59457, 57226, 58440) ;
 
-
--- Remove attributs
+-- Remove useless attributs
 DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (
     81992, -- Amaranthus hybridus L., 1753 (texte à garder => taxon supprimé)
     84230, -- Asarum europaeum L., 1753 (texte à garder => taxon supprimé)
@@ -53,6 +79,8 @@ DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (
     151867, -- Sisymbrium officinale (L.) Scop., 1772 (texte à garder = > taxon maintenu)
     151868 -- Sisymbrium officinale (L.) Scop., 1772 (texte à garder = > taxon maintenu)
 ) ;
+
+-- Reassociate attributs to new taxon
 -- Amaranthus hybridus L., 1753
 UPDATE taxonomie.cor_taxon_attribut SET cd_ref = 81992 WHERE cd_ref = 131296 ;
 -- Asarum europaeum L., 1753
