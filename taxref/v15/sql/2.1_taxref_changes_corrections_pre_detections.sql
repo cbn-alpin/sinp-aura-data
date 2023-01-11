@@ -42,8 +42,8 @@ WHERE l.id_nom IN (
         660311,
         810958,
         811202
-    ) ;
-
+    )
+) ;
 
 -- Deleting rows in "taxonomie.bib_noms" for all kinds of conflicts.
 -- "taxonomie.bib_noms" is only used in SINP for Taxhub INPN medias dowload script.
