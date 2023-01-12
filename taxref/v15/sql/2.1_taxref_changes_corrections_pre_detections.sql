@@ -79,10 +79,12 @@ DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (
     151867, -- Sisymbrium officinale (texte à garder => taxon maintenu)
     151868, -- Sisymbrium officinale (texte à garder => taxon maintenu)
     137541, -- Lycopus europaeus var.europaeus
-    131383, -- Androsace vitaliana subsp.cinerea (texte à garder = > taxon maintenu 82545)
-    132482, -- Campanula glomerata subsp.glomerata (texte à garder = > taxon maintenu 87652)
-    140668, -- Saxifraga oppositifolia subsp.oppositifolia (texte à garder = > taxon maintenu 121132)
-    612628 -- Scorzoneroides pyrenaica var.pyrenaica (texte à garder = > taxon maintenu 611356)
+    131383, -- Androsace vitaliana subsp.cinerea (texte à garder => taxon maintenu 82545)
+    132482, -- Campanula glomerata subsp.glomerata (texte à garder => taxon maintenu 87652)
+    132481, -- Campanula glomerata subsp.farinosa (texte à garder => taxon maintenu 87652)
+    140668, -- Saxifraga oppositifolia subsp.oppositifolia (texte à garder => taxon maintenu 121132)
+    612628, -- Scorzoneroides pyrenaica var.pyrenaica (texte à garder => taxon maintenu 611356)
+    612627-- Scorzoneroides pyrenaica var.helvetica (texte à garder => taxon maintenu 611356)
 ) ;
 
 -- Reassociate attributs to new taxon
