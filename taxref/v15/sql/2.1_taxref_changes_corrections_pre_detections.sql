@@ -30,6 +30,7 @@ WHERE l.id_nom IN (
     SELECT id_nom
     FROM taxonomie.bib_noms
     WHERE cd_nom IN (
+        45001,
         57226,
         58440,
         59457,
@@ -50,6 +51,7 @@ WHERE l.id_nom IN (
 -- "taxonomie.bib_noms" must be recreated from gn_synthese.synthese if necessary.
 DELETE FROM taxonomie.bib_noms
 WHERE cd_nom IN (
+    45001,
     57226,
     58440,
     59457,
