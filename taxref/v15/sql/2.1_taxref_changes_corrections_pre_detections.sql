@@ -67,41 +67,48 @@ WHERE cd_nom IN (
 
 -- Remove useless attributs
 DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (
-    81992, -- Amaranthus hybridus L., 1753 (texte à garder => taxon supprimé)
-    84230, -- Asarum europaeum L., 1753 (texte à garder => taxon supprimé)
-    94693, -- Dianthus armeria L., 1753(texte à garder => taxon supprimé)
-    148559, -- Medicago minima (L.) L., 1754 (texte à garder => taxon maintenu)
-    108703, -- Moenchia erecta (L.) G.Gaertn., B.Mey.& Scherb., 1799 (texte à garder => taxon supprimé)
-    140428, -- Sagina saginoides (L.) H.Karst., 1882 (texte à garder = > taxon maintenu)
-    140485, -- Salix triandra L., 1753 (texte à garder = > taxon maintenu)
-    141332, -- Sparganium erectum L., 1753 (texte à garder = > taxon maintenu)
-    612583, -- Veratrum album L., 1753 (texte à garder = > taxon maintenu)
-    151867, -- Sisymbrium officinale (L.) Scop., 1772 (texte à garder = > taxon maintenu)
-    151868 -- Sisymbrium officinale (L.) Scop., 1772 (texte à garder = > taxon maintenu)
+    81992, -- Amaranthus hybridus (texte à garder => taxon supprimé)
+    84230, -- Asarum europaeum (texte à garder => taxon supprimé)
+    94693, -- Dianthus armeria (texte à garder => taxon supprimé)
+    148559, -- Medicago minima (texte à garder => taxon maintenu)
+    108703, -- Moenchia erecta (texte à garder => taxon supprimé)
+    140428, -- Sagina saginoides (texte à garder => taxon maintenu)
+    140485, -- Salix triandra (texte à garder => taxon maintenu)
+    141332, -- Sparganium erectum (texte à garder => taxon maintenu)
+    612583, -- Veratrum album (texte à garder => taxon maintenu)
+    151867, -- Sisymbrium officinale (texte à garder => taxon maintenu)
+    151868, -- Sisymbrium officinale (texte à garder => taxon maintenu)
+    137541, -- Lycopus europaeus var.europaeus
+    131383, -- Androsace vitaliana subsp.cinerea (texte à garder = > taxon maintenu 82545)
+    132482, -- Campanula glomerata subsp.glomerata (texte à garder = > taxon maintenu 87652)
+    140668, -- Saxifraga oppositifolia subsp.oppositifolia (texte à garder = > taxon maintenu 121132)
+    612628 -- Scorzoneroides pyrenaica var.pyrenaica (texte à garder = > taxon maintenu 611356)
 ) ;
 
 -- Reassociate attributs to new taxon
--- Amaranthus hybridus L., 1753
+-- Amaranthus hybridus
 UPDATE taxonomie.cor_taxon_attribut SET cd_ref = 81992 WHERE cd_ref = 131296 ;
--- Asarum europaeum L., 1753
+-- Asarum europaeum
 UPDATE taxonomie.cor_taxon_attribut SET cd_ref = 84230 WHERE cd_ref = 131752 ;
--- Dianthus armeria L., 1753
+-- Dianthus armeria
 UPDATE taxonomie.cor_taxon_attribut SET cd_ref = 94693 WHERE cd_ref = 133810 ;
--- Moenchia erecta (L.) G.Gaertn., B.Mey.& Scherb., 1799
+-- Moenchia erecta
 UPDATE taxonomie.cor_taxon_attribut SET cd_ref = 108703 WHERE cd_ref = 613153 ;
 
 
 -- Associate deleted taxons photos to new taxons
--- Dianthus armeria L., 1753
+-- Dianthus armeria
 UPDATE taxonomie.t_medias SET cd_ref = 94693, id_type = 2 WHERE cd_ref = 133810 ;
--- Moenchia erecta (L.) G.Gaertn., B.Mey.& Scherb., 1799
+-- Moenchia erecta
 UPDATE taxonomie.t_medias SET cd_ref = 108703, id_type = 2 WHERE cd_ref = 613153 ;
--- Sagina saginoides (L.) H.Karst., 1882
+-- Sagina saginoides
 UPDATE taxonomie.t_medias SET cd_ref = 119827, id_type = 2 WHERE cd_ref = 140428 ;
--- Salix triandra L., 1753
+-- Salix triandra
 UPDATE taxonomie.t_medias SET cd_ref = 120246, id_type = 2 WHERE cd_ref = 140485 ;
--- Veratrum album L., 1753
+-- Veratrum album
 UPDATE taxonomie.t_medias SET cd_ref = 128520, id_type = 2 WHERE cd_ref = 612583 ;
+-- Campanula glomerata
+UPDATE taxonomie.t_medias SET cd_ref = 87652, id_type = 2 WHERE cd_ref = 132482 ;
 
 
 -- Commit if all good
