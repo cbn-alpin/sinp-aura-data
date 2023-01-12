@@ -84,7 +84,8 @@ DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (
     132481, -- Campanula glomerata subsp.farinosa (texte à garder => taxon maintenu 87652)
     140668, -- Saxifraga oppositifolia subsp.oppositifolia (texte à garder => taxon maintenu 121132)
     612628, -- Scorzoneroides pyrenaica var.pyrenaica (texte à garder => taxon maintenu 611356)
-    612627-- Scorzoneroides pyrenaica var.helvetica (texte à garder => taxon maintenu 611356)
+    612627,-- Scorzoneroides pyrenaica var.helvetica (texte à garder => taxon maintenu 611356)
+    140484 -- Salix triandra subsp. discolor (texte à garder => taxon maintenu 120246)
 ) ;
 
 -- Reassociate attributs to new taxon
