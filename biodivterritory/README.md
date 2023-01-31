@@ -23,6 +23,6 @@ psql -U geonatadmin -h localhost geonature2db -f data/sql/install/01_taxonomy_sc
 
 Pour transférer les données sur le serveur, utiliser Rsync :
 ```bash
-rsync -av biodivterritoires geonat@db-aura-sinp:/home/geonat/data/ --dry-run
+rsync -av biodivterritory geonat@db-aura-sinp:/home/geonat/data/ --dry-run
 ```
 Supprimer l'option `--dry-run` si tout semble OK.
