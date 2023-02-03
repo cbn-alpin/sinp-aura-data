@@ -83,7 +83,7 @@ function main() {
             updateInpnImages
             maintainDatabase
             refreshMaterializedViews
-            rebuildGeoNatureAtlas
+            refreshGeoNatureAtlas
         else
             printError "No new data => stop upkeeping !"
         fi
