@@ -220,25 +220,11 @@ function refreshMaterializedViews() {
             -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
 }
 
-function rebuildGeoNatureAtlas() {
-    local maintenance_path="/home/geonat/www/maintenance/atlas"
-    local atlas_path="/home/geonat/www/atlas"
-
-    printMsg "Put the Atlas in maintenance..."
-    ssh geonat@web-aura-sinp "mv ${maintenance_path}/maintenance.disable ${maintenance_path}/maintenance.enable"
-
-    printMsg "Run Atlas synchronise from web-srb to db-srv..."
-    ssh geonat@web-aura-sinp "rsync -av ${atlas_path}/ geonat@db-aura-sinp:${atlas_path}/"
-
-    printMsg "Run Atlas rebuild on db-srv..."
-    cat .env | sudo -S -u postgres \
-        psql -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
-            FROM pg_stat_activity
-            WHERE pg_stat_activity.datname = 'gnatlas' AND pid <> pg_backend_pid();" \
-        && "${atlas_path}/install_db.sh"
-
-    printMsg "Put the Atlas in production..."
-    ssh geonat@web-aura-sinp "mv ${maintenance_path}/maintenance.enable ${maintenance_path}/maintenance.disable"
+function refreshGeoNatureAtlas() {
+    printMsg "Refresh Atlas materialized views on db-srv..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
+            -f "${sql_dir}/atlas_refresh.sql"
 }
 
 main "${@}"
