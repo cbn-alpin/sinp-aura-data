@@ -1,0 +1,44 @@
+-- Refresh all Atlas Materialized views
+
+BEGIN ;
+
+-- TAXO
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_taxref;
+
+-- GEO
+
+REFRESH MATERIALIZED VIEW atlas.t_layer_territoire;
+
+REFRESH MATERIALIZED VIEW atlas.vm_subdivided_area;
+
+REFRESH MATERIALIZED VIEW atlas.l_communes;
+
+REFRESH MATERIALIZED VIEW atlas.vm_communes;
+
+-- DATA
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY synthese.vm_cor_synthese_area;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_observations;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_observations_mailles;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_cor_taxon_organism;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_mois;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_altitudes;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_taxons;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_taxon_attribute;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_search_taxon;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_medias;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_taxons_plus_observes;
+
+
+COMMIT;

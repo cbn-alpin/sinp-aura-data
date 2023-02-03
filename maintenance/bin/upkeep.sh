@@ -63,15 +63,20 @@ function main() {
     parseScriptOptions "${@}"
     loadScriptConfig "${setting_file_path-}"
     redirectOutput "${gnuk_log_imports}"
-    checkBinary ("jo" "jq" "ssh" "psql")
+
+    local readonly commands=("jo" "jq" "ssh" "psql")
+    checkBinary "${commands[@]}"
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
     printInfo "${app_name} script started at: ${fmt_time_start}"
 
-    update_script_running="$(pgrep -fl "gn2pg_cli|import_update.sh")"
+    printMsg "Check update script running..."
+    update_script_running="$(pgrep -fl 'gn2pg_cli|import_update.sh' || echo 'NO')"
 
-    if [[ "${update_script_running}" == "" ]]; then
+    if [[ "${update_script_running}" == "NO" ]]; then
+        printInfo "No update script running => continue..."
+
         checkNewData
         if [[ "${has_new_data}" == "true" ]]; then
             updateOutsideObservations
@@ -92,6 +97,8 @@ function main() {
 }
 
 function checkNewData() {
+    printMsg "Check new data..."
+
     local readonly json="${raw_dir}/synthese_infos.json"
     has_new_data="false"
 
@@ -111,8 +118,10 @@ function checkNewData() {
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT MAX(meta_update_date) FROM gn_synthese.synthese;")
 
+    local reason=""
     if [[ ! -f "${json}" ]]; then
-        has_new_data="false"
+        has_new_data="true"
+        reason="No JSON file"
     else
         last_count=$(jq .count "${json}")
         last_max_id_synthese=$(jq .maxIdSynthese "${json}")
@@ -120,16 +129,26 @@ function checkNewData() {
         last_max_update_date=$(jq -r .maxUpdateDate "${json}")
         last_create_at=$(jq -r .createdAt "${json}")
 
-        if [[ "${count}" > "${last_count}" ]]; then
+        if [[ "${count}" != "${last_count}" ]]; then
             has_new_data="true"
+            reason="observations count != last observations count"
         fi
         if [[ "${max_id_synthese}" > "${last_max_id_synthese}" ]]; then
             has_new_data="true"
+            reason="max id synthese > last max id synthese"
+        fi
+        if [[ "${max_update_date}" > "${last_max_update_date}" ]]; then
+            has_new_data="true"
+            reason="max update date > last update date"
         fi
     fi
 
+    if [[ "${has_new_data}" == "true" ]]; then
+        printInfo "New data reason: ${reason}"
+    fi
+
     jo -p \
-        count=${db_count} maxIdSynthese=${max_id_synthese} maxCreateDate="${max_create_date}"  \
+        count=${count} maxIdSynthese=${max_id_synthese} maxCreateDate="${max_create_date}"  \
         maxUpdateDate="${max_update_date}" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
         > "${json}"
 }
@@ -152,9 +171,30 @@ function updateInpnImages() {
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_dir}/update_scinames_list.sql"
 
-    printMsg "Run SINP update images on web-srv..."
-    ssh geonat@web-aura-srv 'bash -s' < "${data_dir}/bash/update_sinp_images.sh"
+    printMsg "Copy update_sinp_image.sh script on web-srv..."
+    scp "${data_dir}/bash/update_sinp_images.sh" geonat@web-aura-sinp:~/dwl/
 
+    printMsg "Run SINP update images on web-srv..."
+    ssh geonat@web-aura-sinp ~/dwl/update_sinp_images.sh
+
+    # Wait until updating images on wb-srv finish
+    sleep 5
+    waiting="alive"
+    while [[ "alive" == "${waiting}" ]]; do
+        waiting="stop"
+        if ssh geonat@web-aura-sinp "pgrep -fa 'import_inpn_media.py'"; then
+            echo "Process 'import_inpn_media.py' is running at $(date '+%H:%M:%S') on web-srv... "
+            waiting="alive"
+            sleep 120
+            continue
+        else
+             echo "Process 'import_inpn_media.py' is finish at $(date '+%H:%M:%S') on web-srv !"
+             updateFirstImages
+        fi
+    done
+}
+
+function updateFirstImages() {
     printMsg "Update first images in taxonomie.t_medias..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
@@ -169,23 +209,36 @@ function maintainDatabase() {
 }
 
 function refreshMaterializedViews() {
-    printMsg "Run materialized view refreshes..."
+    printMsg "Run refresh of GeoNature materialized views..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_shared_dir}/refresh_materialized_view.sql"
+
+    printMsg "Run refresh of Biodiv'territory materialized views..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
 }
 
 function rebuildGeoNatureAtlas() {
-    local atlas_path="/home/geonat/www/maintenance/atlas/"
+    local maintenance_path="/home/geonat/www/maintenance/atlas"
+    local atlas_path="/home/geonat/www/atlas"
 
     printMsg "Put the Atlas in maintenance..."
-    ssh geonat@web-aura-srv "mv ${atlas_path}/maintenance.disable ${atlas_path}/maintenance.enable"
+    ssh geonat@web-aura-sinp "mv ${maintenance_path}/maintenance.disable ${maintenance_path}/maintenance.enable"
+
+    printMsg "Run Atlas synchronise from web-srb to db-srv..."
+    ssh geonat@web-aura-sinp "rsync -av ${atlas_path}/ geonat@db-aura-sinp:${atlas_path}/"
+
+    printMsg "Run Atlas rebuild on db-srv..."
+    cat .env | sudo -S -u postgres \
+        psql -c "SELECT pg_terminate_backend(pg_stat_activity.pid)
+            FROM pg_stat_activity
+            WHERE pg_stat_activity.datname = 'gnatlas' AND pid <> pg_backend_pid();" \
+        && "${atlas_path}/install_db.sh"
 
     printMsg "Put the Atlas in production..."
-    ssh geonat@web-aura-srv 'bash -s' < "${data_dir}/bash/rebuild_atlas.sh"
-
-    printMsg "Put the Atlas in production..."
-    ssh geonat@web-aura-srv "mv ${atlas_path}/maintenance.enable ${atlas_path}/maintenance.disable"
+    ssh geonat@web-aura-sinp "mv ${maintenance_path}/maintenance.enable ${maintenance_path}/maintenance.disable"
 }
 
 main "${@}"
