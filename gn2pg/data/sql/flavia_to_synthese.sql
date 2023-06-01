@@ -273,8 +273,8 @@ BEGIN
             (_actor_role ->> 'uuid_actor')::UUID,
             _actor_role #>> '{identity,first_name}',
             _actor_role #>> '{identity,last_name}',
-            _actor_role ->> 'email',
-            jsonb_build_object('source', _source, 'module', 'gn2pg')
+            NULL,
+            jsonb_build_object('source', _source, 'module', 'gn2pg', 'email', _actor_role ->> 'email')
         )
         ON CONFLICT (uuid_role) DO NOTHING ;
 
