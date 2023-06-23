@@ -81,7 +81,9 @@ function main() {
         if [[ "${has_new_data}" == "true" ]]; then
             updateOutsideObservations
             updateInpnImages
-            maintainDatabase
+            # WARNING: désactivation car REINDEX dure plusieurs heures et bloque l'utilisation...
+            # La réindexation ne semble pas forcément utile. Il faudrait peut être par contre forcé le VACUUM même si l'AUTOVACUUM est actif !
+            #maintainDatabase
             refreshMaterializedViews
             refreshGeoNatureAtlas
         else
@@ -131,15 +133,15 @@ function checkNewData() {
 
         if [[ "${count}" != "${last_count}" ]]; then
             has_new_data="true"
-            reason="observations count != last observations count"
+            reason="observations count ${count} != last observations count ${last_count}"
         fi
         if [[ "${max_id_synthese}" > "${last_max_id_synthese}" ]]; then
             has_new_data="true"
-            reason="max id synthese > last max id synthese"
+            reason="max id synthese ${max_id_synthese} > last max id synthese ${last_max_id_synthese}"
         fi
         if [[ "${max_update_date}" > "${last_max_update_date}" ]]; then
             has_new_data="true"
-            reason="max update date > last update date"
+            reason="max update date ${max_update_date} > last update date ${last_max_update_date}"
         fi
     fi
 
