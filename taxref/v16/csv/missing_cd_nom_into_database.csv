@@ -1,0 +1,81 @@
+table_name,cd_nom,nom_complet,nb_occurence,plus_recente_diffusion,cd_nom_remplacement,cd_raison_suppression
+gn_synthese.synthese,83483,Arbutus uva-ursi auct. non L.,1,9.0,83482,1
+gn_synthese.synthese,83527,"Arctostaphylos uva-ursi auct. non (L.) Spreng., 1825",1,9.0,83528,1
+gn_synthese.synthese,88410,"Carex canescens auct. non L., 1753, sensu Thuill., 1799",1,9.0,,3
+gn_synthese.synthese,89860,"Centaurium umbellatum auct. non Gilib., 1782, sensu P.Fourn., 1938",1,9.0,619051,1
+gn_synthese.synthese,96528,"Equisetum maximum Duval-Jouve, 1864",1,9.0,619337,1
+gn_synthese.synthese,96530,"Equisetum maximum auct. non Lam., 1779, sensu Bonnier",1,9.0,619337,1
+gn_synthese.synthese,97290,"Erythraea centaurium auct. non (L.) Pers., 1805",1,9.0,97289,1
+gn_synthese.synthese,101626,"Hieracium anfractum (Fr.) Fr., 1856",1,9.0,,2
+gn_synthese.synthese,102114,"Hieracium laevicaule Jord., 1848",1,9.0,717248,1
+gn_synthese.synthese,106344,"Linum suffruticosum L., 1753",1,9.0,,2
+gn_synthese.synthese,107310,"Malva rotundifolia L., 1754",1,9.0,,3
+gn_synthese.synthese,109427,"Nasturtium pyrenaicum sensu H.J.Coste, 1905",1,9.0,109428,1
+gn_synthese.synthese,110895,"Orchis latifolia L., 1753",1,9.0,,3
+gn_synthese.synthese,111955,"Oxycoccus vulgaris Bong., 1832",1,9.0,1008910,1
+gn_synthese.synthese,113211,"Phleum nodosum auct. non L., 1759",1,9.0,113212,1
+gn_synthese.synthese,118953,"Rubus anoplocladus Sudre, 1905",1,9.0,,2
+gn_synthese.synthese,119441,"Rumex angiocarpus auct. non Murb., 1891, sensu Rech.f., 1964",1,9.0,161830,1
+gn_synthese.synthese,122145,"Sedum complanatum Gilib., 1782",1,9.0,,3
+gn_synthese.synthese,126918,"Toxylon pomiferum Raf., 1817 [orth. var.]",1,9.0,103674,1
+gn_synthese.synthese,130819,"Adenocarpus complicatus subsp. complicatus auct. non J.Gay, 1836",1,9.0,142583,1
+gn_synthese.synthese,134199,"Erigeron acer subsp. acer L., 1753",1,9.0,612619,1
+gn_synthese.synthese,137347,"Linaria vulgaris subsp. perrieri (Rouy) Rouy, 1910",1,9.0,619867,1
+gn_synthese.synthese,137835,"Minuartia recurva subsp. juressi (Willd. ex Schltdl.) Mattf., 1921",1,9.0,,3
+gn_synthese.synthese,159642,Elaeagnus x submacrophylla Thunb.,1,9.0,611221,1
+gn_synthese.synthese,436045,"Bryum schleicheri var. latifolium (Schwägr.) Schimp., 1876",1,9.0,,2
+gn_synthese.synthese,436047,"Bryum turbinatum var. latifolium (Schwägr.) Bruch & Schimp., 1839",1,9.0,,2
+gn_synthese.synthese,463664,Pucciniastrum circaeae (G. Winter) De Toni,1,9.0,463673,1
+gn_synthese.synthese,463887,Uromyces armeriae Kickx,1,9.0,463867,1
+gn_synthese.synthese,464912,Puccinia gentianae Röhling,1,9.0,464913,1
+gn_synthese.synthese,611982,"Vicia tetrasperma subsp. gracilis (Loisel.) Hook.f., 1870",1,9.0,142242,1
+gn_synthese.synthese,613650,Centaurea jacea var. decipiens ,1,9.0,89579,1
+gn_synthese.synthese,613655,Centaurea jacea var. nigra ,1,9.0,89653,1
+gn_synthese.synthese,613771,"Agrostis capillaris f. pumila L., 1767 L., 1767",1,9.0,80713,1
+gn_synthese.synthese,637815,Mentha rotundifolia auct.,1,9.0,108151,1
+gn_synthese.synthese,773798,"Nasturtium officinale R.Br., 1812",1,9.0,109422,1
+gn_synthese.synthese,787051,"Brachythecium tauriscorum Molendo, 1866",1,9.0,,2
+gn_synthese.synthese,788037,"Homalothecium mandonii (Mitt.) Geh., 1886",1,9.0,,2
+gn_synthese.synthese,921710,"Granatum puniceum St.-Lag., 1880 [orth. var.]",1,15.0,100572,1
+taxonomie.bib_noms,83483,Arbutus uva-ursi auct. non L.,1,9.0,83482,1
+taxonomie.bib_noms,83527,"Arctostaphylos uva-ursi auct. non (L.) Spreng., 1825",1,9.0,83528,1
+taxonomie.bib_noms,88410,"Carex canescens auct. non L., 1753, sensu Thuill., 1799",1,9.0,,3
+taxonomie.bib_noms,89860,"Centaurium umbellatum auct. non Gilib., 1782, sensu P.Fourn., 1938",1,9.0,619051,1
+taxonomie.bib_noms,96528,"Equisetum maximum Duval-Jouve, 1864",1,9.0,619337,1
+taxonomie.bib_noms,96530,"Equisetum maximum auct. non Lam., 1779, sensu Bonnier",1,9.0,619337,1
+taxonomie.bib_noms,97290,"Erythraea centaurium auct. non (L.) Pers., 1805",1,9.0,97289,1
+taxonomie.bib_noms,101626,"Hieracium anfractum (Fr.) Fr., 1856",1,9.0,,2
+taxonomie.bib_noms,102114,"Hieracium laevicaule Jord., 1848",1,9.0,717248,1
+taxonomie.bib_noms,106344,"Linum suffruticosum L., 1753",1,9.0,,2
+taxonomie.bib_noms,107310,"Malva rotundifolia L., 1754",1,9.0,,3
+taxonomie.bib_noms,109427,"Nasturtium pyrenaicum sensu H.J.Coste, 1905",1,9.0,109428,1
+taxonomie.bib_noms,110895,"Orchis latifolia L., 1753",1,9.0,,3
+taxonomie.bib_noms,111955,"Oxycoccus vulgaris Bong., 1832",1,9.0,1008910,1
+taxonomie.bib_noms,113211,"Phleum nodosum auct. non L., 1759",1,9.0,113212,1
+taxonomie.bib_noms,118928,"Rubus aculeolatus P.J.Müll., 1859",1,9.0,,2
+taxonomie.bib_noms,118946,"Rubus amplifrons Sudre, 1911",1,9.0,,2
+taxonomie.bib_noms,118953,"Rubus anoplocladus Sudre, 1905",1,9.0,,2
+taxonomie.bib_noms,118981,"Rubus borreri T.B.Salter, 1845",1,9.0,,2
+taxonomie.bib_noms,119441,"Rumex angiocarpus auct. non Murb., 1891, sensu Rech.f., 1964",1,9.0,161830,1
+taxonomie.bib_noms,122145,"Sedum complanatum Gilib., 1782",1,9.0,,3
+taxonomie.bib_noms,126918,"Toxylon pomiferum Raf., 1817 [orth. var.]",1,9.0,103674,1
+taxonomie.bib_noms,130819,"Adenocarpus complicatus subsp. complicatus auct. non J.Gay, 1836",1,9.0,142583,1
+taxonomie.bib_noms,134199,"Erigeron acer subsp. acer L., 1753",1,9.0,612619,1
+taxonomie.bib_noms,137347,"Linaria vulgaris subsp. perrieri (Rouy) Rouy, 1910",1,9.0,619867,1
+taxonomie.bib_noms,137835,"Minuartia recurva subsp. juressi (Willd. ex Schltdl.) Mattf., 1921",1,9.0,,3
+taxonomie.bib_noms,159642,Elaeagnus x submacrophylla Thunb.,1,9.0,611221,1
+taxonomie.bib_noms,436045,"Bryum schleicheri var. latifolium (Schwägr.) Schimp., 1876",1,9.0,,2
+taxonomie.bib_noms,436047,"Bryum turbinatum var. latifolium (Schwägr.) Bruch & Schimp., 1839",1,9.0,,2
+taxonomie.bib_noms,463664,Pucciniastrum circaeae (G. Winter) De Toni,1,9.0,463673,1
+taxonomie.bib_noms,463887,Uromyces armeriae Kickx,1,9.0,463867,1
+taxonomie.bib_noms,464912,Puccinia gentianae Röhling,1,9.0,464913,1
+taxonomie.bib_noms,611982,"Vicia tetrasperma subsp. gracilis (Loisel.) Hook.f., 1870",1,9.0,142242,1
+taxonomie.bib_noms,613650,Centaurea jacea var. decipiens ,1,9.0,89579,1
+taxonomie.bib_noms,613655,Centaurea jacea var. nigra ,1,9.0,89653,1
+taxonomie.bib_noms,613771,"Agrostis capillaris f. pumila L., 1767 L., 1767",1,9.0,80713,1
+taxonomie.bib_noms,637815,Mentha rotundifolia auct.,1,9.0,108151,1
+taxonomie.bib_noms,773798,"Nasturtium officinale R.Br., 1812",1,9.0,109422,1
+taxonomie.bib_noms,787051,"Brachythecium tauriscorum Molendo, 1866",1,9.0,,2
+taxonomie.bib_noms,788037,"Homalothecium mandonii (Mitt.) Geh., 1886",1,9.0,,2
+taxonomie.bib_noms,921710,"Granatum puniceum St.-Lag., 1880 [orth. var.]",1,15.0,100572,1
+taxonomie.bib_noms,956743,"Ptychostomum schleicheri var. latifolium (Schwägr.) D.Bell & Holyoak, 2020",1,15.0,,2
