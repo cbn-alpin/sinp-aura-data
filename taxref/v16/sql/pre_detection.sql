@@ -64,7 +64,8 @@ INSERT INTO taxonomie.taxref (
     'Airelle canneberge, Canneberge à gros fruits, Canneberge commune',
     'Cranberry', 'Trachéophytes', 'Angiospermes', 'https://inpn.mnhn.fr/espece/cd_nom/1008910',
     'Autres'
-);
+)
+ON CONFLICT (cd_nom) DO NOTHING ;
 
 -- Replace old removing cd_nom by new cd_nom
 UPDATE gn_synthese.synthese SET
