@@ -21,6 +21,7 @@ priority_first_medias AS (
             FROM
                 exists_first_medias
         )
+        AND id_type = 2
         AND "source" != 'INPN'
         AND supprime != TRUE
     GROUP BY
@@ -39,6 +40,7 @@ priority_first_medias AS (
             FROM
                 exists_first_medias
         )
+        AND id_type = 2
         AND "source" = 'INPN'
         AND supprime != TRUE
     GROUP BY
