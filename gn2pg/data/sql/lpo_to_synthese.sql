@@ -48,11 +48,17 @@ CREATE UNIQUE INDEX IF NOT EXISTS uidx_synthese_id_source_id_entity_source_pk_va
 CREATE UNIQUE INDEX IF NOT EXISTS uidx_t_roles_uuid_role
     ON utilisateurs.t_roles (uuid_role) ;
 
+-- -------------------------------------------------------------------------------------------------
+-- Cleaning: drop triggers and functions
+
+DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature_with_metadata ON gn2pg_lpo.data_json;
+
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_tri_c_upsert_data_to_geonature_with_metadata();
 
 -- -------------------------------------------------------------------------------------------------
 -- Acquisition Frameworks
 
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_af_from_uuid_name (_uuid UUID, _name TEXT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_af_from_uuid_name(_uuid UUID, _name TEXT) ;
 
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_get_or_insert_basic_af_from_uuid_name(_uuid UUID, _name TEXT)
@@ -97,7 +103,7 @@ COMMENT ON
 
 -- -------------------------------------------------------------------------------------------------
 -- Datasets
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name (_uuid UUID, _name TEXT, _id_af INT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name(_uuid UUID, _name TEXT, _id_af INT) ;
 
 CREATE OR REPLACE FUNCTION
     gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name(_uuid UUID, _name TEXT, _id_af INT)
@@ -233,6 +239,8 @@ BEGIN
 END
 $$ ;
 
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_create_actors_in_usershub(_actor_role JSONB, _source CHARACTER VARYING) ;
+
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_get_or_create_actors_in_usershub(_actor_role JSONB, _source CHARACTER VARYING)
     RETURNS INTEGER
@@ -289,6 +297,8 @@ BEGIN
 END
 $$;
 
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_dataset_actor(_id_dataset INTEGER, _actor_roles JSONB, _source CHARACTER VARYING);
+
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_insert_dataset_actor(_id_dataset INTEGER, _actor_roles JSONB, _source CHARACTER VARYING)
     RETURNS VOID
@@ -318,6 +328,8 @@ BEGIN
 END
 $$;
 
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_af_actors(_id_af INTEGER, _actor_roles JSONB, _source CHARACTER VARYING) ;
+
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_insert_af_actors(_id_af INTEGER, _actor_roles JSONB, _source CHARACTER VARYING) RETURNS VOID
     LANGUAGE plpgsql
 AS
@@ -345,6 +357,8 @@ BEGIN
         END LOOP;
 END
 $$;
+
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(_af_data JSONB, _source CHARACTER VARYING);
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(_af_data JSONB, _source CHARACTER VARYING) RETURNS INTEGER
     LANGUAGE plpgsql
@@ -396,6 +410,8 @@ $$;
 
 COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(JSONB, VARCHAR)
     IS 'Function to create acquisition framework from json structured data.';
+
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(_ds_data JSONB, _id_af INTEGER, _source CHARACTER VARYING);
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(_ds_data JSONB, _id_af INTEGER, _source CHARACTER VARYING) RETURNS INTEGER
     LANGUAGE plpgsql
@@ -458,6 +474,8 @@ $$;
 COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(JSONB, INTEGER, VARCHAR)
     IS 'Function to basically create datasets.';
 
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT) ;
+
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT)
     RETURNS INTEGER
     LANGUAGE plpgsql
@@ -487,7 +505,7 @@ COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_or_insert_source(TEXT)
 -- -------------------------------------------------------------------------------------------------
 -- MANAGE TRIGGERS
 
-CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_tri_c_upsert_data_to_geonature_with_metadata() RETURNS TRIGGER
+CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_tri_c_upsert_data_to_geonature() RETURNS TRIGGER
     LANGUAGE plpgsql
 AS
 $$
@@ -552,7 +570,6 @@ DECLARE
     the_additional_data                      JSONB;
     the_meta_validation_date                 TIMESTAMP;
 BEGIN
-    RAISE DEBUG 'Update synthese_with_metadata';
     SELECT find_srid('gn_synthese', 'synthese', 'the_geom_local')
     INTO _local_srid;
     SELECT new.uuid
@@ -564,51 +581,154 @@ BEGIN
     --     id_module                                INT;
     SELECT new.item #>> '{id_synthese}'
     INTO the_entity_source_pk_value;
-    SELECT gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(new.item #> '{ca_data}', new.source)
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_metadata'
+                THEN gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(
+                    new.item #> '{ca_data}',
+                    new.source
+                )
+            ELSE gn2pg_lpo.fct_c_get_or_insert_basic_af_from_uuid_name(
+                cast(new.item #>> '{ca_uuid}' AS UUID),
+                new.item #>> '{ca_nom}'
+            )
+        END AS the_id_af
     INTO the_id_af;
-    SELECT gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(new.item #> '{jdd_data}', the_id_af, new.source)
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_metadata'
+                THEN gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(
+                    new.item #> '{jdd_data}',
+                    the_id_af,
+                    new.source
+                )
+            ELSE gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name(
+                cast(new.item #>> '{jdd_uuid}' AS UUID),
+                new.item #>> '{jdd_nom}',
+                the_id_af
+            )
+        END AS id_dataset
     INTO the_id_dataset;
-    SELECT ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', new.item #>> '{nature_objet_geo}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('NAT_OBJ_GEO',  new.item #>> '{nature_objet_geo}')
+            ELSE ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO',  new.item #>> '{nature_objet_geo}')
+        END AS id_nomenclature_geo_object_nature
     INTO the_id_nomenclature_geo_object_nature;
-    SELECT ref_nomenclatures.get_id_nomenclature('TYP_GRP', new.item #>> '{type_regroupement}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('TYP_GRP',  new.item #>> '{type_regroupement}')
+            ELSE ref_nomenclatures.get_id_nomenclature('TYP_GRP',  new.item #>> '{type_regroupement}')
+        END AS id_nomenclature_grp_typ
     INTO the_id_nomenclature_grp_typ;
     SELECT new.item #>> '{methode_regroupement}'
     INTO the_grp_method;
-    SELECT ref_nomenclatures.get_id_nomenclature('METH_OBS', new.item #>> '{technique_obs}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('METH_OBS',  new.item #>> '{technique_obs}')
+            ELSE ref_nomenclatures.get_id_nomenclature('METH_OBS',  new.item #>> '{technique_obs}')
+        END AS id_nomenclature_obs_technique
     INTO the_id_nomenclature_obs_technique;
-    SELECT ref_nomenclatures.get_id_nomenclature('STATUT_BIO', new.item #>> '{statut_biologique}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('STATUT_BIO',  new.item #>> '{statut_biologique}')
+            ELSE ref_nomenclatures.get_id_nomenclature('STATUT_BIO',  new.item #>> '{statut_biologique}')
+        END AS id_nomenclature_bio_status
     INTO the_id_nomenclature_bio_status;
-    SELECT ref_nomenclatures.get_id_nomenclature('ETA_BIO', new.item #>> '{etat_biologique}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('ETA_BIO',  new.item #>> '{etat_biologique}')
+            ELSE ref_nomenclatures.get_id_nomenclature('ETA_BIO',  new.item #>> '{etat_biologique}')
+        END AS id_nomenclature_bio_condition
     INTO the_id_nomenclature_bio_condition;
-    SELECT ref_nomenclatures.get_id_nomenclature('NATURALITE', new.item #>> '{naturalite}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('NATURALITE',  new.item #>> '{naturalite}')
+            ELSE ref_nomenclatures.get_id_nomenclature('NATURALITE',  new.item #>> '{naturalite}')
+        END AS id_nomenclature_naturalness
     INTO the_id_nomenclature_naturalness;
-    SELECT ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', new.item #>> '{preuve_existante}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('PREUVE_EXIST',  new.item #>> '{preuve_existante}')
+            ELSE ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST',  new.item #>> '{preuve_existante}')
+        END AS id_nomenclature_exist_proof
     INTO the_id_nomenclature_exist_proof;
-    SELECT ref_nomenclatures.get_id_nomenclature('STATUT_VALID', new.item #>> '{statut_validation}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('STATUT_VALID',  new.item #>> '{statut_validation}')
+            ELSE ref_nomenclatures.get_id_nomenclature('STATUT_VALID',  new.item #>> '{statut_validation}')
+        END AS id_nomenclature_valid_status
     INTO the_id_nomenclature_valid_status;
-    SELECT ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', new.item #>> '{precision_diffusion}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('NIV_PRECIS',  new.item #>> '{precision_diffusion}')
+            ELSE ref_nomenclatures.get_id_nomenclature('NIV_PRECIS', new.item #>> '{precision_diffusion}')
+        END AS id_nomenclature_diffusion_level
     INTO the_id_nomenclature_diffusion_level;
-    SELECT ref_nomenclatures.get_id_nomenclature('STADE_VIE', new.item #>> '{stade_vie}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('STADE_VIE',  new.item #>> '{stade_vie}')
+            ELSE ref_nomenclatures.get_id_nomenclature('STADE_VIE',  new.item #>> '{stade_vie}')
+        END AS id_nomenclature_life_stage
     INTO the_id_nomenclature_life_stage;
-    SELECT ref_nomenclatures.get_id_nomenclature('SEXE', new.item #>> '{sexe}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('SEXE',  new.item #>> '{sexe}')
+            ELSE ref_nomenclatures.get_id_nomenclature('SEXE',  new.item #>> '{sexe}')
+        END AS id_nomenclature_sex
     INTO the_id_nomenclature_sex;
-    SELECT ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', new.item #>> '{objet_denombrement}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('OBJ_DENBR',  new.item #>> '{objet_denombrement}')
+            ELSE ref_nomenclatures.get_id_nomenclature('OBJ_DENBR',  new.item #>> '{objet_denombrement}')
+        END AS id_nomenclature_obj_count
     INTO the_id_nomenclature_obj_count;
-    SELECT ref_nomenclatures.get_id_nomenclature('TYP_DENBR', new.item #>> '{type_denombrement}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('TYP_DENBR',  new.item #>> '{type_denombrement}')
+            ELSE ref_nomenclatures.get_id_nomenclature('TYP_DENBR',  new.item #>> '{type_denombrement}')
+        END AS id_nomenclature_type_count
     INTO the_id_nomenclature_type_count;
-    SELECT ref_nomenclatures.get_id_nomenclature('SENSIBILITE', new.item #>> '{niveau_sensibilite}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('SENSIBILITE',  new.item #>> '{niveau_sensibilite}')
+            ELSE ref_nomenclatures.get_id_nomenclature('SENSIBILITE',  new.item #>> '{niveau_sensibilite}')
+        END AS id_nomenclature_sensitivity
     INTO the_id_nomenclature_sensitivity;
-    SELECT ref_nomenclatures.get_id_nomenclature('STATUT_OBS', new.item #>> '{statut_observation}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('STATUT_OBS',  new.item #>> '{statut_observation}')
+            ELSE ref_nomenclatures.get_id_nomenclature('STATUT_OBS',  new.item #>> '{statut_observation}')
+        END AS id_nomenclature_observation_status
     INTO the_id_nomenclature_observation_status;
-    SELECT ref_nomenclatures.get_id_nomenclature('DEE_FLOU', new.item #>> '{floutage_dee}')
+    SELECT CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('DEE_FLOU',  new.item #>> '{floutage_dee}')
+            ELSE ref_nomenclatures.get_id_nomenclature('DEE_FLOU',  new.item #>> '{floutage_dee}')
+        END AS id_nomenclature_blurring
     INTO the_id_nomenclature_blurring;
-    SELECT ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', new.item #>> '{statut_source}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('STATUT_SOURCE',  new.item #>> '{statut_source}')
+            ELSE ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE',  new.item #>> '{statut_source}')
+        END AS id_nomenclature_source_status
     INTO the_id_nomenclature_source_status;
-    SELECT ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', new.item #>> '{type_info_geo}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('TYP_INF_GEO',  new.item #>> '{type_info_geo}')
+            ELSE ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO',  new.item #>> '{type_info_geo}')
+        END AS id_nomenclature_info_geo_type
     INTO the_id_nomenclature_info_geo_type;
-    SELECT ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', new.item #>> '{comportement}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('OCC_COMPORTEMENT',  new.item #>> '{comportement}')
+            ELSE ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT',  new.item #>> '{comportement}')
+        END AS id_nomenclature_behaviour
     INTO the_id_nomenclature_behaviour;
-    SELECT ref_nomenclatures.get_id_nomenclature('STAT_BIOGEO', new.item #>> '{statut_biogeo}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label' THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('STAT_BIOGEO',  new.item #>> '{statut_biogeo}')
+            ELSE ref_nomenclatures.get_id_nomenclature('STAT_BIOGEO',  new.item #>> '{statut_biogeo}')
+        END AS id_nomenclature_biogeo_status
     INTO the_id_nomenclature_biogeo_status;
     SELECT new.item #>> '{reference_biblio}'
     INTO the_reference_biblio;
@@ -662,7 +782,12 @@ BEGIN
     INTO the_determiner;
     SELECT NULL
     INTO the_id_digitiser;
-    SELECT ref_nomenclatures.get_id_nomenclature('TYPE', new.item #>> '{label}')
+    SELECT
+        CASE new.type
+            WHEN 'synthese_with_label'
+                THEN gn2pg_lpo.fct_c_get_id_nomenclature_from_label('TYPE',  new.item #>> '{label}')
+            ELSE ref_nomenclatures.get_id_nomenclature('TYPE',  new.item #>> '{label}')
+        END AS id_nomenclature_determination_method
     INTO the_id_nomenclature_determination_method;
     SELECT new.item #>> '{comment_releve}'
     INTO the_comment_context;
@@ -853,18 +978,18 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION gn2pg_lpo.fct_tri_c_upsert_data_to_geonature_with_metadata()
-    IS 'Trigger function to upsert datas from import to synthese.';
+COMMENT ON FUNCTION gn2pg_lpo.fct_tri_c_upsert_data_to_geonature()
+    IS 'Trigger function to upsert datas from import to synthese';
 
-DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature_with_metadata ON gn2pg_lpo.data_json;
-
-CREATE TRIGGER tri_c_upsert_data_to_geonature_with_metadata
+DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature ON gn2pg_lpo.data_json;
+CREATE TRIGGER tri_c_upsert_data_to_geonature
     AFTER INSERT OR UPDATE
     ON gn2pg_lpo.data_json
     FOR EACH ROW
-    WHEN (new.type::TEXT ~~ 'synthese_with_metadata'::TEXT)
-EXECUTE PROCEDURE gn2pg_lpo.fct_tri_c_upsert_data_to_geonature_with_metadata();
+    EXECUTE PROCEDURE gn2pg_lpo.fct_tri_c_upsert_data_to_geonature();
 
+-- DELETE
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_tri_c_delete_data_from_geonature();
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_tri_c_delete_data_from_geonature()
     RETURNS TRIGGER
