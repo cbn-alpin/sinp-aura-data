@@ -58,9 +58,26 @@ DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature_with_metadata ON gn2pg_lpo
 DROP FUNCTION IF EXISTS gn2pg_lpo.fct_tri_c_upsert_data_to_geonature_with_metadata();
 
 -- -------------------------------------------------------------------------------------------------
--- Acquisition Frameworks
+-- Drop before create again:  triggers and functions
+
+DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature ON gn2pg_lpo.data_json ;
+DROP TRIGGER IF EXISTS tri_c_delete_data_from_geonature ON gn2pg_lpo.data_json ;
 
 DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_af_from_uuid_name(_uuid UUID, _name TEXT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name(_uuid UUID, _name TEXT, _id_af INT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_id_nomenclature_from_label(_type TEXT, _label TEXT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_ds_territories(_id_ds INTEGER, _territories JSONB) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_create_actors_in_usershub(_actor_role JSONB, _source CHARACTER VARYING) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_dataset_actor(_id_dataset INTEGER, _actor_roles JSONB, _source CHARACTER VARYING) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_af_actors(_id_af INTEGER, _actor_roles JSONB, _source CHARACTER VARYING) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(_af_data JSONB, _source CHARACTER VARYING) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(_ds_data JSONB, _id_af INTEGER, _source CHARACTER VARYING) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT) ;
+DROP FUNCTION IF EXISTS gn2pg_lpo.fct_tri_c_delete_data_from_geonature() ;
+
+-- -------------------------------------------------------------------------------------------------
+-- Acquisition Frameworks
 
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_get_or_insert_basic_af_from_uuid_name(_uuid UUID, _name TEXT)
@@ -105,7 +122,6 @@ COMMENT ON
 
 -- -------------------------------------------------------------------------------------------------
 -- Datasets
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name(_uuid UUID, _name TEXT, _id_af INT) ;
 
 CREATE OR REPLACE FUNCTION
     gn2pg_lpo.fct_c_get_or_insert_basic_dataset_from_uuid_name(_uuid UUID, _name TEXT, _id_af INT)
@@ -156,7 +172,6 @@ COMMENT ON
 
 -- -------------------------------------------------------------------------------------------------
 -- Sources
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT) ;
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT)
     RETURNS INTEGER
@@ -187,7 +202,6 @@ COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_or_insert_source (_source TEXT)
 
 -- -------------------------------------------------------------------------------------------------
 -- Nomenclatures
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_id_nomenclature_from_label(_type TEXT, _label TEXT) ;
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_id_nomenclature_from_label(_type TEXT, _label TEXT)
     RETURNS INTEGER
@@ -215,8 +229,6 @@ COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_id_nomenclature_from_label (_type TEXT, 
 -- -------------------------------------------------------------------------------------------------
 -- SYNTHESE WITH METADATA
 
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_ds_territories(_id_ds INTEGER, _territories JSONB);
-
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_insert_ds_territories(_id_ds INTEGER, _territories JSONB)
     RETURNS VOID
@@ -240,8 +252,6 @@ BEGIN
         END LOOP ;
 END
 $$ ;
-
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_create_actors_in_usershub(_actor_role JSONB, _source CHARACTER VARYING) ;
 
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_get_or_create_actors_in_usershub(_actor_role JSONB, _source CHARACTER VARYING)
@@ -299,8 +309,6 @@ BEGIN
 END
 $$;
 
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_dataset_actor(_id_dataset INTEGER, _actor_roles JSONB, _source CHARACTER VARYING);
-
 CREATE OR REPLACE
     FUNCTION gn2pg_lpo.fct_c_insert_dataset_actor(_id_dataset INTEGER, _actor_roles JSONB, _source CHARACTER VARYING)
     RETURNS VOID
@@ -330,8 +338,6 @@ BEGIN
 END
 $$;
 
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_insert_af_actors(_id_af INTEGER, _actor_roles JSONB, _source CHARACTER VARYING) ;
-
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_insert_af_actors(_id_af INTEGER, _actor_roles JSONB, _source CHARACTER VARYING) RETURNS VOID
     LANGUAGE plpgsql
 AS
@@ -359,8 +365,6 @@ BEGIN
         END LOOP;
 END
 $$;
-
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(_af_data JSONB, _source CHARACTER VARYING);
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(_af_data JSONB, _source CHARACTER VARYING) RETURNS INTEGER
     LANGUAGE plpgsql
@@ -412,8 +416,6 @@ $$;
 
 COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_or_insert_af_from_af_jsondata(JSONB, VARCHAR)
     IS 'Function to create acquisition framework from json structured data.';
-
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(_ds_data JSONB, _id_af INTEGER, _source CHARACTER VARYING);
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(_ds_data JSONB, _id_af INTEGER, _source CHARACTER VARYING) RETURNS INTEGER
     LANGUAGE plpgsql
@@ -475,8 +477,6 @@ $$;
 
 COMMENT ON FUNCTION gn2pg_lpo.fct_c_get_or_insert_dataset_from_jsondata(JSONB, INTEGER, VARCHAR)
     IS 'Function to basically create datasets.';
-
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT) ;
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_c_get_or_insert_source(_source TEXT)
     RETURNS INTEGER
@@ -983,7 +983,6 @@ $$;
 COMMENT ON FUNCTION gn2pg_lpo.fct_tri_c_upsert_data_to_geonature()
     IS 'Trigger function to upsert datas from import to synthese';
 
-DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature ON gn2pg_lpo.data_json;
 CREATE TRIGGER tri_c_upsert_data_to_geonature
     AFTER INSERT OR UPDATE
     ON gn2pg_lpo.data_json
@@ -991,7 +990,6 @@ CREATE TRIGGER tri_c_upsert_data_to_geonature
     EXECUTE PROCEDURE gn2pg_lpo.fct_tri_c_upsert_data_to_geonature();
 
 -- DELETE
-DROP FUNCTION IF EXISTS gn2pg_lpo.fct_tri_c_delete_data_from_geonature();
 
 CREATE OR REPLACE FUNCTION gn2pg_lpo.fct_tri_c_delete_data_from_geonature()
     RETURNS TRIGGER
@@ -1013,16 +1011,12 @@ $$;
 COMMENT ON FUNCTION gn2pg_lpo.fct_tri_c_delete_data_from_geonature()
     IS 'Trigger function to delete datas.' ;
 
-
-DROP TRIGGER IF EXISTS tri_c_delete_data_from_geonature ON gn2pg_lpo.data_json ;
-
 CREATE TRIGGER tri_c_delete_data_from_geonature
     AFTER DELETE
     ON gn2pg_lpo.data_json
     FOR EACH ROW
     WHEN (old.type IN ('synthese_with_label', 'synthese_with_cd_nomenclature', 'synthese_with_metadata'))
 EXECUTE PROCEDURE gn2pg_lpo.fct_tri_c_delete_data_from_geonature() ;
-
 
 -- -------------------------------------------------------------------------------------------------
 -- COMMIT if all is OK !
