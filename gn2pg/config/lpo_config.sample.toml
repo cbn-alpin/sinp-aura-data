@@ -33,6 +33,7 @@ data_type = "synthese_with_metadata"
 id_application = 1
 # Enable source
 enable = true
+#last_action_date = None
 # Additional export API QueryStrings to filter or order data, you can add multiple "orderby" columns by separating column names with ":"
 [source.query_strings]
 orderby = 'id_synthese'
@@ -54,3 +55,5 @@ retry_delay = 5
 unavailable_delay = 600
 # LRU cache size for common requests (taxo_groups...)
 lru_maxsize = 64
+# Number of computing threads
+nb_threads = 1
