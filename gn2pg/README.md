@@ -4,33 +4,45 @@ Installation de [GN2PG](https://github.com/lpoaura/GN2PG) spécifique au SINP AU
 
 ## Installation de Pipenv
 
-Sous Debian Buster :
+Sous Debian Booksworm :
 ```bash
-cd gn2pg/
-pip3 install --user pipenv
+sudo apt install pipx
+pipx ensurepath
+source ~/.bashrc
+pipx install pipenv
 ```
 
+Sous Debian Buster :
+- Installer Pipenv au niveau de l'utilisateur :
+    ```bash
+    cd gn2pg/
+    pip3 install --user pipenv
+    ```
+
 - Ajouter le code suivant au fichier `~/.bashrc` :
-```
-# Add ~/.local/bin to PATH (Pipenv)
-if [ -d "${HOME}/.local/bin" ] ; then
-    PATH="${HOME}/.local/bin:$PATH"
-fi
-```
+    ```
+    # Add ~/.local/bin to PATH (Pipenv)
+    if [ -d "${HOME}/.local/bin" ] ; then
+        PATH="${HOME}/.local/bin:$PATH"
+    fi
+    ```
 - Recharger le fichier `~/.bashrc` avec la commande : `source ~/.bashrc`
 - **Notes** : il est nécessaire de donner les droits d'execution à GCC pour
 tout le monde si l'on veut pouvoir installer correctement le venv
 avec `sudo chmod o+x /usr/bin/gcc`. Une fois l'installation terminée,
 retirer les à nouveau avec  `sudo chmod o-x /usr/bin/gcc`.
 
-Pour créer un fichier Pipfile avec le paquet `gn2pg-client` utiliser :
-```bash
-pipenv install gn2pg-client
-```
+### Notes pour les développeurs
+  * Pour créer un fichier Pipfile avec le paquet `gn2pg-client` utiliser :
+    ```bash
+    pipenv install gn2pg-client
+    ```
+  * Créer un commit prenant en compte les fichier `Pipfile` et `Pipfile.lock`
+  * Pour mettre à jour le fichier `Pipfile.lock` utilise : `pipenv lock`
 
 ## Mise en place
 
-- Installer les dépendances le venv et ses dépendances via :
+- Installer le venv et ses dépendances via :
   - `cd gn2pg/`
   - `pipenv install`
 - Créer un lien symbolique du dossier ~/.gn2pg/ vers le dossier config/ :
