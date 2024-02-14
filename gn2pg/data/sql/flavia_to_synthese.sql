@@ -49,7 +49,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS uidx_t_roles_uuid_role
 
 
 -- -------------------------------------------------------------------------------------------------
--- Cleaning: drop triggers and functions
+-- Cleaning: drop tables, triggers and functions
+DROP TABLE IF EXISTS gn2pg_flavia.datasets_json ;
 
 DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature_with_metadata ON gn2pg_flavia.data_json;
 

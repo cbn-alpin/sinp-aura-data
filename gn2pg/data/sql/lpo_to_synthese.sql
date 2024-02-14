@@ -49,7 +49,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS uidx_t_roles_uuid_role
     ON utilisateurs.t_roles (uuid_role) ;
 
 -- -------------------------------------------------------------------------------------------------
--- Cleaning: drop triggers and functions
+-- Cleaning: drop tables, triggers and functions
+
+DROP TABLE IF EXISTS gn2pg_lpo.datasets_json ;
 
 DROP TRIGGER IF EXISTS tri_c_upsert_data_to_geonature_with_metadata ON gn2pg_lpo.data_json;
 
