@@ -10,8 +10,8 @@ PATH=/home/geonat/.local/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin
 #MAILFROM=mailer@biodiversite-aura.fr
 
 # LPO - Each sunday at 20:00
-0 20 * * SUN geonat /home/geonat/data/gn2pg/bin/gn2pg_update.sh -c lpo_config.toml
+0 20 * * SUN geonat /home/geonat/data/gn2pg/bin/gn2pg_update.sh -n lpo
 # FLAVIA - Each sunday at 17:00
-0 17 * * SUN geonat /home/geonat/data/gn2pg/bin/gn2pg_update.sh -c flavia_config.toml
+0 17 * * SUN geonat /home/geonat/data/gn2pg/bin/gn2pg_update.sh -n flavia
 
 # An empty line is required at the end of this file for a valid cron file.
