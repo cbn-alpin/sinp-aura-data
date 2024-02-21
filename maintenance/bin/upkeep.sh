@@ -63,9 +63,7 @@ function main() {
     parseScriptOptions "${@}"
     loadScriptConfig "${setting_file_path-}"
     redirectOutput "${gnuk_log_imports}"
-
-    local readonly commands=("jo" "jq" "ssh" "psql")
-    checkBinary "${commands[@]}"
+    runChecks
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
@@ -78,19 +76,19 @@ function main() {
         printInfo "No update script running => continue..."
 
         checkNewData
+        sendStartMessage
         if [[ "${has_new_data}" == "true" ]]; then
             updateOutsideObservations
             updateInpnImages
-            # WARNING: désactivation car REINDEX dure plusieurs heures et bloque l'utilisation...
-            # La réindexation ne semble pas forcément utile. Il faudrait peut être par contre forcé le VACUUM même si l'AUTOVACUUM est actif !
-            #maintainDatabase
             refreshMaterializedViews
             refreshGeoNatureAtlas
         else
             printError "No new data => stop upkeeping !"
         fi
+        sendStopMessage
     else
         printError "Updating data script running => stop upkeeping: ${update_script_running} !"
+        sendDelayedMessage
     fi
 
     #+----------------------------------------------------------------------------------------------------------+
@@ -98,42 +96,63 @@ function main() {
     displayTimeElapsed
 }
 
+function runChecks {
+    local readonly commands=("jo" "jq" "ssh" "psql")
+    checkBinary "${commands[@]}"
+}
+
 function checkNewData() {
     printMsg "Check new data..."
 
-    local readonly json="${raw_dir}/synthese_infos.json"
-    has_new_data="false"
+    extractDbNewInfos
+    readJsonLastInfos
+    evaluateNewDataReason
 
-    local readonly count=$(export PGPASSWORD="${db_pass}"; \
+    if [[ "${has_new_data}" == "true" ]]; then
+        printInfo "New data reason: ${reason}"
+    fi
+
+    writeNewJsonContent
+}
+
+function extractDbNewInfos() {
+    count_id_synthese=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT COUNT(*) FROM gn_synthese.synthese;")
 
-    local readonly max_id_synthese=$(export PGPASSWORD="${db_pass}"; \
+    max_id_synthese=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT MAX(id_synthese) FROM gn_synthese.synthese;")
 
-    local readonly max_create_date=$(export PGPASSWORD="${db_pass}"; \
+    max_create_date=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT MAX(meta_create_date) FROM gn_synthese.synthese;")
 
-    local readonly max_update_date=$(export PGPASSWORD="${db_pass}"; \
+    max_update_date=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT MAX(meta_update_date) FROM gn_synthese.synthese;")
+}
 
-    local reason=""
-    if [[ ! -f "${json}" ]]; then
+function readJsonLastInfos() {
+    if [[ -f "${gnuk_json}" ]]; then
+        last_count_id_synthese=$(jq .count "${gnuk_json}")
+        last_max_id_synthese=$(jq .maxIdSynthese "${gnuk_json}")
+        last_max_create_date=$(jq -r .maxCreateDate "${gnuk_json}")
+        last_max_update_date=$(jq -r .maxUpdateDate "${gnuk_json}")
+        last_create_at=$(jq -r .createdAt "${gnuk_json}")
+    fi
+}
+
+function evaluateNewDataReason() {
+    has_new_data="false"
+    reason=""
+    if [[ ! -f "${gnuk_json}" ]]; then
         has_new_data="true"
         reason="No JSON file"
     else
-        last_count=$(jq .count "${json}")
-        last_max_id_synthese=$(jq .maxIdSynthese "${json}")
-        last_max_create_date=$(jq -r .maxCreateDate "${json}")
-        last_max_update_date=$(jq -r .maxUpdateDate "${json}")
-        last_create_at=$(jq -r .createdAt "${json}")
-
-        if [[ "${count}" != "${last_count}" ]]; then
+        if [[ "${count_id_synthese}" != "${last_count_id_synthese}" ]]; then
             has_new_data="true"
-            reason="observations count ${count} != last observations count ${last_count}"
+            reason="observations count ${count_id_synthese} != last observations count ${last_count_id_synthese}"
         fi
         if [[ "${max_id_synthese}" > "${last_max_id_synthese}" ]]; then
             has_new_data="true"
@@ -144,15 +163,36 @@ function checkNewData() {
             reason="max update date ${max_update_date} > last update date ${last_max_update_date}"
         fi
     fi
+}
 
-    if [[ "${has_new_data}" == "true" ]]; then
-        printInfo "New data reason: ${reason}"
-    fi
-
+function writeNewJsonContent() {
     jo -p \
-        count=${count} maxIdSynthese=${max_id_synthese} maxCreateDate="${max_create_date}"  \
+        count=${count_id_synthese} maxIdSynthese=${max_id_synthese} maxCreateDate="${max_create_date}"  \
         maxUpdateDate="${max_update_date}" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
-        > "${json}"
+        > "${gnuk_json}"
+}
+
+function sendStartMessage() {
+    buildNewDataDetails
+    sendTelegram "🚀 ${app_name} started on ${HOSTNAME^^} …
+        Update script running: ${update_script_running}
+        Has new data: ${has_new_data}
+        Reason: ${reason}
+        ${new_data_details-}"
+}
+
+function buildNewDataDetails() {
+    new_data_details=""
+    if [[ "${has_new_data}" == "true" ]]; then
+        new_data_details="
+            ---------------------------
+            Type           : New / Last
+            obs count      : ${count_id_synthese} / ${last_count_id_synthese}
+            max id synthese: ${max_id_synthese} / ${last_max_id_synthese}
+            max create date: ${max_create_date} / ${last_max_create_date}
+            max update date: ${max_update_date} / ${last_max_update_date}
+            "
+    fi
 }
 
 function updateOutsideObservations() {
@@ -203,13 +243,6 @@ function updateFirstImages() {
             -f "${sql_dir}/update_first_images.sql"
 }
 
-function maintainDatabase() {
-    printMsg "Run database maintenance..."
-    export PGPASSWORD="${db_pass}"; \
-        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_shared_dir}/synthese_maintenance.sql"
-}
-
 function refreshMaterializedViews() {
     printMsg "Run refresh of GeoNature materialized views..."
     export PGPASSWORD="${db_pass}"; \
@@ -227,6 +260,25 @@ function refreshGeoNatureAtlas() {
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
             -f "${sql_dir}/atlas_refresh.sql"
+}
+
+function sendStopMessage() {
+    computeElapsedTime
+    sendTelegram "🟢 ${app_name} finished on ${HOSTNAME^^} …
+        Elapsed time: ${elapsed_time}"
+}
+
+function sendDelayedMessage() {
+    computeElapsedTime
+    sendTelegram "🟠 ${app_name} stop upkeeping on ${HOSTNAME^^} …
+        Update script running: ${update_script_running} !
+        Elapsed time: ${elapsed_time}"
+}
+
+function computeElapsedTime() {
+    local time_end="$(date +%s)"
+    local time_diff="$((${time_end} - ${time_start}))"
+    elapsed_time="$(displayTime "${time_diff}")"
 }
 
 main "${@}"
