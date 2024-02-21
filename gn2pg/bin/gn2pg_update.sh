@@ -116,7 +116,7 @@ function startStatusMessenger() {
             WHERE source = '${sn}' AND controler = 'data' \
             ORDER BY last_ts DESC ;"
     )
-    sendTelegram "🚀 Gn2Pg started for ${gn2pg_source_name^^} …
+    sendTelegram "🚀 ${app_name} started for ${gn2pg_source_name^^} on ${HOSTNAME^^} …
         Last download date used: ${last_download_date}"
     runStatusMessenger &
     status_messenger_pid=$!
@@ -152,10 +152,10 @@ function extractDownloadedData() {
                AND last_ts = '${last_download_date}' ;"
     )
 
-    result="✅"
+    result="🟢"
     errors_msg=""
     if [[ "${errors_count}" != "0" ]]; then
-        result="❌"
+        result="🔴"
         errors_msg="🔺 Errors: ${errors_count} 🔺"
     fi
 
