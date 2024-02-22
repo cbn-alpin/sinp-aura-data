@@ -268,6 +268,7 @@ function notify() {
     fi
     local message="${1}"
     printMsg "${message}"
+    computeElapsedTime
     sendTelegram "🔵 ${message}
         Elapsed time: ${elapsed_time}"
 }
