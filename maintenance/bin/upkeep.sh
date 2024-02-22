@@ -196,27 +196,27 @@ function buildNewDataDetails() {
 }
 
 function updateOutsideObservations() {
-    printMsg "Create outside all tmp table..."
+    notify "Create outside all tmp table..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${root_dir}/area-outside/data/sql/01_create_outside_all.sql"
 
-    printMsg "Fix outside observations geometries..."
+    notify "Fix outside observations geometries..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${root_dir}/area-outside/data/sql/03_fix_outside_geom.sql"
 }
 
 function updateInpnImages() {
-    printMsg "Update bib_noms table with new observations scientific names..."
+    notify "Update bib_noms table with new observations scientific names..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_dir}/update_scinames_list.sql"
 
-    printMsg "Copy update_sinp_image.sh script on web-srv..."
+    notify "Copy update_sinp_image.sh script on web-srv..."
     scp "${data_dir}/bash/update_sinp_images.sh" geonat@web-aura-sinp:~/dwl/
 
-    printMsg "Run SINP update images on web-srv..."
+    notify "Run SINP update images on web-srv..."
     ssh geonat@web-aura-sinp ~/dwl/update_sinp_images.sh
 
     # Wait until updating images on wb-srv finish
@@ -225,41 +225,51 @@ function updateInpnImages() {
     while [[ "alive" == "${waiting}" ]]; do
         waiting="stop"
         if ssh geonat@web-aura-sinp "pgrep -fa 'import_inpn_media.py'"; then
-            echo "Process 'import_inpn_media.py' is running at $(date '+%H:%M:%S') on web-srv... "
+            notify "Process 'import_inpn_media.py' is running at $(date '+%H:%M:%S') on web-srv... "
             waiting="alive"
             sleep 120
             continue
         else
-             echo "Process 'import_inpn_media.py' is finish at $(date '+%H:%M:%S') on web-srv !"
-             updateFirstImages
+            notify "Process 'import_inpn_media.py' is finish at $(date '+%H:%M:%S') on web-srv !"
+            updateFirstImages
         fi
     done
 }
 
 function updateFirstImages() {
-    printMsg "Update first images in taxonomie.t_medias..."
+    notify "Update first images in taxonomie.t_medias..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_dir}/update_first_images.sql"
 }
 
 function refreshMaterializedViews() {
-    printMsg "Run refresh of GeoNature materialized views..."
+    notify "Run refresh of GeoNature materialized views..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_shared_dir}/refresh_materialized_view.sql"
 
-    printMsg "Run refresh of Biodiv'territory materialized views..."
+    notify "Run refresh of Biodiv'territory materialized views..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
 }
 
 function refreshGeoNatureAtlas() {
-    printMsg "Refresh Atlas materialized views on db-srv..."
+    notify "Refresh Atlas materialized views on db-srv..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
             -f "${sql_dir}/atlas_refresh.sql"
+}
+
+function notify() {
+    if [[ $# -lt 1 ]]; then
+        exitScript "Missing required argument to ${FUNCNAME[0]}()!" 2
+    fi
+    local message="${1}"
+    printMsg "${message}"
+    sendTelegram "🔵 ${message}
+        Elapsed time: ${elapsed_time}"
 }
 
 function sendStopMessage() {
