@@ -118,7 +118,14 @@ psql -h localhost -U geonatadmin -d geonature2db -f ~/data/lpo/data/sql/update/0
     ```sql
     SELECT MAX(id_data) FROM gn2pg_lpo.data_json ;
     ```
-- Une fois la récupération des données finalisé, il faut penser à supprimer le paramètre `filter_n_up_id_synthese` de la config.
+- Il est également possible de limiter un import entre deux `id_synthese` en utilisant le paramètre "`filter_n_up_id_synthese`" pour le plus petit `id_synthese` à prendre en compte et "`filter_n_lo_id_synthese`" pour le plus grand `id_synthese`. La sous-section `[source.query_strings]` contiendra par exemple :
+    ```ini
+    [source.query_strings]
+    orderby = "id_synthese"
+    filter_n_up_id_synthese = 1661497
+    filter_n_lo_id_synthese = 38141534
+    ```
+- Une fois la récupération des données finalisée, il faut penser à supprimer les paramètres `filter_n_up_id_synthese` et `filter_n_lo_id_synthese` de la config.
 
 
 ## Tansfert d'un schéma gn2pg en production
