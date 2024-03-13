@@ -187,10 +187,10 @@ function buildNewDataDetails() {
         new_data_details="
             ---------------------------
             Type           : New / Last
-            obs count      : ${count_id_synthese} / ${last_count_id_synthese}
-            max id synthese: ${max_id_synthese} / ${last_max_id_synthese}
-            max create date: ${max_create_date} / ${last_max_create_date}
-            max update date: ${max_update_date} / ${last_max_update_date}
+            obs count      : ${count_id_synthese-} / ${last_count_id_synthese-}
+            max id synthese: ${max_id_synthese-} / ${last_max_id_synthese-}
+            max create date: ${max_create_date-} / ${last_max_create_date-}
+            max update date: ${max_update_date-} / ${last_max_update_date-}
             "
     fi
 }
@@ -213,27 +213,38 @@ function updateInpnImages() {
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_dir}/update_scinames_list.sql"
 
-    notify "Copy update_sinp_image.sh script on web-srv..."
-    scp "${data_dir}/bash/update_sinp_images.sh" geonat@web-aura-sinp:~/dwl/
+    local readonly inpn_media_script_dir="/home/${USER}/www/taxhub/data/scripts/import_inpn_media"
+    if  [[ "${gnuk_local_inpn_import_media_script}" = true ]] && \
+        [[ -f "${inpn_media_script_dir}/import_inpn_media.py" ]]; then
+        notify "Run SINP update images on ${HOSTNAME}..."
+        cd "${inpn_media_script_dir}/"
+        source venv/bin/activate
+        python import_inpn_media.py
+        deactivate;
+        cd "${bin_dir}"
+    else
+        notify "Copy update_sinp_image.sh script on web-srv..."
+        scp "${data_dir}/bash/update_sinp_images.sh" geonat@web-aura-sinp:~/dwl/
 
-    notify "Run SINP update images on web-srv..."
-    ssh geonat@web-aura-sinp ~/dwl/update_sinp_images.sh
+        notify "Run SINP update images on web-srv..."
+        ssh geonat@web-aura-sinp ~/dwl/update_sinp_images.sh
 
-    # Wait until updating images on wb-srv finish
-    sleep 5
-    waiting="alive"
-    while [[ "alive" == "${waiting}" ]]; do
-        waiting="stop"
-        if ssh geonat@web-aura-sinp "pgrep -fa 'import_inpn_media.py'"; then
-            notify "Process 'import_inpn_media.py' is running at $(date '+%H:%M:%S') on web-srv... "
-            waiting="alive"
-            sleep 120
-            continue
-        else
-            notify "Process 'import_inpn_media.py' is finish at $(date '+%H:%M:%S') on web-srv !"
-            updateFirstImages
-        fi
-    done
+        # Wait until updating images on wb-srv finish
+        sleep 5
+        waiting="alive"
+        while [[ "alive" == "${waiting}" ]]; do
+            waiting="stop"
+            if ssh geonat@web-aura-sinp "pgrep -fa 'import_inpn_media.py'"; then
+                notify "Process 'import_inpn_media.py' is running at $(date '+%H:%M:%S') on web-srv... "
+                waiting="alive"
+                sleep 120
+                continue
+            else
+                notify "Process 'import_inpn_media.py' is finish at $(date '+%H:%M:%S') on web-srv !"
+                updateFirstImages
+            fi
+        done
+    fi
 }
 
 function updateFirstImages() {
