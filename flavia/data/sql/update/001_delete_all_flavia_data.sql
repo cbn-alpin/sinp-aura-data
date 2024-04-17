@@ -5,6 +5,7 @@
 
 BEGIN ;
 
+
 \echo '-------------------------------------------------------------------------------'
 \echo 'OBSERVATIONS SYNTHESE'
 
@@ -22,94 +23,118 @@ USING gn_synthese.t_sources AS so
 WHERE sy.id_source = so.id_source
     AND so.name_source = 'flavia' ;
 
+
 \echo '-------------------------------------------------------------------------------'
 \echo 'DATASETS'
 
 \echo 'Deletion in cor_dataset_actor'
 DELETE FROM gn_meta.cor_dataset_actor AS act
-USING gn_meta.t_datasets AS da,
-    gn_synthese.synthese AS sy
-WHERE act.id_dataset = da.id_dataset
-    AND sy.id_dataset = da.id_dataset
-    AND sy.id_synthese IS NULL ;
+WHERE NOT EXISTS (
+	SELECT TRUE
+	FROM gn_synthese.synthese AS sy
+	WHERE sy.id_dataset = act.id_dataset
+) ;
 
 \echo 'Deletion in cor_dataset_territory'
 DELETE FROM gn_meta.cor_dataset_territory AS te
-USING gn_meta.t_datasets AS da,
-    gn_synthese.synthese AS sy
-WHERE te.id_dataset = da.id_dataset
-    AND sy.id_dataset = da.id_dataset
-    AND sy.id_synthese IS NULL ;
+WHERE NOT EXISTS (
+	SELECT TRUE
+	FROM gn_synthese.synthese AS sy
+	WHERE sy.id_dataset = te.id_dataset
+) ;
 
 \echo 'Deletion in cor_dataset_protocol'
 DELETE FROM gn_meta.cor_dataset_protocol AS pro
-USING gn_meta.t_datasets AS da,
-    gn_synthese.synthese AS sy
-WHERE pro.id_dataset = da.id_dataset
-    AND sy.id_dataset = da.id_dataset
-    AND sy.id_synthese IS NULL ;
+WHERE NOT EXISTS (
+	SELECT TRUE
+	FROM gn_synthese.synthese AS sy
+	WHERE sy.id_dataset = pro.id_dataset
+) ;
 
 \echo 'Deletion in t_datasets'
 DELETE FROM gn_meta.t_datasets AS da
-USING gn_synthese.synthese AS sy
-WHERE sy.id_dataset = da.id_dataset
-    AND sy.id_synthese IS NULL ;
+WHERE NOT EXISTS (
+	SELECT TRUE
+	FROM gn_synthese.synthese AS sy
+	WHERE sy.id_dataset = da.id_dataset
+) ;
+
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'ACQUISITION FRAMEWORKS'
 
 \echo 'Deletion in cor_acquisition_framework_actor'
 DELETE FROM gn_meta.cor_acquisition_framework_actor AS act
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE act.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in cor_acquisition_framework_objectif'
 DELETE FROM gn_meta.cor_acquisition_framework_objectif AS obj
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE obj.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in cor_acquisition_framework_publication'
 DELETE FROM gn_meta.cor_acquisition_framework_publication AS pub
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE pub.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in cor_acquisition_framework_voletsinp'
 DELETE FROM gn_meta.cor_acquisition_framework_voletsinp AS vol
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE vol.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in t_acquisition_frameworks'
 DELETE FROM gn_meta.t_acquisition_frameworks AS af
-USING gn_meta.t_datasets AS da
-WHERE af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+WHERE NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 
 \echo '-------------------------------------------------------------------------------'
@@ -117,65 +142,87 @@ WHERE af.id_acquisition_framework NOT IN (
 
 \echo 'Deletion in cor_acquisition_framework_actor for parents AF'
 DELETE FROM gn_meta.cor_acquisition_framework_actor AS act
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE act.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND af.is_parent = TRUE
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in cor_acquisition_framework_objectif for parents AF'
 DELETE FROM gn_meta.cor_acquisition_framework_objectif AS obj
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE obj.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND af.is_parent = TRUE
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in cor_acquisition_framework_publication for parents AF'
 DELETE FROM gn_meta.cor_acquisition_framework_publication AS pub
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE pub.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND af.is_parent = TRUE
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in cor_acquisition_framework_voletsinp for parents AF'
 DELETE FROM gn_meta.cor_acquisition_framework_voletsinp AS vol
-USING gn_meta.t_acquisition_frameworks AS af,
-    gn_meta.t_datasets AS da
+USING gn_meta.t_acquisition_frameworks AS af
 WHERE vol.id_acquisition_framework = af.id_acquisition_framework
-    AND af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND af.is_parent = TRUE
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
 
 \echo 'Deletion in t_acquisition_frameworks for parents AF'
 DELETE FROM gn_meta.t_acquisition_frameworks AS af
-USING gn_meta.t_datasets AS da
-WHERE af.id_acquisition_framework NOT IN (
-        SELECT DISTINCT acquisition_framework_parent_id FROM  gn_meta.t_acquisition_frameworks
+WHERE NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND af.is_parent = TRUE
-    AND da.id_acquisition_framework = af.id_acquisition_framework
-    AND da.id_dataset IS NULL ;
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
+
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'USERS & ORGANISMS'
 
+\echo 'Deletion in cor_roles'
 DELETE FROM utilisateurs.cor_roles AS cr
 USING utilisateurs.t_roles AS r
 WHERE cr.id_role_utilisateur = r.id_role
@@ -183,105 +230,129 @@ WHERE cr.id_role_utilisateur = r.id_role
     AND r.champs_addi ->> 'module' = 'gn2pg' ;
 
 \echo 'Deletion in t_roles'
-DELETE FROM utilisateurs.t_roles
+DELETE FROM utilisateurs.t_roles AS r
 WHERE champs_addi ->> 'source' = 'flavia'
     AND champs_addi ->> 'module' = 'gn2pg'
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role_utilisateur
-        FROM utilisateurs.cor_roles
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM utilisateurs.cor_roles AS cr
+        WHERE cr.id_role_utilisateur = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM utilisateurs.cor_role_liste
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM utilisateurs.cor_role_liste AS crl
+        WHERE crl.id_role = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_validator
-        FROM gn_commons.t_validations
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_commons.t_validations AS v
+        WHERE v.id_validator = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM gn_commons.t_places
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_commons.t_places AS p
+        WHERE p.id_role = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_digitizer
-        FROM gn_meta.t_acquisition_frameworks
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_acquisition_frameworks AS af
+        WHERE af.id_digitizer = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM gn_meta.cor_acquisition_framework_actor
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.cor_acquisition_framework_actor AS afa
+        WHERE afa.id_role = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_digitizer
-        FROM gn_meta.t_datasets
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_digitizer = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM gn_meta.cor_dataset_actor
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.cor_dataset_actor AS da
+        WHERE da.id_role = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM gn_permissions.cor_role_action_filter_module_object
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_permissions.cor_role_action_filter_module_object AS rafmo
+        WHERE rafmo.id_role = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_digitiser
-        FROM gn_synthese.synthese
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_synthese.synthese AS sy
+        WHERE sy.id_digitiser = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM gn_synthese.cor_observer_synthese
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_synthese.cor_observer_synthese AS cos
+        WHERE cos.id_role = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_inventor
-        FROM gn_monitoring.t_base_sites
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_monitoring.t_base_sites AS bs
+        WHERE bs.id_inventor = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_digitiser
-        FROM gn_monitoring.t_base_sites
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_monitoring.t_base_sites AS bs
+        WHERE bs.id_digitiser = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_digitiser
-        FROM gn_monitoring.t_base_visits
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_monitoring.t_base_visits AS bv
+        WHERE bv.id_digitiser = r.id_role
     )
-    AND id_role NOT IN (
-        SELECT DISTINCT id_role
-        FROM gn_monitoring.cor_visit_observer
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_monitoring.cor_visit_observer AS cvo
+        WHERE cvo.id_role = r.id_role
     )
 ;
 
 \echo 'Deletion in bib_organismes'
-DELETE FROM utilisateurs.bib_organismes
-WHERE id_organisme NOT IN (
-        SELECT DISTINCT id_organisme
-        FROM utilisateurs.t_roles
+DELETE FROM utilisateurs.bib_organismes AS o
+WHERE NOT EXISTS (
+        SELECT TRUE
+        FROM utilisateurs.t_roles AS r
+        WHERE r.id_organisme = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_organism
-        FROM gn_meta.cor_dataset_actor
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.cor_dataset_actor AS cda
+        WHERE cda.id_organism = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_organism
-        FROM gn_meta.cor_acquisition_framework_actor
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.cor_acquisition_framework_actor AS cafa
+        WHERE cafa.id_organism = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_parent
-        FROM utilisateurs.bib_organismes
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM utilisateurs.bib_organismes AS op
+        WHERE op.id_parent = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_organism
-        FROM gn_commons.t_parameters
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_commons.t_parameters AS p
+        WHERE p.id_organism = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_organism
-        FROM ref_nomenclatures.defaults_nomenclatures_value
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM ref_nomenclatures.defaults_nomenclatures_value AS dnv
+        WHERE dnv.id_organism = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_organism
-        FROM gn_synthese.defaults_nomenclatures_value
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_synthese.defaults_nomenclatures_value AS dnv
+        WHERE dnv.id_organism = o.id_organisme
     )
-    AND id_organisme NOT IN (
-        SELECT DISTINCT id_organisme
-        FROM utilisateurs.temp_users
-    );
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM utilisateurs.temp_users AS tu
+        WHERE tu.id_organisme = o.id_organisme
+    ) ;
+
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'GN2PG'
@@ -301,4 +372,7 @@ TRUNCATE gn2pg_flavia.increment_log ;
 \echo 'Remove tmp_fix_obs_to_delete'
 DROP TABLE IF EXISTS gn2pg_flavia.tmp_fix_obs_to_delete ;
 
+
+\echo '----------------------------------------------------------------------------'
+\echo 'COMMIT if all is ok:'
 COMMIT;
