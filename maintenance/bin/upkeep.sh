@@ -213,7 +213,7 @@ function updateInpnImages() {
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_dir}/update_scinames_list.sql"
 
-    local readonly inpn_media_script_dir="/home/${USER}/www/taxhub/data/scripts/import_inpn_media"
+    local readonly inpn_media_script_dir="${gnuk_inpn_media_script_dir}"
     if  [[ "${gnuk_local_inpn_import_media_script}" = true ]] && \
         [[ -f "${inpn_media_script_dir}/import_inpn_media.py" ]]; then
         notify "Run SINP update images on ${HOSTNAME}..."
