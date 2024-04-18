@@ -17,6 +17,7 @@ Usage: ./$(basename $BASH_SOURCE)[options]
      -x | --debug: display debug script infos
      -c | --config: name of config file to use with this script
      -n | --name: name of Gn2Pg source. Ex. : flavia, lpo.
+     -t | --type: type of Gn2Pg download among: update, fulle. Default: update.
 EOF
     exit 0
 }
@@ -34,18 +35,20 @@ function parseScriptOptions() {
             "--debug") set -- "${@}" "-x" ;;
             "--config") set -- "${@}" "-c" ;;
             "--name") set -- "${@}" "-n" ;;
+            "--type") set -- "${@}" "-t" ;;
             "--"*) exitScript "ERROR : parameter '${arg}' invalid ! Use -h option to know more." 1 ;;
             *) set -- "${@}" "${arg}"
         esac
     done
 
-    while getopts "hvxc:n:" option; do
+    while getopts "hvxc:n:t:" option; do
         case "${option}" in
             "h") printScriptUsage ;;
             "v") readonly verbose=true ;;
             "x") readonly debug=true; set -x ;;
             "c") setting_file_path="${OPTARG}" ;;
             "n") gn2pg_source_name="${OPTARG}" ;;
+            "t") gn2pg_update_type="${OPTARG}" ;;
             *) exitScript "ERROR : parameter invalid ! Use -h option to know more." 1 ;;
         esac
     done
@@ -79,7 +82,7 @@ function main() {
     # Run Gn2Pg update
     printMsg "Running Gn2Pg updates with ${gn2pg_config_file_name} config..."
     cd "${current_dir}/../"
-    pipenv run gn2pg_cli ${gn2pg_verbosity} --update "${gn2pg_config_file_name}"
+    pipenv run gn2pg_cli ${gn2pg_verbosity} ${gn2pg_update_type} "${gn2pg_config_file_name}"
 
     # Finalize Gn2Pg update
     stopStatusMessenger
@@ -102,6 +105,14 @@ function prepareParameters() {
         gn2pg_verbosity="--verbose"
     fi
 
+    if [[ "${gn2pg_update_type-}" == "update" ]]; then
+        gn2pg_update_type="--update"
+    elif [[ "${gn2pg_update_type-}" == "full" ]]; then
+        gn2pg_update_type="--full"
+    else
+        gn2pg_update_type="--update"
+    fi
+
     gn2pg_config_file_name="${gn2pg_source_name,,}_config.toml"
     sn="${gn2pg_source_name,,}"
 
@@ -116,7 +127,9 @@ function startStatusMessenger() {
             WHERE source = '${sn}' AND controler = 'data' \
             ORDER BY last_ts DESC ;"
     )
-    sendTelegram "🚀 ${app_name} started for ${gn2pg_source_name^^} on ${HOSTNAME^^} …
+    last_download_date=${last_download_date:-"1970-01-01 00:00:00"}
+    display_type="${gn2pg_update_type//--/}"
+    sendTelegram "🚀 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} …
         Last download date used: ${last_download_date}"
     runStatusMessenger &
     status_messenger_pid=$!
