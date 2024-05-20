@@ -1,0 +1,69 @@
+table_name,cd_nom,nom_complet,nb_occurence,plus_recente_diffusion,cd_nom_remplacement,cd_raison_suppression
+gn_synthese.synthese,85841,"Betonica hirta Leyss., 1761",1,9.0,,3
+gn_synthese.synthese,85893,"Betula laciniata Blom, 1786",1,9.0,,3
+gn_synthese.synthese,85914,"Betula x aschersoniana Hayek, 1908",1,9.0,,3
+gn_synthese.synthese,85922,"Betula x rhombifolia Tausch, 1838",1,9.0,,3
+gn_synthese.synthese,90788,"Chenopodium praeacutum (Beck) Murr, 1901",1,9.0,,3
+gn_synthese.synthese,94956,"Digitalis parviflora All., 1773",1,9.0,,3
+gn_synthese.synthese,95552,"Dryopteris austriaca Woyn. ex Schinz & Thell., 1915",1,9.0,,3
+gn_synthese.synthese,104596,"Kochia trichophylla Voss, 1905",1,9.0,789254,1
+gn_synthese.synthese,108159,"Mentha scribae F.W.Schultz, 1873",1,9.0,,3
+gn_synthese.synthese,108225,"Mentha x canescens Roth, 1806",1,9.0,,3
+gn_synthese.synthese,108258,"Mentha x incisoserrata Strail, 1887",1,9.0,,3
+gn_synthese.synthese,108284,"Mentha x obtusata Opiz, 1825",1,9.0,,3
+gn_synthese.synthese,108288,"Mentha x origanifolia Host, 1831",1,9.0,,3
+gn_synthese.synthese,108290,"Mentha x paludosa Nees, 1825",1,9.0,,3
+gn_synthese.synthese,108324,"Mentha x subspicata auct. non Fresen., 1828, sensu Boreau, 1857",1,9.0,,3
+gn_synthese.synthese,108997,"Myosotis arvensis Roth, 1827",1,9.0,,3
+gn_synthese.synthese,109517,"Nepeta citriodora Becker, 1827",1,9.0,,3
+gn_synthese.synthese,109829,"Odontites divergens Jord., 1851",1,9.0,978967,1
+gn_synthese.synthese,110477,"Ophrys sphegodes Mill., 1768",1,9.0,,3
+gn_synthese.synthese,113709,"Pinus uncinata Mill. ex Mirb., 1805",1,9.0,113708,1
+gn_synthese.synthese,114383,"Poa silvatica Chaix, 1787",1,9.0,614970,1
+gn_synthese.synthese,116017,"Prunella x dissecta Wender., 1831",1,9.0,,3
+gn_synthese.synthese,119138,"Rubus humifusus Weihe, 1825",1,9.0,,2
+gn_synthese.synthese,119168,"Rubus koehleri Weihe, 1825",1,9.0,,3
+gn_synthese.synthese,119177,"Rubus lejeunei Weihe, 1825",1,9.0,,2
+gn_synthese.synthese,119268,"Rubus pilocarpus Gremli, 1870",1,9.0,,2
+gn_synthese.synthese,124829,"Stachys x intermedia Aiton, 1789",1,9.0,,3
+gn_synthese.synthese,141567,"Teucrium flavum subsp. pilosum (Čelak.) Rech.f., 1941",1,9.0,,3
+taxonomie.bib_noms,85841,"Betonica hirta Leyss., 1761",1,9.0,,3
+taxonomie.bib_noms,85893,"Betula laciniata Blom, 1786",1,9.0,,3
+taxonomie.bib_noms,85914,"Betula x aschersoniana Hayek, 1908",1,9.0,,3
+taxonomie.bib_noms,85922,"Betula x rhombifolia Tausch, 1838",1,9.0,,3
+taxonomie.bib_noms,90788,"Chenopodium praeacutum (Beck) Murr, 1901",1,9.0,,3
+taxonomie.bib_noms,94956,"Digitalis parviflora All., 1773",1,9.0,,3
+taxonomie.bib_noms,95552,"Dryopteris austriaca Woyn. ex Schinz & Thell., 1915",1,9.0,,3
+taxonomie.bib_noms,95583,"Dryopteris paleacea (T.Moore) Fomin, 1911",1,9.0,,3
+taxonomie.bib_noms,95746,"Echium carriezii Gand., 1875",1,9.0,,3
+taxonomie.bib_noms,104596,"Kochia trichophylla Voss, 1905",1,9.0,789254,1
+taxonomie.bib_noms,108148,"Mentha riviniana N.H.F.Desp., 1838",1,9.0,,3
+taxonomie.bib_noms,108159,"Mentha scribae F.W.Schultz, 1873",1,9.0,,3
+taxonomie.bib_noms,108225,"Mentha x canescens Roth, 1806",1,9.0,,3
+taxonomie.bib_noms,108258,"Mentha x incisoserrata Strail, 1887",1,9.0,,3
+taxonomie.bib_noms,108284,"Mentha x obtusata Opiz, 1825",1,9.0,,3
+taxonomie.bib_noms,108288,"Mentha x origanifolia Host, 1831",1,9.0,,3
+taxonomie.bib_noms,108290,"Mentha x paludosa Nees, 1825",1,9.0,,3
+taxonomie.bib_noms,108324,"Mentha x subspicata auct. non Fresen., 1828, sensu Boreau, 1857",1,9.0,,3
+taxonomie.bib_noms,108997,"Myosotis arvensis Roth, 1827",1,9.0,,3
+taxonomie.bib_noms,109517,"Nepeta citriodora Becker, 1827",1,9.0,,3
+taxonomie.bib_noms,109692,"Nonea setosa (Lehm.) Roem. & Schult., 1819",1,9.0,,2
+taxonomie.bib_noms,109829,"Odontites divergens Jord., 1851",1,9.0,978967,1
+taxonomie.bib_noms,110477,"Ophrys sphegodes Mill., 1768",1,9.0,,3
+taxonomie.bib_noms,113709,"Pinus uncinata Mill. ex Mirb., 1805",1,9.0,113708,1
+taxonomie.bib_noms,114383,"Poa silvatica Chaix, 1787",1,9.0,614970,1
+taxonomie.bib_noms,116017,"Prunella x dissecta Wender., 1831",1,9.0,,3
+taxonomie.bib_noms,119138,"Rubus humifusus Weihe, 1825",1,9.0,,2
+taxonomie.bib_noms,119151,"Rubus inaequabilis Sudre, 1903",1,9.0,,2
+taxonomie.bib_noms,119166,"Rubus kaltenbachii Metsch, 1856",1,9.0,,2
+taxonomie.bib_noms,119168,"Rubus koehleri Weihe, 1825",1,9.0,,3
+taxonomie.bib_noms,119177,"Rubus lejeunei Weihe, 1825",1,9.0,,2
+taxonomie.bib_noms,119229,"Rubus myricae Focke, 1875",1,9.0,,2
+taxonomie.bib_noms,119268,"Rubus pilocarpus Gremli, 1870",1,9.0,,2
+taxonomie.bib_noms,119362,"Rubus thyrsiflorus Weihe, 1825",1,9.0,,2
+taxonomie.bib_noms,119388,"Rubus vulgaris Weihe & Nees, 1824",1,9.0,,2
+taxonomie.bib_noms,124829,"Stachys x intermedia Aiton, 1789",1,9.0,,3
+taxonomie.bib_noms,137953,"Myosotis sylvatica subsp. suaveolens (Waldst. & Kit. ex Willd.) Rouy, 1927",1,9.0,,2
+taxonomie.bib_noms,141567,"Teucrium flavum subsp. pilosum (Čelak.) Rech.f., 1941",1,9.0,,3
+taxonomie.bib_noms,141571,"Teucrium polium subsp. album (Mill.) Breistr., 1974",1,9.0,,3
+taxonomie.bib_noms,718789,"Thymus pulegioides nothovar. pilisiensis (Borbás) B.Bock, 2012",1,9.0,,2
