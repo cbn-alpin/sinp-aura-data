@@ -2,6 +2,8 @@
 BEGIN;
 
 -- Database change in TaxHub v1.14.0
+DROP TABLE IF EXISTS taxonomie.t_meta_taxref ;
+
 CREATE TABLE taxonomie.t_meta_taxref (
     referencial_name varchar NOT NULL,
     "version" int4 NOT NULL,
@@ -57,9 +59,11 @@ UPDATE taxonomie.taxref SET cd_ref = 133622 WHERE cd_nom = 133622 ;
 -- Set cd_nom to NULL for removing TaxRef cd_nom (cd_raison_suppression = 2 or 3)
 UPDATE gn_synthese.synthese
 SET cd_nom = NULL
-WHERE cd_nom IN (85841, 85893, 85914, 85922, 90788, 94956, 95552, 108159, 108225, 108258, 108284,
-108288, 108290, 108324, 108997, 109517, 110477, 116017, 119138, 119168, 119177, 119268, 124829,
-141567);
+WHERE cd_nom IN (
+    85841, 85893, 85914, 85922, 90788, 94956, 95552, 108159, 108225, 108258, 108284, 108288,
+    108290, 108324, 108997, 109517, 110477, 116017, 119138, 119168, 119177, 119268, 124829, 141567,
+    469860, 607025, 199049, 884045
+);
 
 -- Update rows with replacement cd_nom in synthese (cd_raison_suppression = 1)
 UPDATE gn_synthese.synthese SET cd_nom = 789254 WHERE cd_nom = 104596 ;
