@@ -17,7 +17,7 @@ Usage: ./$(basename $BASH_SOURCE)[options]
      -x | --debug: display debug script infos
      -c | --config: name of config file to use with this script
      -n | --name: name of Gn2Pg source. Ex. : flavia, lpo.
-     -t | --type: type of Gn2Pg download among: update, fulle. Default: update.
+     -t | --type: type of Gn2Pg download among: update, full. Default: update.
 EOF
     exit 0
 }
