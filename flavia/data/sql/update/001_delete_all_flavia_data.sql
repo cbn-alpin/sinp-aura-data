@@ -69,7 +69,7 @@ USING gn_meta.t_acquisition_frameworks AS af
 WHERE act.id_acquisition_framework = af.id_acquisition_framework
     AND NOT EXISTS (
         SELECT TRUE
-        FROM  gn_meta.t_acquisition_frameworks AS afp
+        FROM gn_meta.t_acquisition_frameworks AS afp
         WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND NOT EXISTS (
@@ -84,7 +84,7 @@ USING gn_meta.t_acquisition_frameworks AS af
 WHERE obj.id_acquisition_framework = af.id_acquisition_framework
     AND NOT EXISTS (
         SELECT TRUE
-        FROM  gn_meta.t_acquisition_frameworks AS afp
+        FROM gn_meta.t_acquisition_frameworks AS afp
         WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND NOT EXISTS (
@@ -99,7 +99,7 @@ USING gn_meta.t_acquisition_frameworks AS af
 WHERE pub.id_acquisition_framework = af.id_acquisition_framework
     AND NOT EXISTS (
         SELECT TRUE
-        FROM  gn_meta.t_acquisition_frameworks AS afp
+        FROM gn_meta.t_acquisition_frameworks AS afp
         WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND NOT EXISTS (
@@ -114,7 +114,22 @@ USING gn_meta.t_acquisition_frameworks AS af
 WHERE vol.id_acquisition_framework = af.id_acquisition_framework
     AND NOT EXISTS (
         SELECT TRUE
-        FROM  gn_meta.t_acquisition_frameworks AS afp
+        FROM gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
+    )
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
+
+\echo 'Deletion in cor_acquisition_framework_territory'
+DELETE FROM gn_meta.cor_acquisition_framework_territory AS ter
+USING gn_meta.t_acquisition_frameworks AS af
+WHERE ter.id_acquisition_framework = af.id_acquisition_framework
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_acquisition_frameworks AS afp
         WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
     )
     AND NOT EXISTS (
@@ -192,6 +207,22 @@ WHERE pub.id_acquisition_framework = af.id_acquisition_framework
 DELETE FROM gn_meta.cor_acquisition_framework_voletsinp AS vol
 USING gn_meta.t_acquisition_frameworks AS af
 WHERE vol.id_acquisition_framework = af.id_acquisition_framework
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM  gn_meta.t_acquisition_frameworks AS afp
+        WHERE afp.acquisition_framework_parent_id = af.id_acquisition_framework
+    )
+    AND af.is_parent = TRUE
+    AND NOT EXISTS (
+        SELECT TRUE
+        FROM gn_meta.t_datasets AS da
+        WHERE da.id_acquisition_framework = af.id_acquisition_framework
+    ) ;
+
+\echo 'Deletion in cor_acquisition_framework_territory for parents AF'
+DELETE FROM gn_meta.cor_acquisition_framework_territory AS ter
+USING gn_meta.t_acquisition_frameworks AS af
+WHERE ter.id_acquisition_framework = af.id_acquisition_framework
     AND NOT EXISTS (
         SELECT TRUE
         FROM  gn_meta.t_acquisition_frameworks AS afp
