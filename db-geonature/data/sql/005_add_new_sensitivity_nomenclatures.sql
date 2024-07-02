@@ -77,7 +77,7 @@ INSERT INTO gn_synthese.cor_area_synthese
         a.id_area
     FROM ref_geo.l_areas AS a
     	JOIN ref_geo.bib_areas_types AS t
-    		ON a.id_type = bat.id_type
+    		ON a.id_type = t.id_type
         JOIN gn_synthese.synthese AS s
             ON (a.geom && s.the_geom_local) -- Postgis operator && : https://postgis.net/docs/geometry_overlaps.html
     WHERE t.type_code IN ('M50', 'M20', 'M2') ;
