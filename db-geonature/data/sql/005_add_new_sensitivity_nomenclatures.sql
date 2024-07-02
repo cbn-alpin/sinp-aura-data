@@ -70,11 +70,25 @@ ALTER TABLE ref_geo.l_areas ENABLE TRIGGER tri_insert_cor_area_synthese ;
 
 
 \echo '-------------------------------------------------------------------------------'
+\echo 'Add entries in cor_area_synthese for new meshes'
+INSERT INTO gn_synthese.cor_area_synthese
+    SELECT
+        s.id_synthese,
+        a.id_area
+    FROM ref_geo.l_areas AS a
+    	JOIN ref_geo.bib_areas_types AS t
+    		ON a.id_type = bat.id_type
+        JOIN gn_synthese.synthese AS s
+            ON (a.geom && s.the_geom_local) -- Postgis operator && : https://postgis.net/docs/geometry_overlaps.html
+    WHERE t.type_code IN ('M50', 'M20', 'M2') ;
+
+
+\echo '-------------------------------------------------------------------------------'
 \echo 'Set status of old sensitivity nomenclatures to deprecated'
 UPDATE ref_nomenclatures.t_nomenclatures SET
     statut = 'Gelé'
 WHERE id_type = ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')
-    AND cd_nomenclature IN ('1', '2', '3') ;
+    AND cd_nomenclature IN ('1', '2', '3', '4') ;
 
 
 \echo '-------------------------------------------------------------------------------'
@@ -151,5 +165,5 @@ ON CONFLICT DO NOTHING ;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'
--- COMMIT;
-ROLLBACK;
+COMMIT;
+
