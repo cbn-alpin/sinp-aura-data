@@ -71,6 +71,7 @@ ALTER TABLE ref_geo.l_areas ENABLE TRIGGER tri_insert_cor_area_synthese ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Add entries in cor_area_synthese for new meshes'
+-- Postgis operator && : https://postgis.net/docs/geometry_overlaps.html
 INSERT INTO gn_synthese.cor_area_synthese
     SELECT
         s.id_synthese,
@@ -79,7 +80,7 @@ INSERT INTO gn_synthese.cor_area_synthese
     	JOIN ref_geo.bib_areas_types AS t
     		ON a.id_type = t.id_type
         JOIN gn_synthese.synthese AS s
-            ON (a.geom && s.the_geom_local) -- Postgis operator && : https://postgis.net/docs/geometry_overlaps.html
+            ON (a.geom && s.the_geom_local)
     WHERE t.type_code IN ('M50', 'M20', 'M2') ;
 
 
