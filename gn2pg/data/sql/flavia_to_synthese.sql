@@ -793,7 +793,7 @@ BEGIN
     INTO the_id_nomenclature_determination_method;
     SELECT new.item #>> '{comment_releve}'
     INTO the_comment_context;
-    SELECT new.item #>> '{comment_occurence}'
+    SELECT new.item #>> '{comment_occurrence}'
     INTO the_comment_description;
     SELECT new.item #>> '{donnees_additionnelles}'
     INTO the_additional_data;
