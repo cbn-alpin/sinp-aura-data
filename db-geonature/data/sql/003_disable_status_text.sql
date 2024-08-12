@@ -14,24 +14,15 @@ UPDATE taxonomie.bdc_statut_text
 SET "enable" = false ;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Enalbe all status text used for SINP PACA territory'
-UPDATE taxonomie.bdc_statut_text
+\echo 'Enalbe all status text used for SINP AURA territory'
+UPDATE taxonomie.bdc_statut_text AS s
 SET "enable" = true
-WHERE cd_doc IS NOT NULL
-    AND cd_doc IN (
-        625, 633, 643, 691, 692, 703, 713, 716, 730, 731, 738, 755, 756, 758, 763, 901, 3561,
-        3601, 3622, 3661, 3681, 158248, 161768, 161848, 161968, 162008, 162474, 179483, 179650,
-        192208, 194588, 194589, 194608, 195168, 196448, 215830, 233229, 264852, 265589, 268429,
-        319830, 358269, 358270, 366749,
-        275396, 31343, 165208, 87625, 87619, 138063, 144173, 220350, 208629, 146311, 249369
-    )
-    AND lb_adm_tr IN (
-        'France', 'France métropolitaine',
-        'Auvergne', 'Rhône-Alpes',
-        'Ain', 'Allier', 'Ardèche', 'Cantal', 'Drôme', 'Haute-Loire',
-        'Haute-Savoie', 'Isère', 'Loire',  'Puy-de-Dôme', 'Rhône', 'Savoie',
-        ''
-    )
+FROM taxonomie.bdc_statut_cor_text_area AS ct
+    JOIN ref_geo.l_areas AS la
+        ON ct.id_area = la.id_area
+WHERE s.id_text = ct.id_text
+    AND la.id_type = ref_geo.get_id_area_type('DEP')
+    AND la.area_code IN ('01', '03', '07', '15', '26', '38', '42', '43', '63', '69', '73', '74')
     AND cd_type_statut IN (
         'LRM', 'LRE', 'LRN', 'LRR', 'ZDET', 'DO', 'DH', 'REGL', 'REGLLUTTE', 'PN', 'PR', 'PD'
     ) ;
