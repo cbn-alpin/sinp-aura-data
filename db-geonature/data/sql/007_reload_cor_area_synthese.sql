@@ -14,7 +14,7 @@ BEGIN;
 \echo 'Create subdivided REG, DEP and COM areas table for faster cor_area_synthese reinsert'
 
 \echo ' Add subdivided REG, DEP and COM areas table'
-CREATE TEMPORARY TABLE ref_geo.subdivided_areas AS
+CREATE TEMPORARY TABLE subdivided_areas AS
     SELECT
         random() AS gid,
         a.id_area AS area_id,
@@ -29,14 +29,14 @@ CREATE TEMPORARY TABLE ref_geo.subdivided_areas AS
 
 \echo ' Create index on geom column for subdivided REG, DEP and COM areas table'
 CREATE INDEX IF NOT EXISTS idx_subdivided_geom
-ON ref_geo.subdivided_areas USING gist(geom);
+ON subdivided_areas USING gist(geom);
 
 \echo ' Create index on column id_area for subdivided REG, DEP and COM areas table'
 CREATE INDEX IF NOT EXISTS idx_subdivided_area_id
-ON ref_geo.subdivided_areas USING btree(area_id) ;
+ON subdivided_areas USING btree(area_id) ;
 
 \echo ' Create unique geom on synthese table'
-CREATE TEMPORARY TABLE gn_synthese.geom_synthese AS (
+CREATE TEMPORARY TABLE geom_synthese AS (
     SELECT
         the_geom_local,
         array_agg(id_synthese) AS id_syntheses
@@ -46,7 +46,7 @@ CREATE TEMPORARY TABLE gn_synthese.geom_synthese AS (
 
 \echo ' Create index on geom column for unique geom on synthese table'
 CREATE INDEX IF NOT EXISTS idx_geom_synthese_geom
-ON gn_synthese.geom_synthese USING gist(the_geom_local);
+ON geom_synthese USING gist(the_geom_local);
 
 
 \echo '----------------------------------------------------------------------------'
@@ -80,8 +80,8 @@ WITH synthese_geom_dep AS (
         s.id_syntheses,
         a.area_id,
         a.area_code
-    FROM gn_synthese.geom_synthese AS s
-        INNER JOIN ref_geo.subdivided_areas AS a
+    FROM geom_synthese AS s
+        INNER JOIN subdivided_areas AS a
             ON ( a.code_type = 'DEP' AND st_intersects(s.the_geom_local, a.geom) )
 ),
 area_syntheses AS (
@@ -89,7 +89,7 @@ area_syntheses AS (
         s.id_syntheses,
         a.area_id
     FROM synthese_geom_dep AS s
-        LEFT JOIN ref_geo.subdivided_areas AS a
+        LEFT JOIN subdivided_areas AS a
             ON ( a.code_type = 'COM' AND LEFT(a.area_code, 2) = s.area_code )
     WHERE st_intersects(s.the_geom_local, a.geom )
 
@@ -121,7 +121,7 @@ FROM area_syntheses;
 \echo ' Create table flatten_meshes with meshes M1, M2, M5, M10, M20, M50'
 -- 72 230 rows
 -- 1mn36
-CREATE TEMPORARY TABLE ref_geo.flatten_meshes AS (
+CREATE TEMPORARY TABLE flatten_meshes AS (
     SELECT
         m1.id_area AS id_m1,
         m2.id_area AS id_m2,
@@ -169,7 +169,7 @@ CREATE TEMPORARY TABLE ref_geo.flatten_meshes AS (
 \echo ' Create index on column id_m1 for flatten_meshes table'
 -- > 1s
 CREATE INDEX IF NOT EXISTS id_m1_flatten_meshes_idx
-ON ref_geo.flatten_meshes USING btree(id_m1);
+ON flatten_meshes USING btree(id_m1);
 
 
 \echo ' Clean Meshes (M1, M2, M5, M10, M20, M50) in table cor_area_synthese'
@@ -196,7 +196,7 @@ WITH synthese_geom_m1 AS (
     SELECT DISTINCT
         s.id_syntheses,
         a.id_area AS id_m1
-    FROM gn_synthese.geom_synthese AS s
+    FROM geom_synthese AS s
         INNER JOIN ref_geo.l_areas AS a
             ON (
                 a.id_type = ref_geo.get_id_area_type('M1')
@@ -215,7 +215,7 @@ synthese_geom_meshes AS (
         sgm.id_syntheses,
         fm.id_m2 AS id_mesh
     FROM synthese_geom_m1 AS sgm
-        LEFT JOIN ref_geo.flatten_meshes AS fm
+        LEFT JOIN flatten_meshes AS fm
             ON sgm.id_m1 = fm.id_m1
 
     UNION
@@ -224,7 +224,7 @@ synthese_geom_meshes AS (
         sgm.id_syntheses,
         fm.id_m5 AS id_mesh
     FROM synthese_geom_m1 AS sgm
-        LEFT JOIN ref_geo.flatten_meshes AS fm
+        LEFT JOIN flatten_meshes AS fm
             ON sgm.id_m1 = fm.id_m1
 
     UNION
@@ -233,7 +233,7 @@ synthese_geom_meshes AS (
         sgm.id_syntheses,
         fm.id_m10 AS id_mesh
     FROM synthese_geom_m1 AS sgm
-        LEFT JOIN ref_geo.flatten_meshes AS fm
+        LEFT JOIN flatten_meshes AS fm
             ON sgm.id_m1 = fm.id_m1
 
     UNION
@@ -242,7 +242,7 @@ synthese_geom_meshes AS (
         sgm.id_syntheses,
         fm.id_m20 AS id_mesh
     FROM synthese_geom_m1 AS sgm
-        LEFT JOIN ref_geo.flatten_meshes AS fm
+        LEFT JOIN flatten_meshes AS fm
             ON sgm.id_m1 = fm.id_m1
 
     UNION
@@ -251,7 +251,7 @@ synthese_geom_meshes AS (
         sgm.id_syntheses,
         fm.id_m50 AS id_mesh
     FROM synthese_geom_m1 AS sgm
-        LEFT JOIN ref_geo.flatten_meshes AS fm
+        LEFT JOIN flatten_meshes AS fm
             ON sgm.id_m1 = fm.id_m1
 )
 SELECT
