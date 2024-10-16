@@ -7,6 +7,9 @@
 -- rsync -av ./reload_cor_area_synthese.sql geonat@db-paca-sinp:~/data/shared/data/sql/ --dry-run
 -- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db \
 --      -f ~/data/shared/data/sql/reload_cor_area_synthese.sql
+
+\timing
+
 BEGIN;
 
 
@@ -14,6 +17,7 @@ BEGIN;
 \echo 'Create subdivided REG, DEP and COM areas table for faster cor_area_synthese reinsert'
 
 \echo ' Add subdivided REG, DEP and COM areas table'
+-- SINP AURA Preprod: 31 735 rows in 29s 352ms
 CREATE TEMPORARY TABLE subdivided_areas AS
     SELECT
         random() AS gid,
@@ -35,7 +39,10 @@ ON subdivided_areas USING gist(geom);
 CREATE INDEX IF NOT EXISTS idx_subdivided_area_id
 ON subdivided_areas USING btree(area_id) ;
 
-\echo ' Create unique geom on synthese table'
+
+\echo '----------------------------------------------------------------------------'
+\echo ' Create table geom_synthese with observations ids group by geom'
+-- SINP AURA Preprod (29 million obs): 7 213 407 rows in 03mn 12s 407ms
 CREATE TEMPORARY TABLE geom_synthese AS (
     SELECT
         the_geom_local,
@@ -45,82 +52,14 @@ CREATE TEMPORARY TABLE geom_synthese AS (
 ) ;
 
 \echo ' Create index on geom column for unique geom on synthese table'
+-- SINP AURA Preprod: 20s 469ms
 CREATE INDEX IF NOT EXISTS idx_geom_synthese_geom
 ON geom_synthese USING gist(the_geom_local);
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Reinsert all data in cor_area_synthese'
-
--- TRUNCATE TABLE cor_area_synthese ;
--- TO AVOID TRUNCATE : add condition on id_source or id_dataset to reduce synthese table entries in below inserts
-
-\echo ' Disables constraints for the current session'
--- TODO: voir si pertinent de garder cette ligne.
-SET session_replication_role = REPLICA;
-
-\echo ' Clean Régions, Départements and Communes in table cor_area_synthese'
-DELETE FROM gn_synthese.cor_area_synthese
-WHERE id_area IN (
-    SELECT id_area
-    FROM ref_geo.l_areas
-    WHERE id_type IN (
-        ref_geo.get_id_area_type('REG'), -- Régions
-        ref_geo.get_id_area_type('DEP'), -- Départements
-        ref_geo.get_id_area_type('COM') -- Communes
-    )
-) ;
-
-\echo ' Reinsert Régions, Départements and Communes'
--- 13mn23s
-INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
-WITH synthese_geom_dep AS (
-    SELECT DISTINCT
-        s.the_geom_local,
-        s.id_syntheses,
-        a.area_id,
-        a.area_code
-    FROM geom_synthese AS s
-        INNER JOIN subdivided_areas AS a
-            ON ( a.code_type = 'DEP' AND st_intersects(s.the_geom_local, a.geom) )
-),
-area_syntheses AS (
-    SELECT DISTINCT
-        s.id_syntheses,
-        a.area_id
-    FROM synthese_geom_dep AS s
-        LEFT JOIN subdivided_areas AS a
-            ON ( a.code_type = 'COM' AND LEFT(a.area_code, 2) = s.area_code )
-    WHERE st_intersects(s.the_geom_local, a.geom )
-
-    UNION ALL
-
-    SELECT
-        id_syntheses,
-        area_id
-    FROM synthese_geom_dep
-
-    UNION ALL
-
-    SELECT DISTINCT
-        s.id_syntheses,
-        a.id_area AS area_id
-    FROM synthese_geom_dep AS s
-        LEFT JOIN (
-            SELECT id_area
-            FROM ref_geo.l_areas
-            WHERE id_type = ref_geo.get_id_area_type('REG')
-        ) AS a ON TRUE
-)
-SELECT
-    unnest(id_syntheses),
-    area_id
-FROM area_syntheses;
-
-
 \echo ' Create table flatten_meshes with meshes M1, M2, M5, M10, M20, M50'
--- 72 230 rows
--- 1mn36
+-- SINP AURA Preprod: 72 230 rows in 1mn 45s 846ms
 CREATE TEMPORARY TABLE flatten_meshes AS (
     SELECT
         m1.id_area AS id_m1,
@@ -167,12 +106,93 @@ CREATE TEMPORARY TABLE flatten_meshes AS (
 );
 
 \echo ' Create index on column id_m1 for flatten_meshes table'
--- > 1s
 CREATE INDEX IF NOT EXISTS id_m1_flatten_meshes_idx
 ON flatten_meshes USING btree(id_m1);
 
 
-\echo ' Clean Meshes (M1, M2, M5, M10, M20, M50) in table cor_area_synthese'
+\echo '----------------------------------------------------------------------------'
+\echo 'Delete cor_area_synthese indexes and constraints'
+DROP INDEX IF EXISTS gn_synthese.cor_area_synthese_id_area_idx ;
+
+DROP INDEX IF EXISTS gn_synthese.cor_area_synthese_id_synthese_idx ;
+
+ALTER TABLE gn_synthese.cor_area_synthese
+DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_area ;
+
+ALTER TABLE gn_synthese.cor_area_synthese
+DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_synthese ;
+
+ALTER TABLE gn_synthese.cor_area_synthese
+DROP CONSTRAINT IF EXISTS pk_cor_area_synthese ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Reinsert all administrative zones (REG, DEP and COM) in cor_area_synthese'
+
+\echo ' Clean Régions, Départements and Communes in table cor_area_synthese'
+-- SINP AURA Preprod: 99 824 926 rows in 5mn 04s 582ms
+DELETE FROM gn_synthese.cor_area_synthese
+WHERE id_area IN (
+    SELECT id_area
+    FROM ref_geo.l_areas
+    WHERE id_type IN (
+        ref_geo.get_id_area_type('REG'), -- Régions
+        ref_geo.get_id_area_type('DEP'), -- Départements
+        ref_geo.get_id_area_type('COM') -- Communes
+    )
+) ;
+
+\echo ' Reinsert Régions, Départements and Communes'
+-- 13mn23s
+WITH synthese_geom_dep AS (
+    SELECT DISTINCT
+        s.the_geom_local,
+        s.id_syntheses,
+        a.area_id,
+        a.area_code
+    FROM geom_synthese AS s
+        INNER JOIN subdivided_areas AS a
+            ON ( a.code_type = 'DEP' AND st_intersects(s.the_geom_local, a.geom) )
+),
+area_syntheses AS (
+    SELECT DISTINCT
+        s.id_syntheses,
+        a.area_id
+    FROM synthese_geom_dep AS s
+        LEFT JOIN subdivided_areas AS a
+            ON ( a.code_type = 'COM' AND LEFT(a.area_code, 2) = s.area_code )
+    WHERE st_intersects(s.the_geom_local, a.geom )
+
+    UNION ALL
+
+    SELECT
+        id_syntheses,
+        area_id
+    FROM synthese_geom_dep
+
+    UNION ALL
+
+    SELECT DISTINCT
+        s.id_syntheses,
+        a.id_area AS area_id
+    FROM synthese_geom_dep AS s
+        LEFT JOIN (
+            SELECT id_area
+            FROM ref_geo.l_areas
+            WHERE id_type = ref_geo.get_id_area_type('REG')
+        ) AS a ON TRUE
+)
+INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
+    SELECT
+        unnest(id_syntheses),
+        area_id
+    FROM area_syntheses ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Reinsert all meshes (M1, M2, M5, M10, M20, M50) in cor_area_synthese'
+
+\echo ' Clean meshes in table cor_area_synthese'
 DELETE FROM gn_synthese.cor_area_synthese
 WHERE id_area IN (
     SELECT id_area
@@ -187,11 +207,9 @@ WHERE id_area IN (
     )
 ) ;
 
-
-\echo ' Reinsert for meshes'
+\echo ' Reinsert all meshes'
 --
 -- 10mn44s
-INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
 WITH synthese_geom_m1 AS (
     SELECT DISTINCT
         s.id_syntheses,
@@ -254,12 +272,15 @@ synthese_geom_meshes AS (
         LEFT JOIN flatten_meshes AS fm
             ON sgm.id_m1 = fm.id_m1
 )
-SELECT
-    UNNEST(id_syntheses) AS id_synthese,
-    id_mesh
-FROM synthese_geom_meshes ;
+INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
+    SELECT
+        UNNEST(id_syntheses) AS id_synthese,
+        id_mesh
+    FROM synthese_geom_meshes ;
 
 
+\echo '----------------------------------------------------------------------------'
+\echo 'Reinsert all observations link to SINP territory in cor_area_synthese'
 
 \echo ' Clean SINP area in table cor_area_synthese'
 WITH sinp AS (
@@ -276,20 +297,39 @@ WHERE id_area IN (
 
 \echo ' Reinsert all observations in cor_area_synthese link to SINP area'
 -- 47s 946ms
+WITH sinp AS (
+    SELECT id_area
+    FROM ref_geo.l_areas
+    WHERE id_type = ref_geo.get_id_area_type('SINP') -- SINP area
+    LIMIT 1
+)
 INSERT INTO gn_synthese.cor_area_synthese (id_synthese, id_area)
-    WITH sinp AS (
-        SELECT id_area
-        FROM ref_geo.l_areas
-        WHERE id_type = ref_geo.get_id_area_type('SINP') -- SINP area
-        LIMIT 1
-    )
     SELECT
         s.id_synthese,
         sinp.id_area
     FROM gn_synthese.synthese AS s, sinp ;
--- ON CONFLICT ON CONSTRAINT pk_cor_area_synthese DO NOTHING;
 
-SET session_replication_role = DEFAULT;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Recreate cor_area_synthese indexes and constraints'
+ALTER TABLE gn_synthese.cor_area_synthese
+ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area) ;
+
+ALTER TABLE gn_synthese.cor_area_synthese
+ADD CONSTRAINT fk_cor_area_synthese_id_area
+FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area)
+ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE gn_synthese.cor_area_synthese
+ADD CONSTRAINT fk_cor_area_synthese_id_synthese
+FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese)
+ON DELETE CASCADE ON UPDATE CASCADE ;
+
+CREATE INDEX cor_area_synthese_id_area_idx
+ON gn_synthese.cor_area_synthese USING btree (id_area);
+
+CREATE INDEX cor_area_synthese_id_synthese_idx
+ON gn_synthese.cor_area_synthese USING btree (id_synthese);
 
 
 \echo '----------------------------------------------------------------------------'
