@@ -108,15 +108,15 @@ function main() {
     displayStats "synthese"
     executeUpgradeScript "synthese" "insert"
     executeUpgradeScript "synthese" "update"
-    executeUpgradeScript "synthese" "delete"
 
+    reloadCorAreaSynthese
+
+    executeUpgradeScript "synthese" "delete"
     executeUpgradeScript "dataset" "delete"
     executeUpgradeScript "acquisition framework" "delete"
     executeUpgradeScript "user" "delete"
     executeUpgradeScript "organism" "delete"
     executeUpgradeScript "source" "delete"
-
-    reloadCorAreaSynthese
 
     printPretty "Are you sure to run maitain DB SQL script wich lock database (y/n). Default: n ?" ${Red}
     read -r -n 1 key
@@ -299,9 +299,9 @@ function reloadCorAreaSynthese() {
     local table="${table_prefix}_synthese"
     checkSuperuser
     export PGPASSWORD="${db_pass}"; \
+        sed "s/\${syntheseImportTable}/${table}/g" "${sql_shared_dir}/update/synthese/reload.sql" | \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -v "syntheseImportTable=${table}" \
-            -f "${sql_shared_dir}/update/synthese/reload.sql"
+            -f -
 }
 
 function maintainDb() {
