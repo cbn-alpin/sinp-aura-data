@@ -45,9 +45,11 @@ ON ref_geo.subdivided_areas USING btree(area_id) ;
 -- SINP AURA Preprod (29 million obs): 7 213 407 rows in 03mn 12s 407ms
 CREATE TABLE IF NOT EXISTS gn_synthese.geom_synthese AS (
     SELECT
-        the_geom_local,
-        array_agg(id_synthese) AS id_syntheses
-    FROM gn_synthese.synthese
+        s.the_geom_local,
+        array_agg(s.id_synthese) AS id_syntheses
+    FROM gn_synthese.synthese s
+        left join gn_imports.${syntheseImportTable} i on i.unique_id_sinp = s.unique_id_sinp
+    where i.meta_last_action in ('I', 'U')
     GROUP BY the_geom_local
 ) ;
 
@@ -293,16 +295,9 @@ DROP CONSTRAINT IF EXISTS pk_cor_area_synthese ;
 
 \echo ' Clean Régions, Départements and Communes in table cor_area_synthese'
 -- SINP AURA Preprod: 99 824 926 rows in 5mn 04s 582ms
-DELETE FROM gn_synthese.cor_area_synthese
-WHERE id_area IN (
-    SELECT id_area
-    FROM ref_geo.l_areas
-    WHERE id_type IN (
-        ref_geo.get_id_area_type('REG'), -- Régions
-        ref_geo.get_id_area_type('DEP'), -- Départements
-        ref_geo.get_id_area_type('COM') -- Communes
-    )
-) ;
+DELETE FROM gn_synthese.cor_area_synthese c
+FROM gn_synthese.synthese s, gn_imports.${syntheseImportTable} i
+WHERE s.id_synthese = c.id_synthese AND i.unique_id_sinp = s.unique_id_sinp ;
 
 \echo ' Reinsert Régions, Départements and Communes'
 -- SINP AURA Preprod: 21 676 437 in 2mn 31s
@@ -324,17 +319,23 @@ BEGIN
         RAISE NOTICE '-------------------------------------------------' ;
         RAISE NOTICE 'Try to insert % observations from %', step, offsetCnt ;
 
+        WITH admin_zones AS (
+            SELECT
+                id_syntheses,
+                area_id
+            FROM gn_synthese.area_syntheses AS a
+            ORDER BY a.area_id ASC
+            OFFSET offsetCnt
+            LIMIT step
+        )
         INSERT INTO gn_synthese.cor_area_synthese (
             id_synthese,
             id_area
         )
             SELECT
-                unnest(id_syntheses),
+                UNNEST(id_syntheses) AS id_synthese,
                 area_id
-            FROM gn_synthese.area_syntheses AS a
-            ORDER BY a.area_id ASC
-            OFFSET offsetCnt
-            LIMIT step ;
+            FROM admin_zones ;
 
         GET DIAGNOSTICS affectedRows = ROW_COUNT;
         RAISE NOTICE 'Inserted cor_area_synthese rows: %', affectedRows ;
@@ -348,21 +349,6 @@ $$ ;
 \echo '----------------------------------------------------------------------------'
 \echo 'Reinsert all meshes (M1, M2, M5, M10, M20, M50) in cor_area_synthese'
 
-\echo ' Clean meshes in table cor_area_synthese'
--- SINP AURA Preprod: 375 695 806 in 8mn 20s
-DELETE FROM gn_synthese.cor_area_synthese
-WHERE id_area IN (
-    SELECT id_area
-    FROM ref_geo.l_areas
-    WHERE id_type IN (
-        ref_geo.get_id_area_type('M1'),
-        ref_geo.get_id_area_type('M2'),
-        ref_geo.get_id_area_type('M5'),
-        ref_geo.get_id_area_type('M10'),
-        ref_geo.get_id_area_type('M20'),
-        ref_geo.get_id_area_type('M50')
-    )
-) ;
 
 \echo ' Reinsert all meshes'
 -- SINP AURA Preprod: 43 677 186 rows in 14mn 33s
@@ -384,6 +370,15 @@ BEGIN
         RAISE NOTICE '-------------------------------------------------' ;
         RAISE NOTICE 'Try to insert % observations from %', step, offsetCnt ;
 
+        WITH meshes AS (
+            SELECT
+                id_syntheses,
+                id_mesh
+            FROM gn_synthese.synthese_geom_meshes AS sgm
+            ORDER BY sgm.id_mesh ASC
+            OFFSET offsetCnt
+            LIMIT step
+        )
         INSERT INTO gn_synthese.cor_area_synthese (
             id_synthese,
             id_area
@@ -391,10 +386,7 @@ BEGIN
             SELECT
                 UNNEST(id_syntheses) AS id_synthese,
                 id_mesh
-            FROM gn_synthese.synthese_geom_meshes AS sgm
-            ORDER BY sgm.id_mesh ASC
-            OFFSET offsetCnt
-            LIMIT step ;
+            FROM meshes ;
 
         GET DIAGNOSTICS affectedRows = ROW_COUNT;
         RAISE NOTICE 'Inserted cor_area_synthese rows: %', affectedRows ;
