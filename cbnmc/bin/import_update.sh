@@ -296,11 +296,12 @@ function executeUpgradeScript() {
 
 function reloadCorAreaSynthese() {
     printMsg "Reload cor_area_synthese table..."
-
+    local table="${table_prefix}_synthese"
     checkSuperuser
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_shared_dir}/reload_cor_area_synthese.sql"
+            -v "syntheseImportTable=${table}" \
+            -f "${sql_shared_dir}/update/synthese/reload.sql"
 }
 
 function maintainDb() {
