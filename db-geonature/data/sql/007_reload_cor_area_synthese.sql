@@ -1,12 +1,17 @@
--- Re-insert all meshes (M1, M5, M10), departements (DEP), municipalities (COM)
--- and SINP area in gn_synthese.cor_area_synthese table.
+-- Re-insert all meshes (M1, M2, M5, M10, ...), departements (DEP), municipalities (COM),
+-- regions (REG) and SINP area in gn_synthese.cor_area_synthese table for a specific import.
 --
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.6.2+
 -- Transfert this script on server this way:
 -- rsync -av ./reload_cor_area_synthese.sql geonat@db-paca-sinp:~/data/shared/data/sql/ --dry-run
--- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db \
---      -f ~/data/shared/data/sql/reload_cor_area_synthese.sql
+-- Use this script this way:
+--      psql -h localhost -U geonatadmin -d geonature2db \
+--          -v syntheseImportTable=<prefix>_synthese \
+--          -f ~/data/shared/data/sql/update/synthse/reload.sql
+-- Parameters:
+--      syntheseImportTable: name of synthese import table to use. See gn_imports schema.
+--                           Ex.: cbnmc_20221130_synthese.
 
 \timing
 
@@ -14,10 +19,13 @@ BEGIN;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create subdivided REG, DEP and COM areas temporary table'
+\echo 'Create subdivided REG, DEP and COM areas table'
+
+\echo ' Drop subdivided REG, DEP and COM areas table'
+DROP TABLE IF EXISTS ref_geo.subdivided_areas ;
 
 \echo ' Add subdivided REG, DEP and COM areas table'
--- SINP AURA Preprod: 31 735 rows in 29s 352ms
+-- SINP AURA Preprod: rows in
 CREATE TABLE IF NOT EXISTS ref_geo.subdivided_areas AS
     SELECT
         random() AS gid,
@@ -41,27 +49,34 @@ ON ref_geo.subdivided_areas USING btree(area_id) ;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo ' Create geom_synthese temporary table with observations ids group by geom'
--- SINP AURA Preprod (29 million obs): 7 213 407 rows in 03mn 12s 407ms
+\echo ' Drop geom_synthese table'
+DROP TABLE IF EXISTS gn_synthese.geom_synthese ;
+
+\echo ' Create geom_synthese table with observations ids group by geom'
+-- SINP AURA Preprod:  rows in
 CREATE TABLE IF NOT EXISTS gn_synthese.geom_synthese AS (
     SELECT
         s.the_geom_local,
         array_agg(s.id_synthese) AS id_syntheses
-    FROM gn_synthese.synthese s
-        left join gn_imports.${syntheseImportTable} i on i.unique_id_sinp = s.unique_id_sinp
-    where i.meta_last_action in ('I', 'U')
+    FROM gn_synthese.synthese AS s
+        LEFT JOIN gn_imports.:syntheseImportTable AS i
+            ON i.unique_id_sinp = s.unique_id_sinp
+    WHERE i.meta_last_action IN ('I', 'U')
     GROUP BY the_geom_local
 ) ;
 
 \echo ' Create index on geom column for unique geom on synthese table'
--- SINP AURA Preprod: 20s 469ms
+-- SINP AURA Preprod:
 CREATE INDEX IF NOT EXISTS idx_geom_synthese_geom
 ON gn_synthese.geom_synthese USING gist(the_geom_local);
 
 
 \echo '----------------------------------------------------------------------------'
-\echo ' Create flatten_meshes temporary table with meshes M1, M2, M5, M10, M20, M50'
--- SINP AURA Preprod: 72 230 rows in 1mn 45s 846ms
+\echo ' Drop flatten_meshes table'
+DROP TABLE IF EXISTS ref_geo.flatten_meshes ;
+
+\echo ' Create flatten_meshes table with meshes M1, M2, M5, M10, M20, M50'
+-- SINP AURA Preprod:  rows in
 CREATE TABLE IF NOT EXISTS ref_geo.flatten_meshes AS (
     SELECT
         m1.id_area AS id_m1,
@@ -113,7 +128,10 @@ ON ref_geo.flatten_meshes USING btree(id_m1);
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create synthese_geom_dep temporary table'
+\echo 'Drop synthese_geom_dep table'
+DROP TABLE IF EXISTS gn_synthese.synthese_geom_dep ;
+
+\echo 'Create synthese_geom_dep table'
 CREATE TABLE IF NOT EXISTS gn_synthese.synthese_geom_dep AS (
     SELECT DISTINCT
         s.the_geom_local AS geom,
@@ -135,7 +153,10 @@ ON gn_synthese.synthese_geom_dep USING btree(area_code) ;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create area_syntheses temporary table'
+\echo 'Drop area_syntheses table'
+DROP TABLE IF EXISTS gn_synthese.area_syntheses ;
+
+\echo 'Create area_syntheses table'
 CREATE TABLE IF NOT EXISTS gn_synthese.area_syntheses AS (
     SELECT DISTINCT
         s.id_syntheses,
@@ -171,8 +192,11 @@ ON gn_synthese.area_syntheses USING btree(area_id) ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Drop synthese_geom_m1 table'
+DROP TABLE IF EXISTS gn_synthese.synthese_geom_m1 ;
+
 \echo 'Create synthese_geom_m1 temporary table'
--- SINP AURA Preprod: 7 483 988 rows in 1mn 42s
+-- SINP AURA Preprod:  rows in
 CREATE TABLE IF NOT EXISTS gn_synthese.synthese_geom_m1 AS (
     SELECT DISTINCT
         s.id_syntheses,
@@ -192,8 +216,11 @@ ON gn_synthese.synthese_geom_m1 USING btree(id_m1) ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Drop synthese_geom_meshes table'
+DROP TABLE IF EXISTS gn_synthese.synthese_geom_meshes ;
+
 \echo 'Create synthese_geom_meshes temporary table'
--- SINP AURA Preprod: 43 677 186 rows in 7mn 21s
+-- SINP AURA Preprod:  rows in
 CREATE TABLE IF NOT EXISTS gn_synthese.synthese_geom_meshes AS (
     SELECT
         id_syntheses,
@@ -253,8 +280,11 @@ ON gn_synthese.synthese_geom_meshes USING btree(id_mesh) ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Drop synthese_sinp table'
+DROP TABLE IF EXISTS gn_synthese.synthese_sinp ;
+
 \echo 'Create synthese_sinp temporary table'
--- SINP AURA Preprod: 29 175 104 rows in 56s
+-- SINP AURA Preprod:  rows in
 CREATE TABLE IF NOT EXISTS gn_synthese.synthese_sinp AS (
     WITH sinp AS (
         SELECT id_area
@@ -263,9 +293,9 @@ CREATE TABLE IF NOT EXISTS gn_synthese.synthese_sinp AS (
         LIMIT 1
     )
     SELECT
-        s.id_synthese,
+        UNNEST(gs.id_syntheses) AS id_synthese,
         sinp.id_area
-    FROM gn_synthese.synthese AS s, sinp
+    FROM gn_synthese.geom_synthese AS gs, sinp
 ) ;
 
 \echo ' Create index on column id_synthese for synthese_sinp table'
@@ -273,34 +303,35 @@ CREATE INDEX IF NOT EXISTS idx_synthese_sinp_id_synthese
 ON gn_synthese.synthese_sinp USING btree(id_synthese) ;
 
 
-\echo '----------------------------------------------------------------------------'
-\echo 'Delete cor_area_synthese indexes and constraints'
+-- \echo '----------------------------------------------------------------------------'
+-- \echo 'Delete cor_area_synthese indexes and constraints'
 -- Don't drop id_area index because it's used by delete queries
 -- DROP INDEX IF EXISTS gn_synthese.cor_area_synthese_id_area_idx ;
 
-DROP INDEX IF EXISTS gn_synthese.cor_area_synthese_id_synthese_idx ;
+-- DROP INDEX IF EXISTS gn_synthese.cor_area_synthese_id_synthese_idx ;
 
-ALTER TABLE gn_synthese.cor_area_synthese
-DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_area ;
+-- ALTER TABLE gn_synthese.cor_area_synthese
+-- DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_area ;
 
-ALTER TABLE gn_synthese.cor_area_synthese
-DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_synthese ;
+-- ALTER TABLE gn_synthese.cor_area_synthese
+-- DROP CONSTRAINT IF EXISTS fk_cor_area_synthese_id_synthese ;
 
-ALTER TABLE gn_synthese.cor_area_synthese
-DROP CONSTRAINT IF EXISTS pk_cor_area_synthese ;
+-- ALTER TABLE gn_synthese.cor_area_synthese
+-- DROP CONSTRAINT IF EXISTS pk_cor_area_synthese ;
 
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Reinsert all administrative zones (REG, DEP and COM) in cor_area_synthese'
 
 \echo ' Clean Régions, Départements and Communes in table cor_area_synthese'
--- SINP AURA Preprod: 99 824 926 rows in 5mn 04s 582ms
-DELETE FROM gn_synthese.cor_area_synthese c
-FROM gn_synthese.synthese s, gn_imports.${syntheseImportTable} i
-WHERE s.id_synthese = c.id_synthese AND i.unique_id_sinp = s.unique_id_sinp ;
+-- SINP AURA Preprod:  rows in
+DELETE FROM gn_synthese.cor_area_synthese AS c
+USING gn_synthese.synthese AS s, gn_imports.:syntheseImportTable AS i
+WHERE c.id_synthese = s.id_synthese
+    AND s.unique_id_sinp = i.unique_id_sinp ;
 
 \echo ' Reinsert Régions, Départements and Communes'
--- SINP AURA Preprod: 21 676 437 in 2mn 31s
+-- SINP AURA Preprod:  rows in
 DO $$
 DECLARE
     step INTEGER;
@@ -351,7 +382,7 @@ $$ ;
 
 
 \echo ' Reinsert all meshes'
--- SINP AURA Preprod: 43 677 186 rows in 14mn 33s
+-- SINP AURA Preprod:  rows in
 DO $$
 DECLARE
     step INTEGER;
@@ -397,12 +428,11 @@ END
 $$ ;
 
 
-
 \echo '----------------------------------------------------------------------------'
 \echo 'Reinsert all observations link to SINP territory in cor_area_synthese'
 
 \echo ' Clean SINP area in table cor_area_synthese'
--- SINP AURA Preprod: 28 987 775 in 3mn 32s
+-- SINP AURA Preprod:  rows in
 WITH sinp AS (
     SELECT id_area
     FROM ref_geo.l_areas
@@ -416,7 +446,7 @@ WHERE id_area IN (
 ) ;
 
 \echo ' Reinsert all observations in cor_area_synthese link to SINP area'
--- SINP AURA Preprod: 29 175 104 rows in 2mn 35s
+-- SINP AURA Preprod:  rows in
 DO $$
 DECLARE
     step INTEGER;
@@ -455,32 +485,60 @@ BEGIN
 END
 $$ ;
 
-\echo '----------------------------------------------------------------------------'
-\echo 'Recreate cor_area_synthese indexes and constraints'
--- 10mn 39s
-ALTER TABLE gn_synthese.cor_area_synthese
-ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area) ;
+-- \echo '----------------------------------------------------------------------------'
+-- \echo 'Recreate cor_area_synthese indexes and constraints'
+-- 8mn 33s
+-- ALTER TABLE gn_synthese.cor_area_synthese
+-- ADD CONSTRAINT pk_cor_area_synthese PRIMARY KEY (id_synthese, id_area) ;
 
--- 2mn 57s
-ALTER TABLE gn_synthese.cor_area_synthese
-ADD CONSTRAINT fk_cor_area_synthese_id_area
-FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area)
-ON DELETE CASCADE ON UPDATE CASCADE ;
+-- 3mn 28s
+-- ALTER TABLE gn_synthese.cor_area_synthese
+-- ADD CONSTRAINT fk_cor_area_synthese_id_area
+-- FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area)
+-- ON DELETE CASCADE ON UPDATE CASCADE ;
 
--- 4mn 25s
-ALTER TABLE gn_synthese.cor_area_synthese
-ADD CONSTRAINT fk_cor_area_synthese_id_synthese
-FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese)
-ON DELETE CASCADE ON UPDATE CASCADE ;
+-- 7mn 36s
+-- ALTER TABLE gn_synthese.cor_area_synthese
+-- ADD CONSTRAINT fk_cor_area_synthese_id_synthese
+-- FOREIGN KEY (id_synthese) REFERENCES gn_synthese.synthese(id_synthese)
+-- ON DELETE CASCADE ON UPDATE CASCADE ;
 
 -- The id_area index was not deleted because delete queries uses it.
 -- 7mn
 -- CREATE INDEX cor_area_synthese_id_area_idx
 -- ON gn_synthese.cor_area_synthese USING btree(id_area);
 
--- 8mn 11s
-CREATE INDEX cor_area_synthese_id_synthese_idx
-ON gn_synthese.cor_area_synthese USING btree(id_synthese);
+-- 7mn 17s
+-- CREATE INDEX cor_area_synthese_id_synthese_idx
+-- ON gn_synthese.cor_area_synthese USING btree(id_synthese);
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Clean all temporary tables'
+
+\echo ' Drop subdivided REG, DEP and COM areas table'
+DROP TABLE IF EXISTS ref_geo.subdivided_areas ;
+
+\echo ' Drop geom_synthese table'
+DROP TABLE IF EXISTS gn_synthese.geom_synthese ;
+
+\echo ' Drop flatten_meshes table'
+DROP TABLE IF EXISTS ref_geo.flatten_meshes ;
+
+\echo ' Drop synthese_geom_dep table'
+DROP TABLE IF EXISTS gn_synthese.synthese_geom_dep ;
+
+\echo ' Drop area_syntheses table'
+DROP TABLE IF EXISTS gn_synthese.area_syntheses ;
+
+\echo ' Drop synthese_geom_m1 table'
+DROP TABLE IF EXISTS gn_synthese.synthese_geom_m1 ;
+
+\echo ' Drop synthese_geom_meshes table'
+DROP TABLE IF EXISTS gn_synthese.synthese_geom_meshes ;
+
+\echo ' Drop synthese_sinp table'
+DROP TABLE IF EXISTS gn_synthese.synthese_sinp ;
 
 
 \echo '----------------------------------------------------------------------------'
