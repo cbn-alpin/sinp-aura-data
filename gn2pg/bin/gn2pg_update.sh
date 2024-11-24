@@ -181,7 +181,7 @@ function extractLastDownloadDate() {
     )
     if [[ "${last_download_date}" != "${extract_last_download_date}" ]]; then
         last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
-        sendTelegram "Last download date used: ${last_download_date}"
+        sendTelegram "⌚ Last download date used: ${last_download_date}"
     fi
 }
 
