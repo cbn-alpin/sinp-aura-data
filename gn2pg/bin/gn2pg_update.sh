@@ -120,23 +120,31 @@ function prepareParameters() {
 }
 
 function startStatusMessenger() {
-    last_download_date=$(export PGPASSWORD="${db_pass}"; \
+    display_type="${gn2pg_update_type//--/}"
+    sendTelegram "🚀 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} …"
+    extractLastDownloadDate
+    runStatusMessenger &
+    status_messenger_pid=$!
+}
+
+function extractLastDownloadDate() {
+    last_download_date=${last_download_date:-"1970-01-01 00:00:00"}
+    local extract_last_download_date=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT last_ts \
             FROM gn2pg_${sn}.increment_log \
             WHERE source = '${sn}' AND controler = 'data' \
             ORDER BY last_ts DESC ;"
     )
-    last_download_date=${last_download_date:-"1970-01-01 00:00:00"}
-    display_type="${gn2pg_update_type//--/}"
-    sendTelegram "🚀 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} …
-        Last download date used: ${last_download_date}"
-    runStatusMessenger &
-    status_messenger_pid=$!
+    if [[ "${last_download_date}" != "${extract_last_download_date}" ]]; then
+        last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
+        sendTelegram "Last download date used: ${last_download_date}"
+    fi
 }
 
 function runStatusMessenger() {
     while true; do
+        extractLastDownloadDate
         extractDownloadedData
         sendTelegram "Data already downloaded: ${downloaded_data_count}
             ${errors_msg}
