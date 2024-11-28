@@ -127,6 +127,7 @@ function startStatusMessenger() {
 }
 
 function runStatusMessenger() {
+    extractDownloadDates
     while true; do
         extractDownloadedData
         sendTelegram "Data already downloaded: ${downloaded_data_count}
@@ -137,8 +138,6 @@ function runStatusMessenger() {
 }
 
 function extractDownloadedData() {
-    extractLastDownloadDate
-
     downloaded_data_count=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT COUNT(id_data) \
@@ -146,7 +145,7 @@ function extractDownloadedData() {
             WHERE source = '${sn}' \
                AND controler = 'data' \
                AND type = 'synthese_with_metadata' \
-               AND update_ts > '${last_download_date}' ;"
+               AND update_ts > '${actual_download_date}' ;"
     )
 
     errors_count=$(export PGPASSWORD="${db_pass}"; \
@@ -155,7 +154,7 @@ function extractDownloadedData() {
             FROM gn2pg_${sn}.error_log \
             WHERE source = '${sn}' \
                AND controler = 'data' \
-               AND last_ts = '${last_download_date}' ;"
+               AND last_ts >= '${last_download_date}' ;"
     )
 
     result="🟢"
@@ -170,8 +169,8 @@ function extractDownloadedData() {
     elapsed_time="$(displayTime "${time_diff}")"
 }
 
-function extractLastDownloadDate() {
-    last_download_date=${last_download_date:-"1970-01-01 00:00:00"}
+function extractDownloadDates() {
+    actual_download_date=${actual_download_date:-"$(date '+%Y-%m-%d %H:%M:%S')"}
     local extract_last_download_date=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT last_ts \
@@ -179,15 +178,14 @@ function extractLastDownloadDate() {
             WHERE source = '${sn}' AND controler = 'data' \
             ORDER BY last_ts DESC ;"
     )
-    if [[ "${last_download_date}" != "${extract_last_download_date}" ]]; then
-        last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
-        sendTelegram "⌚ Last download date used: ${last_download_date}"
-    fi
+    last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
+    sendTelegram "⌚ Last download date: ${last_download_date}
+        Actual download date used: ${actual_download_date}"
 }
 
 function stopStatusMessenger() {
     kill $status_messenger_pid >/dev/null 2>&1
-    extractLastDownloadDate
+    extractDownloadDates
     extractDownloadedData
 
     sendTelegram "${result} Gn2Pg download for ${gn2pg_source_name^^} completed in ${elapsed_time} !
