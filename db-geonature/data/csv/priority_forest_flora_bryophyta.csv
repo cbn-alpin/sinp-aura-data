@@ -1,8 +1,8 @@
 cd_nom	taxa_name	level_1_alp	level_1_mc
 3819	Plasteurhynchium meridionale (Schimp.) M.Fleisch.	1	0
-3845	Tetrodontium repandum (Funck) SchwÃ¤gr.	1	1
+3845	Tetrodontium repandum (Funck) Schwägr.	1	1
 3849	Atrichum angustatum (Brid.) Bruch & Schimp.	1	0
-3851	Atrichum tenellum (RÃ¶hl.) Bruch & Schimp.	1	1
+3851	Atrichum tenellum (Röhl.) Bruch & Schimp.	1	1
 3856	Oligotrichum hercynicum (Hedw.) Lam. & DC.	1	1
 3859	Pogonatum nanum (Schreb. ex Hedw.) P.Beauv.	1	1
 3870	Polytrichum longisetum Sw. ex Brid.	1	1
@@ -24,7 +24,7 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 4394	Fissidens rufulus Bruch & Schimp.	1	0
 4413	Campylopus atrovirens De Not.	1	1
 4415	Campylopus flexuosus (Hedw.) Brid.	1	0
-4421	Campylopus oerstedianus (MÃ¼ll.Hal.) Mitt.	1	1
+4421	Campylopus oerstedianus (Müll.Hal.) Mitt.	1	1
 4423	Campylopus pilifer Brid.	1	1
 4429	Campylopus subulatus Schimp. ex Milde	1	0
 4431	Cynodontium bruntonii (Sm.) Bruch & Schimp.	1	0
@@ -61,18 +61,18 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 4830	Rhabdoweisia crispata (Dicks.) Lindb.	1	1
 4835	Saelania glaucescens (Hedw.) Broth.	1	1
 4852	Encalypta vulgaris Hedw.	0	1
-4859	Acaulon muticum (Hedw.) MÃ¼ll.Hal.	1	1
+4859	Acaulon muticum (Hedw.) Müll.Hal.	1	1
 4860	Acaulon mediterraneum Limpr.	1	0
-4862	Acaulon triquetrum (Spruce) MÃ¼ll.Hal.	1	1
+4862	Acaulon triquetrum (Spruce) Müll.Hal.	1	1
 4865	Aloina ambigua (Bruch & Schimp.) Limpr.	1	0
 4879	Pseudobryum cinclidioides (Huebener) T.J.Kop.	1	1
-4881	Pohlia andalusica (HÃ¶hn.) Broth.	1	1
+4881	Pohlia andalusica (Höhn.) Broth.	1	1
 4895	Pohlia lescuriana (Sull.) Ochi	1	0
 4900	Pohlia melanodon (Brid.) A.J.Shaw	1	1
 4903	Pohlia proligera (Kindb.) Lindb. ex Broth.	1	1
 4909	Rhodobryum ontariense (Kindb.) Kindb.	1	1
 4920	Mnium marginatum (Dicks.) P.Beauv.	0	1
-4924	Mnium spinosum (Voit) SchwÃ¤gr.	0	1
+4924	Mnium spinosum (Voit) Schwägr.	0	1
 4927	Mnium thomsonii Schimp.	0	1
 4930	Cyrtomnium hymenophylloides (Huebener) T.J.Kop.	1	0
 4936	Plagiomnium elatum (Bruch & Schimp.) T.J.Kop.	0	1
@@ -110,14 +110,14 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 5125	Neckera pumila Hedw.	1	1
 5128	Neckera menziesii Drumm.	1	0
 5132	Hookeria lucens (Hedw.) Sm.	1	0
-5136	Myurella julacea (SchwÃ¤gr.) Schimp.	1	1
+5136	Myurella julacea (Schwägr.) Schimp.	1	1
 5139	Anacamptodon splachnoides (Froel. ex Brid.) Brid.	1	1
 5143	Fabronia pusilla Raddi	1	1
 5149	Habrodon perpusillus (De Not.) Lindb.	1	1
 5151	Lescuraea mutabilis (Brid.) Lindb. ex I.Hagen	1	1
 5180	Anomodon longifolius (Schleich. ex Brid.) Hartm.	1	1
 5181	Anomodon rostratus (Hedw.) Schimp.	1	1
-5182	Anomodon rugelii (MÃ¼ll.Hal.) Keissl.	1	1
+5182	Anomodon rugelii (Müll.Hal.) Keissl.	1	1
 5188	Heterocladium dimorphum (Brid.) Schimp.	0	1
 5205	Pterygoneurum ovatum (Hedw.) Dixon	1	1
 5210	Tortula atrovirens (Sm.) Lindb.	1	1
@@ -157,17 +157,17 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 5423	Thuidium delicatulum (Hedw.) Schimp.	1	0
 5425	Thuidium recognitum (Hedw.) Lindb.	1	1
 5452	Hygroamblystegium tenax (Hedw.) Jenn.	1	0
-5455	Conardia compacta (Drumm. ex MÃ¼ll.Hal.) H.Rob.	1	1
+5455	Conardia compacta (Drumm. ex Müll.Hal.) H.Rob.	1	1
 5464	Calliergon giganteum (Schimp.) Kindb.	0	1
 5491	Campylium protensum (Brid.) Kindb.	0	1
 5514	Warnstorfia fluitans (Hedw.) Loeske	1	0
-5520	Drepanocladus sendtneri (Schimp. ex H.MÃ¼ll.) Warnst.	1	1
+5520	Drepanocladus sendtneri (Schimp. ex H.Müll.) Warnst.	1	1
 5525	Grimmia anomala Hampe ex Schimp.	1	1
 5530	Grimmia crinita Brid.	1	1
 5531	Grimmia decipiens (Schultz) Lindb.	1	0
 5533	Grimmia donniana Sm.	1	1
 5534	Grimmia elatior Bruch ex Bals.-Criv. & De Not.	1	1
-5540	Grimmia incurva SchwÃ¤gr.	1	1
+5540	Grimmia incurva Schwägr.	1	1
 5546	Grimmia muehlenbeckii Schimp.	1	1
 5547	Grimmia orbicularis Bruch ex Wilson	0	1
 5552	Grimmia plagiopodia Hedw.	1	1
@@ -179,12 +179,12 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 5613	Brachydontium trichodes (F.Weber) Milde	1	1
 5615	Seligeria acutifolia Lindb.	1	0
 5617	Seligeria calcarea (Hedw.) Bruch & Schimp.	1	0
-5620	Seligeria donniana (Sm.) MÃ¼ll.Hal.	1	1
+5620	Seligeria donniana (Sm.) Müll.Hal.	1	1
 5621	Seligeria pusilla (Hedw.) Bruch & Schimp.	0	1
 5625	Seligeria recurvata (Hedw.) Bruch & Schimp.	1	1
 5626	Seligeria trifaria (Brid.) Lindb.	1	0
 5639	Entosthodon attenuatus (Dicks.) Bryhn	1	1
-5642	Entosthodon fascicularis (Hedw.) MÃ¼ll.Hal.	1	1
+5642	Entosthodon fascicularis (Hedw.) Müll.Hal.	1	1
 5643	Entosthodon obtusus (Hedw.) Lindb.	1	1
 5658	Physcomitrium eurystomum Sendtn.	1	0
 5660	Physcomitrium sphaericum (C.F.Ludw. ex Schkuhr) Brid.	1	0
@@ -200,7 +200,7 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 5705	Anomobryum julaceum (Schrad. ex G.Gaertn., B.Mey. & Scherb.) Schimp.	1	0
 5706	Anomobryum concinnatum (Spruce) Lindb.	1	1
 5726	Bryum canariense Brid.	1	1
-5742	Bryum funckii SchwÃ¤gr.	1	1
+5742	Bryum funckii Schwägr.	1	1
 5744	Bryum gemmiparum De Not.	1	1
 5745	Bryum gemmilucens R.Wilczek & Demaret	1	1
 5749	Bryum klinggraeffii Schimp.	1	1
@@ -308,8 +308,8 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 6502	Saccogyna viticulosa (L.) Dumort.	1	1
 6508	Diplophyllum taxifolium (Wahlenb.) Dumort.	1	1
 6510	Douinia ovata (Dicks.) H.Buch	1	1
-6513	Scapania aequiloba (SchwÃ¤gr.) Dumort.	0	1
-6514	Scapania apiculata Spruce	1
+6513	Scapania aequiloba (Schwägr.) Dumort.	0	1
+6514	Scapania apiculata Spruce	1	0
 6515	Scapania calcicola (Arnell & J.Perss.) Ingham	1	1
 6517	Scapania aspera M.Bernet & Bernet	0	1
 6518	Scapania compacta (Roth) Dumort.	1	1
@@ -321,7 +321,7 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 6537	Scapania uliginosa (Sw. ex Lindenb.) Dumort.	1	1
 6538	Scapania paludosa (Müll.Frib.) Müll.Frib.	1	1
 6539	Scapania umbrosa (Schrad.) Dumort.	1	1
-6543	Scapania verrucosa Heeg	1
+6543	Scapania verrucosa Heeg	1	0
 6550	Cephaloziella baumgartneri Schiffn.	1	1
 6558	Cephaloziella hampeana (Nees) Schiffn.	1	1
 6559	Cephaloziella integerrima (Lindb.) Warnst.	1	1
@@ -385,12 +385,12 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 6830	Andreaea frigida Huebener	1	1
 6833	Andreaea rothii F.Weber & D.Mohr	1	1
 7990	Anthoceros punctatus L.	1	1
-159445	Hamatocaulis vernicosus (Mitt.) HedenÃ¤s	1	1
+159445	Hamatocaulis vernicosus (Mitt.) Hedenäs	1	1
 433975	Polytrichastrum alpinum (Hedw.) G.L.Sm.	0	1
 433984	Polytrichum uliginosum (Wallr.) Schriebl	1	0
 433994	Encalypta longicolla Bruch	1	0
 433999	Entosthodon muhlenbergii (Turner) Fife	1	1
-434000	Entosthodon pulchellus (H.Philib.) BruguÃ©s	1	1
+434000	Entosthodon pulchellus (H.Philib.) Brugués	1	1
 434012	Grimmia capillata De Not.	1	0
 434014	Grimmia dissimulata E.Maier	1	1
 434017	Grimmia longirostris Hook.	1	1
@@ -421,14 +421,14 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 434377	Campyliadelphus chrysophyllus (Brid.) R.S.Chopra	0	1
 434378	Campyliadelphus elodes (Lindb.) Kanda	1	0
 434387	Hygroamblystegium varium (Hedw.) Mönk.	1	0
-434441	Oxyrrhynchium schleicheri (R.Hedw.) RÃ¶ll	1	1
+434441	Oxyrrhynchium schleicheri (R.Hedw.) Röll	1	1
 434445	Sciuro-hypnum flotowianum (Sendtn.) Ignatov & Huttunen	1	1
 434446	Sciuro-hypnum glaciale (Schimp.) Ignatov & Huttunen	1	0
-434449	Sciuro-hypnum ornellanum (Molendo) Ignatov & Huttunen	1
+434449	Sciuro-hypnum ornellanum (Molendo) Ignatov & Huttunen	1	0
 434450	Sciuro-hypnum plumosum (Hedw.) Ignatov & Huttunen	1	0
 434453	Sciuro-hypnum starkei (Brid.) Ignatov & Huttunen	1	1
 434458	Brachythecium tommasinii (Sendtn. ex Boulay) Ignatov & Huttunen	0	1
-434468	Calliergonella lindbergii (Mitt.) HedenÃ¤s	1	1
+434468	Calliergonella lindbergii (Mitt.) Hedenäs	1	1
 434473	Hypnum procerrimum Molendo	1	0
 434474	Hypnum sauteri Schimp.	1	0
 434483	Isopterygiopsis pulchella (Hedw.) Z.Iwats.	1	1
@@ -445,7 +445,7 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 436153	Lescuraea saviana (De Not.) E.Lawton	1	1
 436220	Campylidium calcareum (Crundw. & Nyholm) Ochyra	0	1
 436308	Dicranum undulatum Schrad. ex Brid.	1	0
-436534	Oxymitra incrassata (Brot.) SÃ©rgio & Sim-Sim	1	1
+436534	Oxymitra incrassata (Brot.) Sérgio & Sim-Sim	1	1
 436548	Aneura maxima (Schiffn.) Steph.	1	0
 436599	Plagiochila bifaria (Sw.) Lindenb.	1	1
 436631	Cephaloziella spinigera (Lindb.) Warnst.	1	1
@@ -490,8 +490,8 @@ cd_nom	taxa_name	level_1_alp	level_1_mc
 786482	Schistochilopsis opacifolia (Culm. ex Meyl.) Konstant.	1	1
 786486	Neoorthocaulis attenuatus (Mart.) L.Söderstr., De Roo & Hedd.	1	1
 786493	Streblotrichum commutatum (Jur.) Hilp.	1	0
-786509	Tortula muralis subsp. obtusifolia (SchwÃ¤gr.) Culm.	1	1
-786514	Jungermannia exsertifolia subsp. cordifolia (Dum.) VÃ¡na	1	1
+786509	Tortula muralis subsp. obtusifolia (Schwägr.) Culm.	1	1
+786514	Jungermannia exsertifolia subsp. cordifolia (Dum.) Váňna	1	1
 786520	Fissidens bryoides var. gymnandrus (Buse) R.Ruthe	1	0
 791744	Hydrogonium amplexifolium (Mitt.) P.C.Chen	1	0
-809163	Arvernella microclada Hugonnot & HedenÃ¤s, 2015	1	1
+809163	Arvernella microclada Hugonnot & Hedenäs, 2015	1	1
