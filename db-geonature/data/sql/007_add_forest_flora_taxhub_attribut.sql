@@ -200,6 +200,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
         WHERE "group" = 'Tracheophyta'
             AND level_1_mc = TRUE
     )
+ON CONFLICT (id_attribut, cd_ref) DO UPDATE
 SET valeur_attribut = CONCAT_WS(
     '&',
     taxonomie.cor_taxon_attribut.valeur_attribut,
@@ -225,6 +226,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
         WHERE "group" = 'Tracheophyta'
             AND level_2_mc = TRUE
     )
+ON CONFLICT (id_attribut, cd_ref) DO UPDATE
 SET valeur_attribut = CONCAT_WS(
     '&',
     taxonomie.cor_taxon_attribut.valeur_attribut,
