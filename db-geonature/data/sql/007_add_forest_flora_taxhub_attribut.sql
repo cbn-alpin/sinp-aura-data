@@ -201,7 +201,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
             AND level_1_mc = TRUE
     )
 SET valeur_attribut = CONCAT_WS(
-    ',',
+    '&',
     taxonomie.cor_taxon_attribut.valeur_attribut,
     EXCLUDED.valeur_attribut
 ) ;
@@ -226,7 +226,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
             AND level_2_mc = TRUE
     )
 SET valeur_attribut = CONCAT_WS(
-    ',',
+    '&',
     taxonomie.cor_taxon_attribut.valeur_attribut,
     EXCLUDED.valeur_attribut
 ) ;
@@ -272,7 +272,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     )
 ON CONFLICT (id_attribut, cd_ref) DO UPDATE
 SET valeur_attribut = CONCAT_WS(
-    ',',
+    '&',
     taxonomie.cor_taxon_attribut.valeur_attribut,
     EXCLUDED.valeur_attribut
 ) ;
