@@ -39,22 +39,24 @@ DROP TABLE IF EXISTS gn_imports.piority_forest_flora ;
 
 CREATE TABLE gn_imports.piority_forest_flora AS
     SELECT
-        NULL::SERIAL AS gid,
-        NULL::INT(4) AS cd_nom,
+        NULL::INT AS gid,
+        NULL::INT AS cd_nom,
         NULL::VARCHAR(250) AS taxa_name,
         NULL::VARCHAR(50) AS group,
-        NULL::BOOLEAN AS lelve_1_alp,
-        NULL::BOOLEAN AS lelve_1_mc,
-        NULL::BOOLEAN AS lelve_2_alp,
-        NULL::BOOLEAN AS lelve_2_mc
+        NULL::BOOLEAN AS level_1_alp,
+        NULL::BOOLEAN AS level_1_mc,
+        NULL::BOOLEAN AS level_2_alp,
+        NULL::BOOLEAN AS level_2_mc
 WITH NO DATA ;
 
+CREATE SEQUENCE gn_imports.priority_forest_flora_seq AS integer START 1 OWNED BY gn_imports.piority_forest_flora.gid;
+ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN gid SET DEFAULT nextval('gn_imports.priority_forest_flora_seq');
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Copy Tracheophyta CVS file to temporary import table'
-ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN group SET DEFAULT 'Tracheophyta';
+ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN "group" SET DEFAULT 'Tracheophyta';
 
-\COPY gn_imports.piority_forest_flora (
+COPY gn_imports.piority_forest_flora (
     cd_nom,
     taxa_name,
     level_1_alp,
@@ -68,9 +70,9 @@ WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Copy Bryophyta CVS file to temporary import table'
-ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN group SET DEFAULT 'Bryophyta';
+ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN "group" SET DEFAULT 'Bryophyta';
 
-\COPY gn_imports.piority_forest_flora (
+COPY gn_imports.piority_forest_flora (
     cd_nom,
     taxa_name,
     level_1_alp,
@@ -79,7 +81,7 @@ ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN group SET DEFAULT 'Bryo
 FROM '${csvDirectory}/priority_forest_flora_bryophyta.csv'
 WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
 
-ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN group DROP DEFAULT;
+ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN "group" DROP DEFAULT;
 
 
 \echo '----------------------------------------------------------------------------'
@@ -155,7 +157,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     WHERE t.cd_nom IN (
         SELECT cd_nom
         FROM gn_imports.piority_forest_flora
-        WHERE group = 'Tracheophyta'
+        WHERE "group" = 'Tracheophyta'
             AND level_1_alp = TRUE
     ) ;
 
@@ -175,7 +177,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     WHERE t.cd_nom IN (
         SELECT cd_nom
         FROM gn_imports.piority_forest_flora
-        WHERE group = 'Tracheophyta'
+        WHERE "group" = 'Tracheophyta'
             AND level_2_alp = TRUE
     ) ;
 
@@ -195,7 +197,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     WHERE t.cd_nom IN (
         SELECT cd_nom
         FROM gn_imports.piority_forest_flora
-        WHERE group = 'Tracheophyta'
+        WHERE "group" = 'Tracheophyta'
             AND level_1_mc = TRUE
     ) ;
 
@@ -215,7 +217,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     WHERE t.cd_nom IN (
         SELECT cd_nom
         FROM gn_imports.piority_forest_flora
-        WHERE group = 'Tracheophyta'
+        WHERE "group" = 'Tracheophyta'
             AND level_2_mc = TRUE
     ) ;
 
@@ -235,7 +237,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     WHERE t.cd_nom IN (
         SELECT cd_nom
         FROM gn_imports.piority_forest_flora
-        WHERE group = 'Bryophyta'
+        WHERE "group" = 'Bryophyta'
             AND level_1_alp = TRUE
     ) ;
 
@@ -255,7 +257,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
     WHERE t.cd_nom IN (
         SELECT cd_nom
         FROM gn_imports.piority_forest_flora
-        WHERE group = 'Bryophyta'
+        WHERE "group" = 'Bryophyta'
             AND level_1_mc = TRUE
     ) ;
 

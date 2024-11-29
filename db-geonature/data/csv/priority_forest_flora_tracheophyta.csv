@@ -1,6 +1,6 @@
 cd_nom	taxa_name	level_1_alp	level_1_mc	level_2_alp	level_2_mc
 96454	Epipactis microphylla (Ehrh.) Sw., 1800	1	1	0	0
-92651	Cotoneaster delphinensis Ch├ótenier, 1923	1	0	0	0
+92651	Cotoneaster delphinensis Chatenier, 1923	1	0	0	0
 123560	Silene nemoralis Waldst. & Kit., 1812	1	1	0	0
 138535	Paeonia officinalis subsp. huthii Soldano, 1993	1	0	0	0
 521629	Epipactis fageticola (C.E.Hermos.) Devillers-Terschuren & Devillers, 1999	1	1	0	0
@@ -48,7 +48,7 @@ cd_nom	taxa_name	level_1_alp	level_1_mc	level_2_alp	level_2_mc
 129481	Vincetoxicum nigrum (L.) Moench, 1802	1	0	0	0
 100614	Gymnadenia odoratissima (L.) Rich., 1817	1	1	0	1
 99185	Gagea lutea (L.) Ker Gawl., 1809	1	1	0	0
-99193	Gagea pomeranica R├╝the, 1893	1	0	0	0
+99193	Gagea pomeranica Rüthe, 1893	1	0	0	0
 810955	Cytisus ardoinoi subsp. sauzeanus (Bumat & Briq.) Auvray	1	0	0	0
 94041	Cypripedium calceolus L., 1753	1	0	0	0
 96499	Epipogium aphyllum Sw., 1814	1	1	0	0
@@ -79,9 +79,9 @@ cd_nom	taxa_name	level_1_alp	level_1_mc	level_2_alp	level_2_mc
 106260	Linnaea borealis L., 1753	1	0	0	0
 93929	Cyperus flavescens L., 1753	1	1	0	0
 102870	Hippuris vulgaris L., 1753	1	1	0	0
-86186	Botrychium matricariifolium (A.Braun ex D├Âll) W.D.J.Koch, 1846	1	1	0	0
+86186	Botrychium matricariifolium (A.Braun ex DáÂll) W.D.J.Koch, 1846	1	1	0	0
 106993	Lycopodiella inundata (L.) Holub, 1964	1	1	0	0
-96469	Epipactis placentina Bongiorni & Gr├╝nanger, 1993	1	0	0	0
+96469	Epipactis placentina Bongiorni & Grünanger, 1993	1	0	0	0
 141033	Seseli annuum subsp. annuum L., 1753	1	0	0	0
 138817	Pinguicula grandiflora subsp. rosea (Mutel) Casper, 1962	1	0	0	0
 100702	Hackelia deflexa (Wahlenb.) Opiz, 1838	1	0	0	0
@@ -137,344 +137,344 @@ cd_nom	taxa_name	level_1_alp	level_1_mc	level_2_alp	level_2_mc
 82652	Anemone pulsatilla L., 1753	1	0	0	0
 111815	Osmunda regalis L., 1753	1	1	0	1
 88669	Carex melanostachya M.Bieb. ex Willd., 1805	1	1	0	0
-151823	Silene nutans var. brachypoda (Rouy) P.Fourn., 1936		1	0	0
-106545	Loncomelos narbonense (L.) Raf., 1840		1	0	0
-103056	Hyacinthoides italica (L.) Rothm., 1944		1	0	0
-612465	Epipactis leptochila subsp. provincialis (Aubenas & Robatsch) J.-M.Tison, 2010		1	1	0
-91708	Cistus pouzolzii Delile, 1840		1	0	0
-138844	Pinus nigra subsp. salzmannii (Dunal) Franco, 1943		1	0	0
-89928	Cephalanthera rubra (L.) Rich., 1817		1	0	1
-96432	Epipactis atrorubens (Hoffm.) Besser, 1809		1	0	1
-106026	Limodorum abortivum (L.) Sw., 1799		1	1	1
-82783	Anogramma leptophylla (L.) Link, 1841		1	1	1
-102845	Hippocrepis emerus (L.) Lassen, 1989		1	0	0
-84487	Asplenium foreziense Legrand, 1885		1	1	0
-718332	Clinopodium nepeta subsp. nepeta (L.) Kuntze, 1891		1	0	0
-109838	Odontites luteus (L.) Clairv., 1811		1	0	0
-99994	Gentianopsis ciliata (L.) Ma, 1951		1	0	1
-82909	Anthericum ramosum L., 1753		1	0	1
-105989	Lilium martagon L., 1753		1	0	0
-92497	Cornus mas L., 1753		1	0	1
-122810	Serapias lingua L., 1753		1	1	1
-128510	Vandenboschia speciosa (Willd.) Kunkel, 1966		1	0	0
-610593	Murbeckiella zanonii (Ball) Rothm., 1939		1	0	0
-87961	Cardamine pentaphyllos (L.) Crantz, 1769		1	0	0
-121995	Scrophularia alpestris J.Gay ex Benth., 1846		1	0	0
-105280	Lathyrus vernus (L.) Bernh., 1800		1	1	1
-92421	Corallorhiza trifida Ch├â┬ótel., 1760		1	1	1
-112293	Papaver cambricum L., 1753		1	0	0
-87666	Campanula latifolia L., 1753		1	1	0
-91715	Cistus salviifolius L., 1753		1	1	1
-95589	Dryopteris remota (A.Braun ex D├â┬Âll) Druce, 1908		1	0	0
-610859	Paragymnopteris marantae (L.) K.H.Shing, 1994		1	1	1
-109001	Myosotis balbisiana Jord., 1852		1	0	1
-117528	Rhamnus alpina L., 1753		1	1	1
-87716	Campanula rhomboidalis L., 1753		1	0	0
-85152	Atropa belladonna L., 1753		1	0	1
-94259	Dactylorhiza incarnata (L.) So├â┬│, 1962		1	0	1
-87085	Bupleurum praealtum L., 1756		1	1	1
-88691	Carex montana L., 1753		1	1	1
-99754	Genista germanica L., 1753		1	0	1
-96476	Epipactis rhodanensis G├â┬®vaudan & Robatsch, 1994		1	1	1
-99881	Gentiana cruciata L., 1753		1	1	1
-107003	Lycopodium clavatum L., 1753		1	1	0
-107024	Lycopodium tristachyum Pursh, 1814		1	0	0
-719047	Lycopodium oellgaardii (Stoor, Boudrie, J├â┬®r├â┬┤me, K.Horn & Bennert) B.Bock, 2012		1	0	0
-120091	Salix lapponum L., 1753		1	0	0
-91684	Cistus laurifolius L., 1753		1	0	0
-95462	Drymocallis rupestris (L.) Soj├â┬ík, 1989		1	0	0
-87478	Callitriche palustris L., 1753		1	0	1
-105441	Lemna trisulca L., 1753		1	1	1
-129307	Vicia serratifolia Jacq., 1778		1	1	1
-521628	Epipactis exilis P.Delforge, 2004		1	0	0
-104148	Juncus capitatus Weigel, 1772		1	0	0
-88732	Carex oedipostyla Duval-Jouve, 1870		1	0	0
-131830	Asplenium obovatum subsp. billotii (F.W.Schultz) Kergu├â┬®len, 1998		1	0	0
-138865	Pisum sativum subsp. biflorum (Raf.) Soldano, 1992		1	0	0
-88467	Carex depressa Link, 1800		1	0	0
-85798	Berula erecta (Huds.) Coville, 1893		1	1	1
-114539	Polygala calcarea F.W.Schultz, 1837		1	1	1
-129260	Vicia onobrychioides L., 1753		1	1	1
-113682	Pinus mugo Turra, 1764		1	0	0
-85897	Betula nana L., 1753		1	0	0
-89920	Cephalanthera damasonium (Mill.) Druce, 1906		1	0	0
-86894	Buglossoides purpurocaerulea (L.) I.M.Johnst., 1954		1	0	1
-108686	Moehringia muscosa L., 1753		1	0	0
-107086	Lysimachia thyrsiflora L., 1753		1	0	0
-125226	Streptopus amplexifolius (L.) DC., 1805		1	1	0
-124329	Sorbus mougeotii Soy.-Will. & Godr., 1858		1	0	1
-106550	Lonicera alpigena L., 1753		1	0	1
-105841	Leucojum vernum L., 1753		1	1	1
-133884	Dianthus superbus subsp. autumnalis Oberd., 1979		1	0	0
-106685	Lotus maritimus L., 1753		1	0	1
-88582	Carex humilis Leyss., 1758		1	0	1
-134096	Empetrum nigrum subsp. nigrum L., 1753		1	0	0
-91422	Cirsium tuberosum (L.) All., 1785		1	1	1
-122998	Seseli annuum L., 1753		1	1	0
-103648	Inula salicina L., 1753		1	0	1
-91132	Cicendia filiformis (L.) Delarbre, 1800		1	0	0
-96691	Erica scoparia L., 1753		1	1	1
-106435	Lobelia urens L., 1753		1	0	0
-112413	Parietaria officinalis L., 1753		1	0	1
-116870	Radiola linoides Roth, 1788		1	0	0
-112042	Paeonia officinalis L., 1753		1	0	0
-129137	Vicia cassubica L., 1753		1	0	0
-138536	Paeonia officinalis subsp. microcarpa Nyman, 1878		1	0	0
-123679	Silene viridiflora L., 1762		1	0	0
-88734	Carex olbiensis Jord., 1846		1	0	0
-126248	Thapsia villosa L., 1753		1	0	0
-612597	Seseli longifolium subsp. intermedium Reduron, 2008		1	0	0
-91727	Cistus umbellatus L., 1753		1	0	0
-155051	Spiraea hypericifolia subsp. obovata (Waldst. & Kit. ex Willd.) H.Huber, 1964		1	0	0
-88774	Carex pilosa Scop., 1772		1	1	1
-142451	Vitis vinifera subsp. sylvestris (C.C.Gmel.) Hegi, 1925		1	0	0
-115233	Potamogeton berchtoldii Fieber, 1838		1	1	0
-102797	Himantoglossum hircinum (L.) Spreng., 1826		1	1	0
-86124	Blysmus compressus (L.) Panz. ex Link, 1827		1	0	1
-88608	Carex laevigata Sm., 1800		1	0	0
-87620	Campanula cervicaria L., 1753		1	0	0
-96465	Epipactis palustris (L.) Crantz, 1769		1	1	1
-98910	Fraxinus angustifolia Vahl, 1804		1	1	0
-86643	Bromus japonicus Thunb., 1784		1	1	0
-117712	Rhus coriaria L., 1753		1	0	0
-121156	Saxifraga prostii Sternb., 1831		1	0	0
-109503	Neottia cordata (L.) Rich., 1817		1	1	0
-84540	Asplenium viride Huds., 1762		1	0	0
-85602	Bartsia alpina L., 1753		1	0	0
-102674	Hieracium umbrosum Jord., 1848		1	0	0
-82943	Anthriscus nitida (Wahlenb.) Hazsl., 1864		1	0	0
-92054	Cochlearia pyrenaica DC., 1821		1	0	0
-129033	Veronica urticifolia Jacq., 1773		1	0	1
-126925	Tozzia alpina L., 1753		1	1	0
-87068	Bupleurum longifolium L., 1753		1	1	0
-128171	Ulmus laevis Pall., 1784		1	0	1
-83528	Arctostaphylos uva-ursi (L.) Spreng., 1825		1	1	0
-143754	Arctostaphylos uva-ursi var. crassifolius Braun-Blanq., 1957		1	0	0
-124314	Sorbus chamaemespilus (L.) Crantz, 1763		1	1	1
-106839	Luzula luzulina (Vill.) Racib., 1888		1	0	0
-107000	Lycopodium annotinum L., 1753		1	1	1
-94257	Dactylorhiza fuchsii (Druce) So├â┬│, 1962		1	0	1
-97454	Euphorbia angulata Jacq., 1789		1	0	0
-160459	Melampyrum catalaunicum Freyn, 1884		1	0	1
-91328	Cirsium erisithales (Jacq.) Scop., 1769		1	1	0
-103034	Huperzia selago (L.) Bernh. ex Schrank & Mart., 1829		1	1	0
-130065	Wahlenbergia hederacea (L.) Rchb., 1827		1	0	0
-103651	Inula spiraeifolia L., 1759		1	1	1
-107662	Medicago monspeliaca (L.) Trautv., 1841		1	1	1
-103019	Hornungia petraea (L.) Rchb., 1838		1	0	1
-83934	Artemisia alba Turra, 1764		1	1	1
-108755	Moneses uniflora (L.) A.Gray, 1848		1	1	1
-89316	Catabrosa aquatica (L.) P.Beauv., 1812		1	0	1
-96456	Epipactis muelleri Godfery, 1921		1	1	1
-132839	Carlina acanthifolia subsp. acanthifolia All., 1773		1	1	0
-105908	Ligularia sibirica (L.) Cass., 1823		1	0	0
-116547	Pyrola rotundifolia L., 1753		1	1	0
-111561	Orobanche hederae Vaucher ex Duby, 1828		1	1	1
-94942	Digitalis grandiflora Mill., 1768		1	0	0
-115061	Polystichum lonchitis (L.) Roth, 1799		1	1	1
-96852	Eriophorum latifolium Hoppe, 1800		1	0	0
-88178	Carduus personata (L.) Jacq., 1776		1	0	0
-91256	Circaea alpina L., 1753		1	1	0
-119959	Salix bicolor Willd., 1796		1	0	0
-89145	Carlina acanthifolia All., 1773		1	0	0
-100487	Gnaphalium norvegicum Gunnerus, 1772		1	1	0
-134966	Genista cinerea subsp. cinerea (Vill.) DC., 1805		0	1	0
-127463	Trifolium rubens L., 1753		0	1	0
-127412	Trifolium ochroleucon Huds., 1762		0	1	0
-89663	Centaurea pectinata L., 1763		0	1	0
-128555	Verbascum chaixii Vill., 1779		0	1	0
-110945	Orchis pallens L., 1771		0	1	1
-110801	Orchis anthropophora (L.) All., 1785		0	1	0
-110237	Ononis striata Gouan, 1773		0	1	0
-104525	Knautia collina Jord., 1848		0	1	0
-131456	Anthriscus sylvestris subsp. alpina (Vill.) Gremli, 1874		0	1	0
-125460	Tanacetum corymbosum (L.) Sch.Bip., 1844		0	1	1
-162131	Himantoglossum robertianum (Loisel.) P.Delforge, 1999		0	1	0
-129623	Viola mirabilis L., 1753		0	1	0
-91630	Cistus albidus L., 1753		0	1	1
-717747	Cyanus semidecurrens (Jord.) Holub, 1973		0	1	0
-96659	Erica arborea L., 1753		0	1	0
-114468	Podospermum laciniatum (L.) DC., 1805		0	1	0
-84286	Asparagus tenuifolius Lam., 1783		0	1	0
-87712	Campanula rapunculus L., 1753		0	1	0
-138616	Paronychia kapela subsp. serpyllifolia (Chaix) Graebn., 1919		0	1	0
-104456	Katapsuxis silaifolia (Jacq.) Raf., 1840		0	1	1
-87925	Cardamine heptaphylla (Vill.) O.E.Schulz, 1903		0	1	0
-130869	Aethionema saxatile subsp. saxatile (L.) R.Br., 1812		0	1	0
-104036	Jasminum fruticans L., 1753		0	1	0
-86288	Brachypodium phoenicoides (L.) Roem. & Schult., 1817		0	1	0
-87678	Campanula medium L., 1753		0	1	0
-83285	Arabis auriculata Lam., 1783		0	1	0
-84485	Asplenium fontanum (L.) Bernh., 1799		0	1	0
-118173	Rosa ferruginea Vill., 1779		0	1	0
-141406	Stachys germanica subsp. germanica L., 1753		0	1	0
-92467	Coriaria myrtifolia L., 1753		0	1	1
-98868	Fragaria viridis Weston, 1771		0	1	0
-96449	Epipactis leptochila (Godfery) Godfery, 1921		0	1	0
-112783	Petasites hybridus (L.) G.Gaertn., B.Mey. & Scherb., 1801		0	1	0
-94774	Dianthus sylvestris Wulfen subsp. longicaulis (Ten.) Greuter & Burdet		0	1	0
-113725	Piptatherum paradoxum (L.) P.Beauv., 1812		0	1	0
-111840	Osyris alba L., 1753		0	1	0
-99032	Fumana thymifolia (L.) Spach ex Webb, 1838		0	1	1
-83359	Arabis nova Vill., 1779		0	1	0
-101455	Hesperis laciniata All., 1785		0	1	0
-118498	Rosa sempervirens L., 1753		0	1	0
-105230	Lathyrus niger (L.) Bernh., 1800		0	1	0
-92631	Cotinus coggygria Scop., 1771		0	1	0
-100551	Goodyera repens (L.) R.Br., 1813		0	1	0
-609983	Euonymus latifolius (L.) Mill., 1768		0	1	0
-92715	Cotoneaster x intermedius (Lecoq & Lamotte) H.J.Coste, 1923		0	1	0
-113748	Pistacia terebinthus L., 1753		0	1	0
-105490	Leontodon crispus Vill., 1779		0	1	1
-97591	Euphorbia nicaeensis All., 1785		0	1	0
-612633	Galatella sedifolia subsp. sedifolia (L.) Greuter, 2003		0	1	0
-123577	Silene otites (L.) Wibel, 1799		0	1	1
-114012	Platanthera chlorantha (Custer) Rchb., 1828		0	1	0
-110129	Onobrychis saxatilis (L.) Lam., 1779		0	1	0
-136983	Juniperus phoenicea subsp. phoenicea L., 1753		0	1	0
-114942	Polypodium cambricum L., 1753		0	1	1
-81541	Allium ursinum L., 1753		0	1	0
-84513	Asplenium onopteris L., 1753		0	1	0
-114243	Poa hybrida Gaudin, 1808		0	1	0
-106919	Lychnis flos-jovis (L.) Desr., 1792		0	1	0
-130802	Aconitum variegatum subsp. paniculatum (Arcang.) Negodi, 1944		0	1	0
-83234	Aposeris foetida (L.) Less., 1832		0	1	0
-608824	Arabis serpillifolia Vill., 1779		0	1	0
-138095	Noccaea montana subsp. montana (L.) F.K.Mey., 1973		0	1	0
-788869	Ervilia sylvatica (L.) Schur, 1853		0	1	0
-96471	Epipactis purpurata Sm., 1828		0	1	1
-96191	Epilobium lanceolatum Sebast. & Mauri, 1818		0	1	0
-102925	Homogyne alpina (L.) Cass., 1821		0	1	0
-120085	Salix laggeri Wimm., 1854		0	1	0
-115076	Polystichum setiferum (Forssk.) T.Moore ex Woyn., 1913		0	1	0
-100636	Gymnocarpium dryopteris (L.) Newman, 1851		0	1	0
-129529	Viola canina L., 1753		0	1	0
-134095	Empetrum nigrum subsp. hermaphroditum (Hagerup) B├Âcher, 1952		0	1	0
-99233	Galanthus nivalis L., 1753		0	1	0
-96127	Epilobium alpestre (Jacq.) Krock., 1787		0	1	0
-89936	Cephalaria alpina (L.) Schrad. ex Roem. & Schult., 1818		0	1	0
-103553	Impatiens noli-tangere L., 1753		0	1	0
-129263	Vicia orobus DC., 1815		0	1	1
-93708	Cyclamen purpurascens Mill., 1768		0	1	0
-81610	Alopecurus aequalis Sobol., 1799		0	1	0
-99418	Galium elongatum C.Presl, 1822		0	1	1
-99986	Gentianella germanica (Willd.) B├Ârner, 1912		0	1	0
-129159	Vicia dumetorum L., 1753		0	1	0
-95154	Dipsacus pilosus L., 1753		0	1	0
-80037	Aconitum napellus L., 1753		0	1	0
-106555	Lonicera caerulea L., 1753		0	1	0
-106634	Lotus angustissimus L., 1753		0	1	0
-107790	Melampyrum cristatum L., 1753		0	1	1
-97277	Erysimum virgatum Roth, 1797		0	1	0
-91118	Chrysosplenium alternifolium L., 1753		0	1	0
-106761	Lunaria rediviva L., 1753		0	1	0
-122140	Sedum cepaea L., 1753		0	1	0
-108587	Minuartia capillacea (All.) Graebn., 1918		0	1	0
-115270	Potamogeton lucens L., 1753		0	1	1
-95239	Doronicum pardalianches L., 1753		0	1	0
-142070	Valeriana officinalis subsp. sambucifolia (J.C.Mikan ex Pohl) Celak., 1871		0	1	1
-105400	Leersia oryzoides (L.) Sw., 1788		0	1	0
-88833	Carex riparia Curtis, 1783		0	1	0
-133928	Dorycnium pentaphyllum subsp. herbaceum (Vill.) Bonnier & Layens, 1894		0	1	0
-110190	Ononis fruticosa L., 1753		0	1	0
-109847	Odontites viscosus (L.) Clairv., 1811		0	1	0
-109291	Narcissus poeticus L., 1753		0	1	0
-80007	Aconitum anthora L., 1753		0	1	0
-106374	Lithodora fruticosa (L.) Griseb., 1844		0	1	1
-113148	Phillyrea latifolia L., 1753		0	1	0
-124740	Stachys alpina L., 1753		0	1	0
-132509	Campanula rotundifolia subsp. macrorhiza (J.Gay ex A.DC.) Bonnier & Layens, 1894		0	1	0
-89881	Centranthus calcitrapae (L.) Dufr., 1811		0	1	1
-102650	Hieracium tomentosum L., 1755		0	1	0
-136812	Iberis intermedia subsp. violletii (Soy.-Will. ex Godr.) Rouy & Foucaud, 1895		0	1	0
-717051	Achnatherum bromoides (L.) P.Beauv., 1812		0	1	1
-88476	Carex distachya Desf., 1799		0	1	0
-88482	Carex divisa Huds., 1762		0	1	1
-115237	Potamogeton coloratus Hornem., 1813		0	1	0
-101221	Helosciadium nodiflorum (L.) W.D.J.Koch, 1824		0	1	0
-95337	Draba muralis L., 1753		0	1	0
-112778	Petasites albus (L.) Gaertn., 1791		0	1	0
-613669	Epipactis leptochila var. neglecta (K├╝mpel) G├®vaudan, 2002		0	1	0
-98830	Fragaria moschata Weston, 1771		0	1	0
-100394	Glyceria maxima (Hartm.) Holmb., 1919		0	1	1
-85745	Bellis sylvestris Cirillo, 1792		0	1	1
-161345	Rosa marginata Wallr., 1815		0	1	0
-142499	Xanthoselinum alsaticum subsp. alsaticum (L.) Schur, 1866		0	1	0
-126628	Tilia cordata Mill., 1768		0	1	0
-88314	Carex acuta L., 1753		0	1	0
-94765	Dianthus hyssopifolius L., 1755		0	1	0
-91853	Clematis alpina (L.) Mill., 1768		0	1	0
-120009	Salix daphnoides Vill., 1779		0	1	0
-97325	Erythronium dens-canis L., 1753		0	1	0
-96523	Equisetum hyemale L., 1753		0	1	0
-98232	Festuca flavescens Bellardi, 1792		0	1	0
-85017	Atocion armeria (L.) Raf., 1840		0	1	0
-130792	Aconitum napellus subsp. vulgare Rouy & Foucaud, 1893		0	1	0
-103917	Isopyrum thalictroides L., 1753		0	1	0
-84230	Asarum europaeum L., 1753		0	1	0
-142020	Ulex europaeus subsp. europaeus L., 1753		0	1	0
-103308	Hypericum nummularium L., 1753		0	1	0
-80417	Agrimonia procera Wallr., 1840		0	1	0
-91398	Cirsium rivulare (Jacq.) All., 1789		0	1	0
-91120	Chrysosplenium oppositifolium L., 1753		0	1	0
-103320	Hypericum pulchrum L., 1753		0	1	0
-96545	Equisetum sylvaticum L., 1753		0	1	0
-111239	Oreopteris limbosperma (Bellardi ex All.) Holub, 1969		0	1	0
-103898	Isolepis setacea (L.) R.Br., 1810		0	1	0
-104145	Juncus bulbosus L., 1753		0	1	0
-112601	Pedicularis sylvatica L., 1753		0	1	0
-105148	Lathraea squamaria L., 1753		0	1	0
-129539	Viola collina Besser, 1816		0	1	0
-92217	Comarum palustre L., 1753		0	1	0
-96861	Eriophorum vaginatum L., 1753		0	1	0
-127333	Trifolium hirtum All., 1789		0	1	0
-105159	Lathyrus angulatus L., 1753		0	1	1
-98687	Filago lutescens Jord., 1846		0	1	1
-611926	Aconitum lycoctonum subsp. vulparia (Rchb.) Nyman, 1889		0	1	0
-125364	Symphytum tuberosum L., 1753		0	1	0
-117668	Rhodiola rosea L., 1753		0	1	0
-111250	Oreoselinum nigrum Delarbre, 1800		0	1	0
-142305	Viola canina subsp. canina L., 1753		0	1	0
-142317	Viola canina subsp. ruppii (All.) Sch├╝bl. & G.Martens, 1834		0	1	0
-94693	Dianthus armeria L., 1753		0	1	0
-95240	Doronicum plantagineum L., 1753		0	1	1
-94136	Cytisus lotoides Pourr., 1788		0	1	0
-97234	Erysimum ochroleucum (Schleich.) DC., 1805		0	1	0
-117774	Ribes rubrum L., 1753		0	1	0
-115041	Polystichum aculeatum (L.) Roth, 1799		0	1	0
-131858	Asplenium trichomanes subsp. pachyrachis (H.Christ) Lovis & Reichst., 1980		0	0	1
-111556	Orobanche gracilis Sm., 1798		0	0	1
-122837	Serapias vomeracea (Burm.f.) Briq., 1910		0	0	1
-93828	Cynoglossum creticum Mill., 1768		0	0	1
-89940	Cephalaria leucantha (L.) Schrad. ex Roem. & Schult., 1818		0	0	1
-105814	Leucanthemum subglaucum De Laramb., 1861		0	0	1
-126552	Thymus nitens Lamotte, 1881		0	0	1
-133970	Dryopteris affinis subsp. cambrensis Fraser-Jenk., 1987		0	0	1
-100584	Groenlandia densa (L.) Fourr., 1869		0	0	1
-119587	Rumex scutatus L., 1753		0	0	1
-130820	Adenocarpus complicatus subsp. complicatus (L.) J.Gay, 1836		0	0	1
-82796	Antennaria dioica (L.) Gaertn., 1791		0	0	1
-129904	Viscaria vulgaris Bernh., 1800		0	0	1
-116754	Quercus pyrenaica Willd., 1805		0	0	1
-99390	Galium boreale L., 1753		0	0	1
-87269	Calamagrostis phragmitoides Hartm., 1843		0	0	1
-93075	Crepis lampsanoides (Gouan) Tausch, 1828		0	0	1
-109861	Oenanthe aquatica (L.) Poir., 1798		0	0	1
-88916	Carex tomentosa L., 1767		0	0	1
-718706	Knautia basaltica var. basaltica Chass. & Szab├â┬│, 1934		0	0	1
-99552	Galium sylvaticum L., 1762		0	0	1
-717574	Stuckenia pectinata (L.) B├â┬Ârner, 1912		0	0	1
-109676	Noccaea montana (L.) F.K.Mey., 1973		0	0	1
-122563	Senecio cacaliaster Lam., 1779		0	0	1
-126078	Thalictrum aquilegiifolium L., 1753		0	0	1
-96695	Erica tetralix L., 1753		0	0	1
-81190	Alchemilla vetteri Buser, 1896		0	0	1
-140616	Saxifraga cuneifolia subsp. robusta D.A.Webb, 1988		0	0	1
-99378	Galium aristatum L., 1762		0	0	1
-717729	Arabidopsis cebennensis (DC.) O'Kane & Al-Shehbaz		0	0	1
-788791	Hieracium juranum Rapin, 1842		0	0	1
-96566	Equisetum x moorei Newman, 1854		0	0	1
-108477	Mibora minima (L.) Desv., 1818		0	0	1
-124771	Stachys germanica L., 1753		0	0	1
-128667	Verbascum virgatum Stokes, 1787		0	0	1
-100640	Gymnocarpium robertianum (Hoffm.) Newman, 1851		0	0	1
+151823	Silene nutans var. brachypoda (Rouy) P.Fourn., 1936	0	1	0	0
+106545	Loncomelos narbonense (L.) Raf., 1840	0	1	0	0
+103056	Hyacinthoides italica (L.) Rothm., 1944	0	1	0	0
+612465	Epipactis leptochila subsp. provincialis (Aubenas & Robatsch) J.-M.Tison, 2010	0	1	1	0
+91708	Cistus pouzolzii Delile, 1840	0	1	0	0
+138844	Pinus nigra subsp. salzmannii (Dunal) Franco, 1943	0	1	0	0
+89928	Cephalanthera rubra (L.) Rich., 1817	0	1	0	1
+96432	Epipactis atrorubens (Hoffm.) Besser, 1809	0	1	0	1
+106026	Limodorum abortivum (L.) Sw., 1799	0	1	1	1
+82783	Anogramma leptophylla (L.) Link, 1841	0	1	1	1
+102845	Hippocrepis emerus (L.) Lassen, 1989	0	1	0	0
+84487	Asplenium foreziense Legrand, 1885	0	1	1	0
+718332	Clinopodium nepeta subsp. nepeta (L.) Kuntze, 1891	0	1	0	0
+109838	Odontites luteus (L.) Clairv., 1811	0	1	0	0
+99994	Gentianopsis ciliata (L.) Ma, 1951	0	1	0	1
+82909	Anthericum ramosum L., 1753	0	1	0	1
+105989	Lilium martagon L., 1753	0	1	0	0
+92497	Cornus mas L., 1753	0	1	0	1
+122810	Serapias lingua L., 1753	0	1	1	1
+128510	Vandenboschia speciosa (Willd.) Kunkel, 1966	0	1	0	0
+610593	Murbeckiella zanonii (Ball) Rothm., 1939	0	1	0	0
+87961	Cardamine pentaphyllos (L.) Crantz, 1769	0	1	0	0
+121995	Scrophularia alpestris J.Gay ex Benth., 1846	0	1	0	0
+105280	Lathyrus vernus (L.) Bernh., 1800	0	1	1	1
+92421	Corallorhiza trifida Châtel., 1760	0	1	1	1
+112293	Papaver cambricum L., 1753	0	1	0	0
+87666	Campanula latifolia L., 1753	0	1	1	0
+91715	Cistus salviifolius L., 1753	0	1	1	1
+95589	Dryopteris remota (A.Braun ex Döll) Druce, 1908	0	1	0	0
+610859	Paragymnopteris marantae (L.) K.H.Shing, 1994	0	1	1	1
+109001	Myosotis balbisiana Jord., 1852	0	1	0	1
+117528	Rhamnus alpina L., 1753	0	1	1	1
+87716	Campanula rhomboidalis L., 1753	0	1	0	0
+85152	Atropa belladonna L., 1753	0	1	0	1
+94259	Dactylorhiza incarnata (L.) Soó, 1962	0	1	0	1
+87085	Bupleurum praealtum L., 1756	0	1	1	1
+88691	Carex montana L., 1753	0	1	1	1
+99754	Genista germanica L., 1753	0	1	0	1
+96476	Epipactis rhodanensis Gévaudan & Robatsch, 1994	0	1	1	1
+99881	Gentiana cruciata L., 1753	0	1	1	1
+107003	Lycopodium clavatum L., 1753	0	1	1	0
+107024	Lycopodium tristachyum Pursh, 1814	0	1	0	0
+719047	Lycopodium oellgaardii (Stoor, Boudrie, Jérôme, K.Horn & Bennert) B.Bock, 2012	0	1	0	0
+120091	Salix lapponum L., 1753	0	1	0	0
+91684	Cistus laurifolius L., 1753	0	1	0	0
+95462	Drymocallis rupestris (L.) Sojáâáík, 1989	0	1	0	0
+87478	Callitriche palustris L., 1753	0	1	0	1
+105441	Lemna trisulca L., 1753	0	1	1	1
+129307	Vicia serratifolia Jacq., 1778	0	1	1	1
+521628	Epipactis exilis P.Delforge, 2004	0	1	0	0
+104148	Juncus capitatus Weigel, 1772	0	1	0	0
+88732	Carex oedipostyla Duval-Jouve, 1870	0	1	0	0
+131830	Asplenium obovatum subsp. billotii (F.W.Schultz) Kerguélen, 1998	0	1	0	0
+138865	Pisum sativum subsp. biflorum (Raf.) Soldano, 1992	0	1	0	0
+88467	Carex depressa Link, 1800	0	1	0	0
+85798	Berula erecta (Huds.) Coville, 1893	0	1	1	1
+114539	Polygala calcarea F.W.Schultz, 1837	0	1	1	1
+129260	Vicia onobrychioides L., 1753	0	1	1	1
+113682	Pinus mugo Turra, 1764	0	1	0	0
+85897	Betula nana L., 1753	0	1	0	0
+89920	Cephalanthera damasonium (Mill.) Druce, 1906	0	1	0	0
+86894	Buglossoides purpurocaerulea (L.) I.M.Johnst., 1954	0	1	0	1
+108686	Moehringia muscosa L., 1753	0	1	0	0
+107086	Lysimachia thyrsiflora L., 1753	0	1	0	0
+125226	Streptopus amplexifolius (L.) DC., 1805	0	1	1	0
+124329	Sorbus mougeotii Soy.-Will. & Godr., 1858	0	1	0	1
+106550	Lonicera alpigena L., 1753	0	1	0	1
+105841	Leucojum vernum L., 1753	0	1	1	1
+133884	Dianthus superbus subsp. autumnalis Oberd., 1979	0	1	0	0
+106685	Lotus maritimus L., 1753	0	1	0	1
+88582	Carex humilis Leyss., 1758	0	1	0	1
+134096	Empetrum nigrum subsp. nigrum L., 1753	0	1	0	0
+91422	Cirsium tuberosum (L.) All., 1785	0	1	1	1
+122998	Seseli annuum L., 1753	0	1	1	0
+103648	Inula salicina L., 1753	0	1	0	1
+91132	Cicendia filiformis (L.) Delarbre, 1800	0	1	0	0
+96691	Erica scoparia L., 1753	0	1	1	1
+106435	Lobelia urens L., 1753	0	1	0	0
+112413	Parietaria officinalis L., 1753	0	1	0	1
+116870	Radiola linoides Roth, 1788	0	1	0	0
+112042	Paeonia officinalis L., 1753	0	1	0	0
+129137	Vicia cassubica L., 1753	0	1	0	0
+138536	Paeonia officinalis subsp. microcarpa Nyman, 1878	0	1	0	0
+123679	Silene viridiflora L., 1762	0	1	0	0
+88734	Carex olbiensis Jord., 1846	0	1	0	0
+126248	Thapsia villosa L., 1753	0	1	0	0
+612597	Seseli longifolium subsp. intermedium Reduron, 2008	0	1	0	0
+91727	Cistus umbellatus L., 1753	0	1	0	0
+155051	Spiraea hypericifolia subsp. obovata (Waldst. & Kit. ex Willd.) H.Huber, 1964	0	1	0	0
+88774	Carex pilosa Scop., 1772	0	1	1	1
+142451	Vitis vinifera subsp. sylvestris (C.C.Gmel.) Hegi, 1925	0	1	0	0
+115233	Potamogeton berchtoldii Fieber, 1838	0	1	1	0
+102797	Himantoglossum hircinum (L.) Spreng., 1826	0	1	1	0
+86124	Blysmus compressus (L.) Panz. ex Link, 1827	0	1	0	1
+88608	Carex laevigata Sm., 1800	0	1	0	0
+87620	Campanula cervicaria L., 1753	0	1	0	0
+96465	Epipactis palustris (L.) Crantz, 1769	0	1	1	1
+98910	Fraxinus angustifolia Vahl, 1804	0	1	1	0
+86643	Bromus japonicus Thunb., 1784	0	1	1	0
+117712	Rhus coriaria L., 1753	0	1	0	0
+121156	Saxifraga prostii Sternb., 1831	0	1	0	0
+109503	Neottia cordata (L.) Rich., 1817	0	1	1	0
+84540	Asplenium viride Huds., 1762	0	1	0	0
+85602	Bartsia alpina L., 1753	0	1	0	0
+102674	Hieracium umbrosum Jord., 1848	0	1	0	0
+82943	Anthriscus nitida (Wahlenb.) Hazsl., 1864	0	1	0	0
+92054	Cochlearia pyrenaica DC., 1821	0	1	0	0
+129033	Veronica urticifolia Jacq., 1773	0	1	0	1
+126925	Tozzia alpina L., 1753	0	1	1	0
+87068	Bupleurum longifolium L., 1753	0	1	1	0
+128171	Ulmus laevis Pall., 1784	0	1	0	1
+83528	Arctostaphylos uva-ursi (L.) Spreng., 1825	0	1	1	0
+143754	Arctostaphylos uva-ursi var. crassifolius Braun-Blanq., 1957	0	1	0	0
+124314	Sorbus chamaemespilus (L.) Crantz, 1763	0	1	1	1
+106839	Luzula luzulina (Vill.) Racib., 1888	0	1	0	0
+107000	Lycopodium annotinum L., 1753	0	1	1	1
+94257	Dactylorhiza fuchsii (Druce) Soó, 1962	0	1	0	1
+97454	Euphorbia angulata Jacq., 1789	0	1	0	0
+160459	Melampyrum catalaunicum Freyn, 1884	0	1	0	1
+91328	Cirsium erisithales (Jacq.) Scop., 1769	0	1	1	0
+103034	Huperzia selago (L.) Bernh. ex Schrank & Mart., 1829	0	1	1	0
+130065	Wahlenbergia hederacea (L.) Rchb., 1827	0	1	0	0
+103651	Inula spiraeifolia L., 1759	0	1	1	1
+107662	Medicago monspeliaca (L.) Trautv., 1841	0	1	1	1
+103019	Hornungia petraea (L.) Rchb., 1838	0	1	0	1
+83934	Artemisia alba Turra, 1764	0	1	1	1
+108755	Moneses uniflora (L.) A.Gray, 1848	0	1	1	1
+89316	Catabrosa aquatica (L.) P.Beauv., 1812	0	1	0	1
+96456	Epipactis muelleri Godfery, 1921	0	1	1	1
+132839	Carlina acanthifolia subsp. acanthifolia All., 1773	0	1	1	0
+105908	Ligularia sibirica (L.) Cass., 1823	0	1	0	0
+116547	Pyrola rotundifolia L., 1753	0	1	1	0
+111561	Orobanche hederae Vaucher ex Duby, 1828	0	1	1	1
+94942	Digitalis grandiflora Mill., 1768	0	1	0	0
+115061	Polystichum lonchitis (L.) Roth, 1799	0	1	1	1
+96852	Eriophorum latifolium Hoppe, 1800	0	1	0	0
+88178	Carduus personata (L.) Jacq., 1776	0	1	0	0
+91256	Circaea alpina L., 1753	0	1	1	0
+119959	Salix bicolor Willd., 1796	0	1	0	0
+89145	Carlina acanthifolia All., 1773	0	1	0	0
+100487	Gnaphalium norvegicum Gunnerus, 1772	0	1	1	0
+134966	Genista cinerea subsp. cinerea (Vill.) DC., 1805	0	0	1	0
+127463	Trifolium rubens L., 1753	0	0	1	0
+127412	Trifolium ochroleucon Huds., 1762	0	0	1	0
+89663	Centaurea pectinata L., 1763	0	0	1	0
+128555	Verbascum chaixii Vill., 1779	0	0	1	0
+110945	Orchis pallens L., 1771	0	0	1	1
+110801	Orchis anthropophora (L.) All., 1785	0	0	1	0
+110237	Ononis striata Gouan, 1773	0	0	1	0
+104525	Knautia collina Jord., 1848	0	0	1	0
+131456	Anthriscus sylvestris subsp. alpina (Vill.) Gremli, 1874	0	0	1	0
+125460	Tanacetum corymbosum (L.) Sch.Bip., 1844	0	0	1	1
+162131	Himantoglossum robertianum (Loisel.) P.Delforge, 1999	0	0	1	0
+129623	Viola mirabilis L., 1753	0	0	1	0
+91630	Cistus albidus L., 1753	0	0	1	1
+717747	Cyanus semidecurrens (Jord.) Holub, 1973	0	0	1	0
+96659	Erica arborea L., 1753	0	0	1	0
+114468	Podospermum laciniatum (L.) DC., 1805	0	0	1	0
+84286	Asparagus tenuifolius Lam., 1783	0	0	1	0
+87712	Campanula rapunculus L., 1753	0	0	1	0
+138616	Paronychia kapela subsp. serpyllifolia (Chaix) Graebn., 1919	0	0	1	0
+104456	Katapsuxis silaifolia (Jacq.) Raf., 1840	0	0	1	1
+87925	Cardamine heptaphylla (Vill.) O.E.Schulz, 1903	0	0	1	0
+130869	Aethionema saxatile subsp. saxatile (L.) R.Br., 1812	0	0	1	0
+104036	Jasminum fruticans L., 1753	0	0	1	0
+86288	Brachypodium phoenicoides (L.) Roem. & Schult., 1817	0	0	1	0
+87678	Campanula medium L., 1753	0	0	1	0
+83285	Arabis auriculata Lam., 1783	0	0	1	0
+84485	Asplenium fontanum (L.) Bernh., 1799	0	0	1	0
+118173	Rosa ferruginea Vill., 1779	0	0	1	0
+141406	Stachys germanica subsp. germanica L., 1753	0	0	1	0
+92467	Coriaria myrtifolia L., 1753	0	0	1	1
+98868	Fragaria viridis Weston, 1771	0	0	1	0
+96449	Epipactis leptochila (Godfery) Godfery, 1921	0	0	1	0
+112783	Petasites hybridus (L.) G.Gaertn., B.Mey. & Scherb., 1801	0	0	1	0
+94774	Dianthus sylvestris Wulfen subsp. longicaulis (Ten.) Greuter & Burdet	0	0	1	0
+113725	Piptatherum paradoxum (L.) P.Beauv., 1812	0	0	1	0
+111840	Osyris alba L., 1753	0	0	1	0
+99032	Fumana thymifolia (L.) Spach ex Webb, 1838	0	0	1	1
+83359	Arabis nova Vill., 1779	0	0	1	0
+101455	Hesperis laciniata All., 1785	0	0	1	0
+118498	Rosa sempervirens L., 1753	0	0	1	0
+105230	Lathyrus niger (L.) Bernh., 1800	0	0	1	0
+92631	Cotinus coggygria Scop., 1771	0	0	1	0
+100551	Goodyera repens (L.) R.Br., 1813	0	0	1	0
+609983	Euonymus latifolius (L.) Mill., 1768	0	0	1	0
+92715	Cotoneaster x intermedius (Lecoq & Lamotte) H.J.Coste, 1923	0	0	1	0
+113748	Pistacia terebinthus L., 1753	0	0	1	0
+105490	Leontodon crispus Vill., 1779	0	0	1	1
+97591	Euphorbia nicaeensis All., 1785	0	0	1	0
+612633	Galatella sedifolia subsp. sedifolia (L.) Greuter, 2003	0	0	1	0
+123577	Silene otites (L.) Wibel, 1799	0	0	1	1
+114012	Platanthera chlorantha (Custer) Rchb., 1828	0	0	1	0
+110129	Onobrychis saxatilis (L.) Lam., 1779	0	0	1	0
+136983	Juniperus phoenicea subsp. phoenicea L., 1753	0	0	1	0
+114942	Polypodium cambricum L., 1753	0	0	1	1
+81541	Allium ursinum L., 1753	0	0	1	0
+84513	Asplenium onopteris L., 1753	0	0	1	0
+114243	Poa hybrida Gaudin, 1808	0	0	1	0
+106919	Lychnis flos-jovis (L.) Desr., 1792	0	0	1	0
+130802	Aconitum variegatum subsp. paniculatum (Arcang.) Negodi, 1944	0	0	1	0
+83234	Aposeris foetida (L.) Less., 1832	0	0	1	0
+608824	Arabis serpillifolia Vill., 1779	0	0	1	0
+138095	Noccaea montana subsp. montana (L.) F.K.Mey., 1973	0	0	1	0
+788869	Ervilia sylvatica (L.) Schur, 1853	0	0	1	0
+96471	Epipactis purpurata Sm., 1828	0	0	1	1
+96191	Epilobium lanceolatum Sebast. & Mauri, 1818	0	0	1	0
+102925	Homogyne alpina (L.) Cass., 1821	0	0	1	0
+120085	Salix laggeri Wimm., 1854	0	0	1	0
+115076	Polystichum setiferum (Forssk.) T.Moore ex Woyn., 1913	0	0	1	0
+100636	Gymnocarpium dryopteris (L.) Newman, 1851	0	0	1	0
+129529	Viola canina L., 1753	0	0	1	0
+134095	Empetrum nigrum subsp. hermaphroditum (Hagerup) BáÂcher, 1952	0	0	1	0
+99233	Galanthus nivalis L., 1753	0	0	1	0
+96127	Epilobium alpestre (Jacq.) Krock., 1787	0	0	1	0
+89936	Cephalaria alpina (L.) Schrad. ex Roem. & Schult., 1818	0	0	1	0
+103553	Impatiens noli-tangere L., 1753	0	0	1	0
+129263	Vicia orobus DC., 1815	0	0	1	1
+93708	Cyclamen purpurascens Mill., 1768	0	0	1	0
+81610	Alopecurus aequalis Sobol., 1799	0	0	1	0
+99418	Galium elongatum C.Presl, 1822	0	0	1	1
+99986	Gentianella germanica (Willd.) BáÂrner, 1912	0	0	1	0
+129159	Vicia dumetorum L., 1753	0	0	1	0
+95154	Dipsacus pilosus L., 1753	0	0	1	0
+80037	Aconitum napellus L., 1753	0	0	1	0
+106555	Lonicera caerulea L., 1753	0	0	1	0
+106634	Lotus angustissimus L., 1753	0	0	1	0
+107790	Melampyrum cristatum L., 1753	0	0	1	1
+97277	Erysimum virgatum Roth, 1797	0	0	1	0
+91118	Chrysosplenium alternifolium L., 1753	0	0	1	0
+106761	Lunaria rediviva L., 1753	0	0	1	0
+122140	Sedum cepaea L., 1753	0	0	1	0
+108587	Minuartia capillacea (All.) Graebn., 1918	0	0	1	0
+115270	Potamogeton lucens L., 1753	0	0	1	1
+95239	Doronicum pardalianches L., 1753	0	0	1	0
+142070	Valeriana officinalis subsp. sambucifolia (J.C.Mikan ex Pohl) Celak., 1871	0	0	1	1
+105400	Leersia oryzoides (L.) Sw., 1788	0	0	1	0
+88833	Carex riparia Curtis, 1783	0	0	1	0
+133928	Dorycnium pentaphyllum subsp. herbaceum (Vill.) Bonnier & Layens, 1894	0	0	1	0
+110190	Ononis fruticosa L., 1753	0	0	1	0
+109847	Odontites viscosus (L.) Clairv., 1811	0	0	1	0
+109291	Narcissus poeticus L., 1753	0	0	1	0
+80007	Aconitum anthora L., 1753	0	0	1	0
+106374	Lithodora fruticosa (L.) Griseb., 1844	0	0	1	1
+113148	Phillyrea latifolia L., 1753	0	0	1	0
+124740	Stachys alpina L., 1753	0	0	1	0
+132509	Campanula rotundifolia subsp. macrorhiza (J.Gay ex A.DC.) Bonnier & Layens, 1894	0	0	1	0
+89881	Centranthus calcitrapae (L.) Dufr., 1811	0	0	1	1
+102650	Hieracium tomentosum L., 1755	0	0	1	0
+136812	Iberis intermedia subsp. violletii (Soy.-Will. ex Godr.) Rouy & Foucaud, 1895	0	0	1	0
+717051	Achnatherum bromoides (L.) P.Beauv., 1812	0	0	1	1
+88476	Carex distachya Desf., 1799	0	0	1	0
+88482	Carex divisa Huds., 1762	0	0	1	1
+115237	Potamogeton coloratus Hornem., 1813	0	0	1	0
+101221	Helosciadium nodiflorum (L.) W.D.J.Koch, 1824	0	0	1	0
+95337	Draba muralis L., 1753	0	0	1	0
+112778	Petasites albus (L.) Gaertn., 1791	0	0	1	0
+613669	Epipactis leptochila var. neglecta (Kümpel) Gá®vaudan, 2002	0	0	1	0
+98830	Fragaria moschata Weston, 1771	0	0	1	0
+100394	Glyceria maxima (Hartm.) Holmb., 1919	0	0	1	1
+85745	Bellis sylvestris Cirillo, 1792	0	0	1	1
+161345	Rosa marginata Wallr., 1815	0	0	1	0
+142499	Xanthoselinum alsaticum subsp. alsaticum (L.) Schur, 1866	0	0	1	0
+126628	Tilia cordata Mill., 1768	0	0	1	0
+88314	Carex acuta L., 1753	0	0	1	0
+94765	Dianthus hyssopifolius L., 1755	0	0	1	0
+91853	Clematis alpina (L.) Mill., 1768	0	0	1	0
+120009	Salix daphnoides Vill., 1779	0	0	1	0
+97325	Erythronium dens-canis L., 1753	0	0	1	0
+96523	Equisetum hyemale L., 1753	0	0	1	0
+98232	Festuca flavescens Bellardi, 1792	0	0	1	0
+85017	Atocion armeria (L.) Raf., 1840	0	0	1	0
+130792	Aconitum napellus subsp. vulgare Rouy & Foucaud, 1893	0	0	1	0
+103917	Isopyrum thalictroides L., 1753	0	0	1	0
+84230	Asarum europaeum L., 1753	0	0	1	0
+142020	Ulex europaeus subsp. europaeus L., 1753	0	0	1	0
+103308	Hypericum nummularium L., 1753	0	0	1	0
+80417	Agrimonia procera Wallr., 1840	0	0	1	0
+91398	Cirsium rivulare (Jacq.) All., 1789	0	0	1	0
+91120	Chrysosplenium oppositifolium L., 1753	0	0	1	0
+103320	Hypericum pulchrum L., 1753	0	0	1	0
+96545	Equisetum sylvaticum L., 1753	0	0	1	0
+111239	Oreopteris limbosperma (Bellardi ex All.) Holub, 1969	0	0	1	0
+103898	Isolepis setacea (L.) R.Br., 1810	0	0	1	0
+104145	Juncus bulbosus L., 1753	0	0	1	0
+112601	Pedicularis sylvatica L., 1753	0	0	1	0
+105148	Lathraea squamaria L., 1753	0	0	1	0
+129539	Viola collina Besser, 1816	0	0	1	0
+92217	Comarum palustre L., 1753	0	0	1	0
+96861	Eriophorum vaginatum L., 1753	0	0	1	0
+127333	Trifolium hirtum All., 1789	0	0	1	0
+105159	Lathyrus angulatus L., 1753	0	0	1	1
+98687	Filago lutescens Jord., 1846	0	0	1	1
+611926	Aconitum lycoctonum subsp. vulparia (Rchb.) Nyman, 1889	0	0	1	0
+125364	Symphytum tuberosum L., 1753	0	0	1	0
+117668	Rhodiola rosea L., 1753	0	0	1	0
+111250	Oreoselinum nigrum Delarbre, 1800	0	0	1	0
+142305	Viola canina subsp. canina L., 1753	0	0	1	0
+142317	Viola canina subsp. ruppii (All.) Schübl. & G.Martens, 1834	0	0	1	0
+94693	Dianthus armeria L., 1753	0	0	1	0
+95240	Doronicum plantagineum L., 1753	0	0	1	1
+94136	Cytisus lotoides Pourr., 1788	0	0	1	0
+97234	Erysimum ochroleucum (Schleich.) DC., 1805	0	0	1	0
+117774	Ribes rubrum L., 1753	0	0	1	0
+115041	Polystichum aculeatum (L.) Roth, 1799	0	0	1	0
+131858	Asplenium trichomanes subsp. pachyrachis (H.Christ) Lovis & Reichst., 1980	0	0	0	1
+111556	Orobanche gracilis Sm., 1798	0	0	0	1
+122837	Serapias vomeracea (Burm.f.) Briq., 1910	0	0	0	1
+93828	Cynoglossum creticum Mill., 1768	0	0	0	1
+89940	Cephalaria leucantha (L.) Schrad. ex Roem. & Schult., 1818	0	0	0	1
+105814	Leucanthemum subglaucum De Laramb., 1861	0	0	0	1
+126552	Thymus nitens Lamotte, 1881	0	0	0	1
+133970	Dryopteris affinis subsp. cambrensis Fraser-Jenk., 1987	0	0	0	1
+100584	Groenlandia densa (L.) Fourr., 1869	0	0	0	1
+119587	Rumex scutatus L., 1753	0	0	0	1
+130820	Adenocarpus complicatus subsp. complicatus (L.) J.Gay, 1836	0	0	0	1
+82796	Antennaria dioica (L.) Gaertn., 1791	0	0	0	1
+129904	Viscaria vulgaris Bernh., 1800	0	0	0	1
+116754	Quercus pyrenaica Willd., 1805	0	0	0	1
+99390	Galium boreale L., 1753	0	0	0	1
+87269	Calamagrostis phragmitoides Hartm., 1843	0	0	0	1
+93075	Crepis lampsanoides (Gouan) Tausch, 1828	0	0	0	1
+109861	Oenanthe aquatica (L.) Poir., 1798	0	0	0	1
+88916	Carex tomentosa L., 1767	0	0	0	1
+718706	Knautia basaltica var. basaltica Chass. & Szabó, 1934	0	0	0	1
+99552	Galium sylvaticum L., 1762	0	0	0	1
+717574	Stuckenia pectinata (L.) Börner, 1912	0	0	0	1
+109676	Noccaea montana (L.) F.K.Mey., 1973	0	0	0	1
+122563	Senecio cacaliaster Lam., 1779	0	0	0	1
+126078	Thalictrum aquilegiifolium L., 1753	0	0	0	1
+96695	Erica tetralix L., 1753	0	0	0	1
+81190	Alchemilla vetteri Buser, 1896	0	0	0	1
+140616	Saxifraga cuneifolia subsp. robusta D.A.Webb, 1988	0	0	0	1
+99378	Galium aristatum L., 1762	0	0	0	1
+717729	Arabidopsis cebennensis (DC.) O'Kane & Al-Shehbaz	0	0	0	1
+788791	Hieracium juranum Rapin, 1842	0	0	0	1
+96566	Equisetum x moorei Newman, 1854	0	0	0	1
+108477	Mibora minima (L.) Desv., 1818	0	0	0	1
+124771	Stachys germanica L., 1753	0	0	0	1
+128667	Verbascum virgatum Stokes, 1787	0	0	0	1
+100640	Gymnocarpium robertianum (Hoffm.) Newman, 1851	0	0	0	1
