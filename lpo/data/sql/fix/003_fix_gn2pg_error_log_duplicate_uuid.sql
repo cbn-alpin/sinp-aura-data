@@ -61,3 +61,32 @@ WHERE dj.source = el.source
 \echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'
 COMMIT;
+
+
+-- Query to see id_data/id_synthese in error_log, data_json and synthese with observation UUID as join
+-- WITH error_log_uuid AS (
+-- 	SELECT
+-- 		el.id_data,
+-- 		(el.item ->> 'id_synthese') AS id_synthese,
+-- 		(el.item ->> 'id_perm_sinp')::uuid AS "uuid",
+-- 		el.last_ts
+-- 	FROM gn2pg_lpo.error_log AS el
+-- 	WHERE el.error ILIKE '%duplicate key value violates unique constraint "unique_id_sinp_unique"%'
+-- 		AND el.last_ts > '2024-11-04 00:00'
+-- )
+-- SELECT
+-- 	elu."uuid",
+-- 	elu.id_data::varchar AS error_log_id_data,
+-- 	elu.id_synthese::varchar AS error_log_item_id_synthese,
+-- 	--elu."uuid" AS error_log_uuid,
+-- 	dj.id_data::varchar AS data_json_id_data,
+-- 	--dj."uuid" AS data_json_uuid,
+-- 	s.entity_source_pk_value::varchar AS gn_synthese_entity_source_pk_value
+-- 	--s.unique_id_sinp AS gn_synthese_uuid
+-- FROM error_log_uuid AS elu
+-- 	LEFT JOIN gn2pg_lpo.data_json AS dj
+-- 		ON elu."uuid" = dj."uuid"
+-- 	LEFT JOIN gn_synthese.synthese AS s
+-- 		ON elu."uuid" = s.unique_id_sinp
+-- WHERE dj."uuid" IS NOT NULL
+-- ORDER BY elu.last_ts ;
