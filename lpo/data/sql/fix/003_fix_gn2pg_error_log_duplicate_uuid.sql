@@ -1,7 +1,7 @@
 \echo 'Fix Gn2Pg error log duplicate UUID entries.'
 \echo 'Rights: db-owner'
 -- Usage: psql -h "localhost" -U "<db-owner-name>" -d "<db-name>" -f <path-to-this-sql-file>
--- Ex.: psql -h "localhost" -U "geonatadmin" -d "geonature2db" -f ~/data/lpo/data/sql/fix/002_*
+-- Ex.: psql -h "localhost" -U "geonatadmin" -d "geonature2db" -f ~/data/lpo/data/sql/fix/003_*
 
 BEGIN;
 
