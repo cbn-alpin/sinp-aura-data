@@ -22,7 +22,7 @@ WHERE uuid IN (SELECT id_perm_sinp FROM duplicated_uuid) ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Reinsert in data_json entries where UUID is noted as duplicate in error log'
-INSERT INT gn2pg_lpo.data_json (
+INSERT INTO gn2pg_lpo.data_json (
     source,
     controler,
     "type",
