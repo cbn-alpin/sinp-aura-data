@@ -32,7 +32,7 @@ REFRESH MATERIALIZED VIEW atlas.vm_communes;
 -- DATA
 
 \echo '----------------------------------------------------------------'
-\echo 'Refreshing synthese.vm_cor_synthese_area:'
+\echo 'Refreshing atlas.vm_cor_synthese_area:'
 REFRESH MATERIALIZED VIEW CONCURRENTLY synthese.vm_cor_synthese_area;
 
 \echo '----------------------------------------------------------------'
