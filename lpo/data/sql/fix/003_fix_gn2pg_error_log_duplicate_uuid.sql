@@ -22,16 +22,6 @@ DELETE FROM gn2pg_lpo.data_json
 WHERE "uuid" IN (SELECT id_perm_sinp FROM duplicated_uuid) ;
 
 
-\echo '----------------------------------------------------------------------------'
-\echo 'COMMIT if all is OK:'
-COMMIT;
-
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Start new transaction'
-BEGIN;
-
-
 \echo '-------------------------------------------------------------------------------'
 \echo 'Reinsert in data_json entries where UUID is noted as duplicate in error log'
 INSERT INTO gn2pg_lpo.data_json (
