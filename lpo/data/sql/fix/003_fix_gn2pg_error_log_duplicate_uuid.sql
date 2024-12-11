@@ -1,11 +1,18 @@
-\echo 'Fix Gn2Pg error log duplicate UUID entries.'
+\echo 'Fix Gn2Pg error log duplicate UUID entries after 2024-11-01.'
 \echo 'Rights: db-owner'
 -- Usage: psql -h "localhost" -U "<db-owner-name>" -d "<db-name>" -f <path-to-this-sql-file>
 -- Ex.: psql -h "localhost" -U "geonatadmin" -d "geonature2db" -f ~/data/lpo/data/sql/fix/003_*
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Start deleting transaction (very long)'
+\echo 'Start deleting transaction'
 BEGIN;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Add index only on entity_source_pk_value field to speed up deletion'
+CREATE INDEX IF NOT EXISTS i_synthese_entity_source_pk_value ON gn_synthese.synthese
+USING btree (entity_source_pk_value) ;
+
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Remove data_json entries where UUID is noted as duplicate in error log'
