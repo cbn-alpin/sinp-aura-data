@@ -35,8 +35,7 @@ WHERE "uuid" IN (SELECT id_perm_sinp FROM flavia_duplicated_uuid) ;
 WITH duplicated_uuid AS (
     SELECT (item ->> 'id_perm_sinp')::uuid AS id_perm_sinp
     FROM gn2pg_lpo.error_log
-    WHERE last_ts < '2024-11-01'
-        AND split_part(
+    WHERE split_part(
                 split_part(error::text, ') '::text, 2),
                 'DETAIL'::text, 1
             ) ILIKE '%duplicate key value violates unique constraint "unique_id_sinp_unique"%'
@@ -60,8 +59,7 @@ WITH last_error_log AS (
 	    id_data,
     	MAX(last_ts) AS max_last_ts
 	FROM gn2pg_lpo.error_log AS el
-	WHERE last_ts < '2024-11-01'
-	    AND split_part(
+	WHERE split_part(
 	        split_part(error::text, ') '::text, 2),
 	        'DETAIL'::text, 1
 	    ) ILIKE '%duplicate key value violates unique constraint "unique_id_sinp_unique"%'
@@ -83,8 +81,7 @@ SELECT
 FROM gn2pg_lpo.error_log AS el
 	JOIN last_error_log AS lel
 		ON (lel.id_data = el.id_data AND lel.max_last_ts = el.last_ts)
-WHERE el.last_ts < '2024-11-01'
-    AND split_part(
+WHERE split_part(
         split_part(el.error::text, ') '::text, 2),
         'DETAIL'::text, 1
     ) ILIKE '%duplicate key value violates unique constraint "unique_id_sinp_unique"%'
