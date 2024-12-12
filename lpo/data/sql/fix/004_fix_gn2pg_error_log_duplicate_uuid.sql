@@ -55,17 +55,37 @@ INSERT INTO gn2pg_lpo.data_json (
     uuid,
     item
 )
+WITH last_error_log AS (
+	SELECT
+	    id_data,
+    	MAX(last_ts) AS max_last_ts
+	FROM gn2pg_lpo.error_log AS el
+	WHERE last_ts < '2024-11-01'
+	    AND split_part(
+	        split_part(error::text, ') '::text, 2),
+	        'DETAIL'::text, 1
+	    ) ILIKE '%duplicate key value violates unique constraint "unique_id_sinp_unique"%'
+	    AND NOT EXISTS (
+	        SELECT 'TRUE'
+	        FROM gn_synthese.synthese AS s
+	        WHERE s.unique_id_sinp = (el.item ->> 'id_perm_sinp')::uuid
+	            AND s.id_source <> gn2pg_lpo.fct_c_get_or_insert_source(el."source")
+	   )
+	GROUP BY id_data
+)
 SELECT
-    "source",
-    controler,
+    el."source",
+    el.controler,
     'synthese_with_metadata',
-    id_data,
-    (item ->> 'id_perm_sinp')::uuid,
-    item
+    el.id_data,
+    (el.item ->> 'id_perm_sinp')::uuid AS id_perm_sinp,
+    el.item
 FROM gn2pg_lpo.error_log AS el
-WHERE last_ts < '2024-11-01'
+	JOIN last_error_log AS lel
+		ON (lel.id_data = el.id_data AND lel.max_last_ts = el.last_ts)
+WHERE el.last_ts < '2024-11-01'
     AND split_part(
-        split_part(error::text, ') '::text, 2),
+        split_part(el.error::text, ') '::text, 2),
         'DETAIL'::text, 1
     ) ILIKE '%duplicate key value violates unique constraint "unique_id_sinp_unique"%'
    AND NOT EXISTS (
