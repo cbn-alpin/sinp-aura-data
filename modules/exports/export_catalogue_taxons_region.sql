@@ -65,6 +65,3 @@ GROUP BY t.cd_ref, t.nom_valide, t.nom_vern
 ORDER BY t.nom_valide ;
 
 COMMIT;
-
--- sans fonction : 4min27s
--- avec fonction : 4min32s
