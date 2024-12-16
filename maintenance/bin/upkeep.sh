@@ -255,12 +255,17 @@ function updateFirstImages() {
 }
 
 function refreshMaterializedViews() {
-    notify "Run refresh of GeoNature materialized views..."
+    notify "Run the refresh of core GeoNature materialized views..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${sql_dir}/geonature_refresh.sql"
+
+    notify "Run the refresh of the GeoNature materialized views of the AURA SINP instance..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_shared_dir}/refresh_materialized_view.sql"
 
-    notify "Run refresh of Biodiv'territory materialized views..."
+    notify "Run the refresh of Biodiv'territory materialized views..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
