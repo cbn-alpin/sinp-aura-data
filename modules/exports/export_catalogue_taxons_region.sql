@@ -1,6 +1,12 @@
 -- Extract all distinct cd_ref for AURA region with cor_area_synthese
 
+-- Enable timing
+\timing
+
 BEGIN;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create function ref_geo.get_id_area_by_code(typeCode varchar, areaCode varchar)'
 
 CREATE OR REPLACE FUNCTION ref_geo.get_id_area_by_code(typeCode varchar, areaCode varchar)
  RETURNS integer
@@ -23,6 +29,8 @@ AS $function$
 $function$
 ;
 
+\echo '----------------------------------------------------------------------------'
+\echo 'Create gn_exports.catalog_taxa_region materialized view'
 
 CREATE MATERIALIZED VIEW gn_exports.catalog_taxa_region
 AS
@@ -64,4 +72,6 @@ FROM gn_synthese.synthese AS s
 GROUP BY t.cd_ref, t.nom_valide, t.nom_vern
 ORDER BY t.nom_valide ;
 
+\echo '----------------------------------------------------------------'
+\echo 'COMMIT if all is ok:'
 COMMIT;
