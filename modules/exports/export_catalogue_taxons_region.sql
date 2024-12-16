@@ -13,7 +13,7 @@ AS $function$
     BEGIN
         SELECT INTO idArea id_area
         FROM ref_geo.l_areas AS la
-		JOIN ref_geo.bib_areas_type AS bat
+		JOIN ref_geo.bib_areas_types AS bat
 			ON bat.id_type = la.id_type
         WHERE bat.type_code = typeCode
 			AND la.area_code = areaCode ;
