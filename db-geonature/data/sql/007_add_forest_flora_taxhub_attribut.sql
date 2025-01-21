@@ -120,38 +120,28 @@ INSERT INTO taxonomie.bib_attributs (
     id_theme,
     ordre
 ) VALUES (
-    'forest_flora_priority_tracheophyta',
-    'Flore vasculaire forestière prioritaire',
-    '{"values": ["Enjeu 1 Alpes", "Enjeu 2 Alpes", "Enjeu 1 Massif Central", "Enjeu 2 Massif Central"]}',
+    'forest_flora_priority',
+    'Flore forestière prioritaire',
+    '{"values": ["Trachéophytes - Enjeu 1 Alpes", "Trachéophytes - Enjeu 2 Alpes", "Trachéophytes - Enjeu 1 Massif Central", "Trachéophytes - Enjeu 2 Massif Central", "Bryophytes - Alpes", "Bryophytes - Massif Central"]}',
     false,
-    'Priorité des taxons de la flore vasculaire forestière sur la région AURA.',
+    'Priorité des taxons de la flore forestière sur la région AURA.',
     'text',
     'multiselect',
     taxonomie.get_id_theme_by_name('forest_flora'),
     1
-), (
-    'forest_flora_priority_bryophyta',
-    'Bryoflore forestière prioritaire',
-    '{"values": ["Enjeu Alpes", "Enjeu Massif Central"]}',
-    false,
-    'Priorité des taxons de la bryoflore forestière sur la région AURA.',
-    'text',
-    'multiselect',
-    taxonomie.get_id_theme_by_name('forest_flora'),
-    2
 ) ON CONFLICT (nom_attribut) DO NOTHING ;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Associate TaxHub attribut forest_flora_priority_tracheophyta="Enjeu 1 Alpes" to taxons'
+\echo 'Associate TaxHub attribut forest_flora_priority="Trachéophytes - Enjeu 1 Alpes" to taxons'
 INSERT INTO taxonomie.cor_taxon_attribut (
     id_attribut,
     valeur_attribut,
     cd_ref
 )
     SELECT DISTINCT
-        taxonomie.get_id_attribut_by_name('forest_flora_priority_tracheophyta'),
-        'Enjeu 1 Alpes',
+        taxonomie.get_id_attribut_by_name('forest_flora_priority'),
+        'Trachéophytes - Enjeu 1 Alpes',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
@@ -163,15 +153,15 @@ INSERT INTO taxonomie.cor_taxon_attribut (
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Associate TaxHub attribut forest_flora_priority_tracheophyta="Enjeu 2 Alpes" to taxons'
+\echo 'Associate TaxHub attribut forest_flora_priority_tracheophyta="Trachéophytes - Enjeu 2 Alpes" to taxons'
 INSERT INTO taxonomie.cor_taxon_attribut (
     id_attribut,
     valeur_attribut,
     cd_ref
 )
     SELECT DISTINCT
-        taxonomie.get_id_attribut_by_name('forest_flora_priority_tracheophyta'),
-        'Enjeu 2 Alpes',
+        taxonomie.get_id_attribut_by_name('forest_flora_priority'),
+        'Trachéophytes - Enjeu 2 Alpes',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
@@ -179,19 +169,25 @@ INSERT INTO taxonomie.cor_taxon_attribut (
         FROM gn_imports.piority_forest_flora
         WHERE "group" = 'Tracheophyta'
             AND level_2_alp = TRUE
-    ) ;
+    )
+ON CONFLICT (id_attribut, cd_ref) DO UPDATE
+SET valeur_attribut = CONCAT_WS(
+    '&',
+    taxonomie.cor_taxon_attribut.valeur_attribut,
+    EXCLUDED.valeur_attribut
+) ;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Associate TaxHub attribut forest_flora_priority_tracheophyta="Enjeu 1 Massif Central" to taxons'
+\echo 'Associate TaxHub attribut forest_flora_priority_tracheophyta="Trachéophytes - Enjeu 1 Massif Central" to taxons'
 INSERT INTO taxonomie.cor_taxon_attribut (
     id_attribut,
     valeur_attribut,
     cd_ref
 )
     SELECT DISTINCT
-        taxonomie.get_id_attribut_by_name('forest_flora_priority_tracheophyta'),
-        'Enjeu 1 Massif Central',
+        taxonomie.get_id_attribut_by_name('forest_flora_priority'),
+        'Trachéophytes - Enjeu 1 Massif Central',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
@@ -209,15 +205,15 @@ SET valeur_attribut = CONCAT_WS(
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Associate TaxHub attribut forest_flora_priority_tracheophyta="Enjeu 2 Massif Central" to taxons'
+\echo 'Associate TaxHub attribut forest_flora_priority="Trachéophytes - Enjeu 2 Massif Central" to taxons'
 INSERT INTO taxonomie.cor_taxon_attribut (
     id_attribut,
     valeur_attribut,
     cd_ref
 )
     SELECT DISTINCT
-        taxonomie.get_id_attribut_by_name('forest_flora_priority_tracheophyta'),
-        'Enjeu 2 Massif Central',
+        taxonomie.get_id_attribut_by_name('forest_flora_priority'),
+        'Trachéophytes - Enjeu 2 Massif Central',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
@@ -235,15 +231,15 @@ SET valeur_attribut = CONCAT_WS(
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Associate TaxHub attribut forest_flora_priority_bryophyta="Enjeu Alpes" to taxons'
+\echo 'Associate TaxHub attribut forest_flora_priority="Bryophytes - Alpes" to taxons'
 INSERT INTO taxonomie.cor_taxon_attribut (
     id_attribut,
     valeur_attribut,
     cd_ref
 )
     SELECT DISTINCT
-        taxonomie.get_id_attribut_by_name('forest_flora_priority_bryophyta'),
-        'Enjeu Alpes',
+        taxonomie.get_id_attribut_by_name('forest_flora_priority'),
+        'Bryophytes - Alpes',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
@@ -251,19 +247,25 @@ INSERT INTO taxonomie.cor_taxon_attribut (
         FROM gn_imports.piority_forest_flora
         WHERE "group" = 'Bryophyta'
             AND level_1_alp = TRUE
-    ) ;
+    )
+ON CONFLICT (id_attribut, cd_ref) DO UPDATE
+SET valeur_attribut = CONCAT_WS(
+    '&',
+    taxonomie.cor_taxon_attribut.valeur_attribut,
+    EXCLUDED.valeur_attribut
+) ;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Associate TaxHub attribut forest_flora_priority_bryophyta="Enjeu Massif Central" to taxons'
+\echo 'Associate TaxHub attribut forest_flora_priority="Bryophytes - Massif Central" to taxons'
 INSERT INTO taxonomie.cor_taxon_attribut (
     id_attribut,
     valeur_attribut,
     cd_ref
 )
     SELECT DISTINCT
-        taxonomie.get_id_attribut_by_name('forest_flora_priority_bryophyta'),
-        'Enjeu Massif Central',
+        taxonomie.get_id_attribut_by_name('forest_flora_priority'),
+        'Bryophytes - Massif Central',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
