@@ -1,11 +1,18 @@
 -- Add new forest_flora_priority TaxHub attribut with new thema forest_flora.
 -- Required rights: DB OWNER
 -- GeoNature database compatibility : v2.9.2+
+--
 -- Transfert this script on server with Git or this way:
--- rsync -av ./007_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
+--      rsync -av ./007_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
 -- Use this script this way:
 --      cat ./007_* | sed 's#${csvDirectory}#/path/to/db-geonature/csv/directory#g'| \
 --      psql -h localhost -U geonatadmin -d geonature2db
+-- Then :
+--      - update your "geonature_config.toml" file to set ID_ATTRIBUT_TAXHUB parameter
+--      - activate GeoNature venv
+--      - update configuration with : `geonature update-configuration`
+--      - restart GeoNature systemd service : `sudo systemctl restart geonature`
+
 
 BEGIN ;
 
