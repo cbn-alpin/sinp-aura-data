@@ -1,4 +1,13 @@
--- Create fonction to define if geometry has to be blurred regarding to the data's sensitivity
+-- Create materialized view of synthese data with blurred geometry depending on sensitivity level
+
+-- Enable timing
+\timing
+
+BEGIN;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create function to define if geometry has to be blurred depending on sensitivity level'
+
 
 CREATE OR REPLACE FUNCTION gn_exports.is_blurred_area_type_by_sensitivity(nomenclaturecode character varying, areatypecode character varying)
 RETURNS boolean
@@ -28,8 +37,8 @@ AS $function$
 $function$
 ;
 
-
--- Create fonction to define if geometry has to be blurred
+\echo '----------------------------------------------------------------------------'
+\echo 'Create function to define if geometry has to be blurred'
 
 CREATE OR REPLACE FUNCTION gn_exports.is_blurred_area_type(sensicode character varying, areatypecode character varying)
 RETURNS boolean
@@ -51,8 +60,8 @@ AS $function$
 $function$
 ;
 
-
--- Create materialized view with all synthese geometry blurred depending on sensitivity level
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view with all synthese geometry blurred depending on sensitivity level'
 
 CREATE MATERIALIZED VIEW gn_exports.synthese_blurred
 TABLESPACE pg_default
@@ -81,3 +90,8 @@ WITH DATA;
 
 CREATE UNIQUE INDEX i_synthese_blurred ON gn_exports.synthese_blurred USING btree (id_synthese, id_area);
 CREATE INDEX synthese_blurred_type_code_idx ON gn_exports.synthese_blurred USING btree (type_code);
+
+
+\echo '----------------------------------------------------------------'
+\echo 'COMMIT if all is ok:'
+COMMIT;
