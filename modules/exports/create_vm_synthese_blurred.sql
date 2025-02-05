@@ -85,7 +85,7 @@ WHERE s.the_geom_point IS NOT NULL
 	AND st.cd_nomenclature = 'Pr'
 	AND sens.cd_nomenclature NOT IN ('4', '2.8')
 	AND t.type_code IN ('M1', 'M2', 'M5', 'M10', 'M20', 'M50')
-	AND atlas.is_blurred_area_type(sens.cd_nomenclature, t.type_code) = TRUE
+	AND gn_exports.is_blurred_area_type(sens.cd_nomenclature, t.type_code) = TRUE
 WITH DATA;
 
 CREATE UNIQUE INDEX i_synthese_blurred ON gn_exports.synthese_blurred USING btree (id_synthese, id_area);
