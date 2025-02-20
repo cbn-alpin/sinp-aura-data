@@ -1,4 +1,4 @@
--- Refresh all SINP AURA specific materialized views
+-- Refresh all GeoNature SINP AURA specific materialized views
 
 -- Enable timing
 \timing
@@ -7,7 +7,7 @@ BEGIN ;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_exports.vm_catalog_taxa_region:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.vm_catalog_taxa_region ;
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.catalog_taxa_region ;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_exports.synthese_blurred:'

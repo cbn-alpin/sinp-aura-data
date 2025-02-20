@@ -81,7 +81,8 @@ function main() {
             updateOutsideObservations
             updateInpnImages
             refreshMaterializedViews
-            refreshGeoNatureAtlas
+            refreshGeoNature
+            refreshAtlas
         else
             printError "No new data => stop upkeeping !"
         fi
@@ -271,11 +272,18 @@ function refreshMaterializedViews() {
             -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
 }
 
-function refreshGeoNatureAtlas() {
+function refreshAtlas() {
     notify "Refresh Atlas materialized views on db-srv..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
             -f "${sql_dir}/atlas_refresh.sql"
+}
+
+function refreshGeoNature() {
+    notify "Refresh GeoNature materialized views on db-srv..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${sql_dir}/geonature_refresh.sql"
 }
 
 function notify() {
