@@ -19,15 +19,15 @@ patchs AS (
         linkage.cd_nom_old,
         tx.cd_nom,
         tx.lb_nom AS nom_cite,
-        tx.nom_vern AS nom_francais_cite
+        SPLIT_PART(tx.nom_vern, ', ', 1) AS nom_francais_cite
     FROM linkage
         LEFT JOIN taxonomie.taxref AS tx
             ON linkage.cd_ref = tx.cd_nom
 )
--- mise à jour
+-- Run the update
 UPDATE taxonomie.taxref_protection_especes SET
     cd_nom = patchs.cd_nom,
-    nom_cite = patchs.cd_nom,
+    nom_cite = patchs.nom_cite,
     nom_francais_cite = patchs.nom_francais_cite
 FROM patchs
 WHERE taxref_protection_especes.cd_nom = patchs.cd_nom_old ;
