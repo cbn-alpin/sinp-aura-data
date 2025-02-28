@@ -6,7 +6,7 @@
 BEGIN ;
 
 \echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.vm_catalog_taxa_region:'
+\echo 'Refreshing gn_exports.catalog_taxa_region:'
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.catalog_taxa_region ;
 
 \echo '----------------------------------------------------------------'
