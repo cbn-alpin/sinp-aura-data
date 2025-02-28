@@ -90,27 +90,6 @@ WITH DATA;
 
 CREATE UNIQUE INDEX unique_idx_synthese_blurred ON gn_exports.synthese_blurred (id_synthese, id_area);
 
--- Index on joined columns
-CREATE INDEX idx_synthese_id ON gn_synthese.synthese (id_synthese);
-CREATE INDEX idx_cor_area_synthese_id ON gn_synthese.cor_area_synthese (id_synthese);
-CREATE INDEX idx_nomenclature_sensitivity ON gn_synthese.synthese (id_nomenclature_sensitivity);
-CREATE INDEX idx_nomenclature_id ON ref_nomenclatures.t_nomenclatures (id_nomenclature);
-CREATE INDEX idx_observation_status ON gn_synthese.synthese (id_nomenclature_observation_status);
-CREATE INDEX idx_area_id ON gn_synthese.cor_area_synthese (id_area);
-CREATE INDEX idx_l_areas_id ON ref_geo.l_areas (id_area);
-CREATE INDEX idx_area_type_id ON ref_geo.l_areas (id_type);
-CREATE INDEX idx_bib_areas_types_id ON ref_geo.bib_areas_types (id_type);
-
--- Index on filtered columns
-CREATE INDEX idx_the_geom_point ON gn_synthese.synthese (the_geom_point);
-CREATE INDEX idx_cd_nomenclature_st ON ref_nomenclatures.t_nomenclatures (cd_nomenclature);
-CREATE INDEX idx_cd_nomenclature_sens ON ref_nomenclatures.t_nomenclatures (cd_nomenclature);
-CREATE INDEX idx_type_code ON ref_geo.bib_areas_types (type_code);
-
--- Index GIST for spatial operations
-CREATE INDEX idx_geom_gist ON ref_geo.l_areas USING GIST (geom);
-
-
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;
