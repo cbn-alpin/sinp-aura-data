@@ -84,7 +84,7 @@ WHERE id_theme = taxonomie.get_id_theme_by_name('taxa_lists') ;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Create TaxHub attributes topic'
-INSERT taxonomie.bib_themes (
+INSERT INTO taxonomie.bib_themes (
     nom_theme,
     desc_theme
 ) VALUES (
