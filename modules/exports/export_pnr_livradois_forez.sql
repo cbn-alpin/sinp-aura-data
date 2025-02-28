@@ -165,7 +165,7 @@ WHERE s.the_geom_point IS NOT NULL
 ;
 
 CREATE UNIQUE INDEX unique_idx_pnr_livradois_forez_blurred
-ON gn_exports.pnr_livradois_forez_blurred (id_synthese);
+ON gn_exports.pnr_livradois_forez_blurred (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'

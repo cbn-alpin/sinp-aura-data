@@ -87,7 +87,7 @@ WHERE s.the_geom_point IS NOT NULL
 WITH DATA;
 
 CREATE UNIQUE INDEX unique_idx_synthese_blurred
-ON gn_exports.synthese_blurred (id_synthese, id_area);
+ON gn_exports.synthese_blurred (id_synthese, id_area) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'

@@ -154,7 +154,7 @@ WHERE
 ;
 
 CREATE UNIQUE INDEX unique_idx_pnr_massif_bauges_blurred
-ON gn_exports.pnr_massif_bauges_blurred (id_synthese);
+ON gn_exports.pnr_massif_bauges_blurred (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
