@@ -17,81 +17,85 @@ blurred_centroid AS (
     FROM gn_exports.synthese_blurred AS sb
     GROUP BY sb.id_synthese
 ),
-
-pnr_massif_bauges AS(
+pnr_massif_bauges AS (
     SELECT
         UNNEST(
-            ARRAY['74138','73263','73270','73151','74123','74135','74194','74242','74054','74002','73020','73086','73277','74097','74104','74108','74111','73081','74072','73182','73154','73301','73293','73005','73153','73090','73208','73265','73010','73310','73097','74148','74310','73014','74060','73196','73036','73120','73129','74219','74147','73162','74142','73247','74232','74167','73139','73171','73084','73210','73018','74004','73098','73243','73096','73294','73164','73004','73312','73202','73178','73234','73146','73101','73106','73292','74267','73192']
-            ) AS code
+            ARRAY['74138','73263','73270','73151','74123','74135','74194','74242','74054','74002',
+            '73020','73086','73277','74097','74104','74108','74111','73081','74072','73182',
+            '73154','73301','73293','73005','73153','73090','73208','73265','73010','73310',
+            '73097','74148','74310','73014','74060','73196','73036','73120','73129','74219',
+            '74147','73162','74142','73247','74232','74167','73139','73171','73084','73210',
+            '73018','74004','73098','73243','73096','73294','73164','73004','73312','73202',
+            '73178','73234','73146','73101','73106','73292','74267','73192']
+        ) AS code
 ),
-
 synthese_export AS (
-    SELECT
-        DISTINCT s.id_synthese,
+    SELECT DISTINCT
+        s.id_synthese,
         s.the_geom_4326
-    FROM gn_synthese.synthese s
-        LEFT JOIN gn_synthese.cor_area_synthese cas
+    FROM gn_synthese.synthese AS s
+        LEFT JOIN gn_synthese.cor_area_synthese AS cas
             ON s.id_synthese = cas.id_synthese
-        LEFT JOIN ref_geo.l_areas a
+        LEFT JOIN ref_geo.l_areas AS a
             ON cas.id_area = a.id_area
-        JOIN pnr_massif_bauges p
+        JOIN pnr_massif_bauges AS p
             ON a.area_code = p.code
 )
 SELECT
     s.id_synthese,
-    s.entity_source_pk_value                         AS id_source,
-    s.unique_id_sinp                                 AS id_perm_sinp,
-    s.unique_id_sinp_grp                             AS id_perm_grp_sinp,
-    s.date_min::date                                 AS date_debut,
-    s.date_max::date                                 AS date_fin,
+    s.entity_source_pk_value AS id_source,
+    s.unique_id_sinp AS id_perm_sinp,
+    s.unique_id_sinp_grp AS id_perm_grp_sinp,
+    s.date_min::date AS date_debut,
+    s.date_max::date AS date_fin,
     s.cd_nom,
-    s.meta_v_taxref                                  AS version_taxref,
+    s.meta_v_taxref AS version_taxref,
     s.nom_cite,
-    s.count_min                                      AS nombre_min,
-    s.count_max                                      AS nombre_max,
+    s.count_min AS nombre_min,
+    s.count_max AS nombre_max,
     s.altitude_min,
     s.altitude_max,
-    s.depth_min                                      AS profondeur_min,
-    s.depth_max                                      AS profondeur_max,
-    s.observers                                      AS observateurs,
-    s.determiner                                     AS determinateur,
-    s.validator                                      AS validateur,
-    s.comment_context                                AS comment_releve,
-    s.comment_description                            AS comment_occurrence,
-    td.dataset_shortname                             AS jdd_nom_court,
-    td.unique_dataset_id                             AS jdd_uuid,
+    s.depth_min AS profondeur_min,
+    s.depth_max AS profondeur_max,
+    s.observers AS observateurs,
+    s.determiner AS determinateur,
+    s.validator AS validateur,
+    s.comment_context AS comment_releve,
+    s.comment_description AS comment_occurrence,
+    td.dataset_shortname AS jdd_nom_court,
+    td.unique_dataset_id AS jdd_uuid,
     s.reference_biblio,
-    s.cd_hab                                         AS code_habitat,
-    h.lb_hab_fr                                      AS habitat,
-    s.place_name                                     AS nom_lieu,
+    s.cd_hab AS code_habitat,
+    h.lb_hab_fr AS habitat,
+    s.place_name AS nom_lieu,
     s.precision,
-    s.additional_data                                AS donnees_additionnelles,
+    s.additional_data AS donnees_additionnelles,
     CASE
         WHEN bc.geom_point IS NOT NULL
             THEN st_astext(bc.geom_point)
         ELSE st_astext(s.the_geom_point)
-    END                                              AS the_geom_point,
-    n1.cd_nomenclature                               AS nature_objet_geo,
-    n2.cd_nomenclature                               AS type_regroupement,
-    s.grp_method                                     AS methode_regroupement,
-    n3.cd_nomenclature                               AS comportement,
-    n4.cd_nomenclature                               AS technique_obs,
-    n5.cd_nomenclature                               AS statut_biologique,
-    n6.cd_nomenclature                               AS etat_biologique,
-    n7.cd_nomenclature                               AS naturalite,
-    n8.cd_nomenclature                               AS preuve_existante,
-    n9.cd_nomenclature                               AS precision_diffusion,
-    n10.cd_nomenclature                              AS stade_vie,
-    n11.cd_nomenclature                              AS sexe,
-    n12.cd_nomenclature                              AS objet_denombrement,
-    n13.cd_nomenclature                              AS type_denombrement,
-    n14.cd_nomenclature                              AS niveau_sensibilite,
-    n15.cd_nomenclature                              AS statut_observation,
-    n16.cd_nomenclature                              AS floutage_dee,
-    n17.cd_nomenclature                              AS statut_source,
-    n18.cd_nomenclature                              AS type_info_geo,
-    n19.cd_nomenclature                              AS methode_determination,
-    n20.cd_nomenclature                              AS statut_validation,
+    END AS the_geom_point,
+    n1.cd_nomenclature AS nature_objet_geo,
+    n2.cd_nomenclature AS type_regroupement,
+    s.grp_method AS methode_regroupement,
+    n3.cd_nomenclature AS comportement,
+    n4.cd_nomenclature AS technique_obs,
+    n5.cd_nomenclature AS statut_biologique,
+    n6.cd_nomenclature AS etat_biologique,
+    n7.cd_nomenclature AS naturalite,
+    n8.cd_nomenclature AS preuve_existante,
+    n9.cd_nomenclature AS precision_diffusion,
+    n10.cd_nomenclature AS stade_vie,
+    n11.cd_nomenclature AS sexe,
+    n12.cd_nomenclature AS objet_denombrement,
+    n13.cd_nomenclature AS type_denombrement,
+    n14.cd_nomenclature AS niveau_sensibilite,
+    n15.cd_nomenclature AS statut_observation,
+    n16.cd_nomenclature AS floutage_dee,
+    n17.cd_nomenclature AS statut_source,
+    n18.cd_nomenclature AS type_info_geo,
+    n19.cd_nomenclature AS methode_determination,
+    n20.cd_nomenclature AS statut_validation,
     coalesce(s.meta_update_date, s.meta_create_date) AS derniere_action
 FROM gn_synthese.synthese AS s
     JOIN synthese_export se
@@ -149,7 +153,8 @@ WHERE
     AND n14.cd_nomenclature NOT IN ('4', '2.8')
 ;
 
-CREATE UNIQUE INDEX unique_idx_pnr_massif_bauges_blurred ON gn_exports.pnr_massif_bauges_blurred (id_synthese);
+CREATE UNIQUE INDEX unique_idx_pnr_massif_bauges_blurred
+ON gn_exports.pnr_massif_bauges_blurred (id_synthese);
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
