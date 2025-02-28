@@ -25,7 +25,7 @@ TRUNCATE gn_sensitivity.cor_sensitivity_area_type ;
 \echo 'Insert new sensitivity values corresponding to area types for SINP AURA'
 
 INSERT INTO gn_sensitivity.cor_sensitivity_area_type
-    (id_nomenclature_sensitivity, i_area_type)
+    (id_nomenclature_sensitivity, id_area_type)
 VALUES
     (ref_nomenclatures.get_id_nomenclature('SENSIBILITE', '1'), ref_geo.get_id_area_type('M5')),
     (ref_nomenclatures.get_id_nomenclature('SENSIBILITE', '2'), ref_geo.get_id_area_type('M5')),
