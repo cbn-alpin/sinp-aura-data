@@ -52,7 +52,7 @@ CREATE TABLE gn_imports.taxa_lists AS
         NULL::VARCHAR(50) AS group
 WITH NO DATA ;
 
-CREATE SEQUENCE gn_imports.tax_lists_seq AS integer START 1 OWNED BY gn_imports.taxa_lists.gid;
+CREATE SEQUENCE gn_imports.taxa_lists_seq AS integer START 1 OWNED BY gn_imports.taxa_lists.gid;
 ALTER TABLE gn_imports.taxa_lists ALTER COLUMN gid SET DEFAULT nextval('gn_imports.taxa_lists_seq');
 
 \echo '-------------------------------------------------------------------------------'
@@ -71,7 +71,6 @@ ALTER TABLE gn_imports.taxa_lists ALTER COLUMN "group" DROP DEFAULT;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Delete all previous taxa_lists topic data'
-
 DELETE FROM taxonomie.cor_taxon_attribut
 WHERE id_attribut IN (
     SELECT id_attribut
@@ -85,7 +84,6 @@ WHERE id_theme = taxonomie.get_id_theme_by_name('taxa_lists') ;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Create TaxHub attributes topic'
--- Change "Mon territoire" default not used theme to "forest_flora" topic
 INSERT taxonomie.bib_themes (
     nom_theme,
     desc_theme
