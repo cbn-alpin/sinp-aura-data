@@ -72,6 +72,8 @@ FROM gn_synthese.synthese AS s
 GROUP BY t.cd_ref, t.nom_valide, t.nom_vern
 ORDER BY t.nom_valide ;
 
+CREATE UNIQUE INDEX unique_idx_catalog_taxa_region ON gn_exports.catalog_taxa_region (cd_ref);
+
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;

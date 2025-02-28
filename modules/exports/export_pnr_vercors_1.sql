@@ -150,6 +150,8 @@ WHERE
     AND n14.cd_nomenclature NOT IN ('4', '2.8')
 ;
 
+CREATE UNIQUE INDEX unique_idx_pnr_vercors_blurred_1 ON gn_exports.pnr_vercors_blurred_1 (id_synthese);
+
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;

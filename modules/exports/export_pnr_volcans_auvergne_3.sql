@@ -150,6 +150,8 @@ WHERE
     AND n14.cd_nomenclature NOT IN ('4', '2.8')
 ;
 
+CREATE UNIQUE INDEX unique_idx_pnr_volcans_auvergne_blurred_3 ON gn_exports.pnr_volcans_auvergne_blurred_3 (id_synthese);
+
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;

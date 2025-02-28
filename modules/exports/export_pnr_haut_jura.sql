@@ -149,6 +149,8 @@ WHERE
     AND n14.cd_nomenclature NOT IN ('4', '2.8')
 ;
 
+CREATE UNIQUE INDEX unique_idx_pnr_haut_jura_blurred ON gn_exports.pnr_haut_jura_blurred (id_synthese);
+
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;
