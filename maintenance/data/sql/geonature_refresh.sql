@@ -49,6 +49,14 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_volcans_auvergne_blurred_2
 \echo 'Refreshing gn_exports.pnr_volcans_auvergne_blurred_3:'
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_volcans_auvergne_blurred_3 ;
 
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_exports.lo_parvi_1:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.lo_parvi_1 ;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_exports.lo_parvi_2:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.lo_parvi_2 ;
+
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
