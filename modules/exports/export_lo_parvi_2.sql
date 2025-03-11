@@ -6,9 +6,9 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.lo_parvi'
+\echo 'Create materialized view gn_exports.lo_parvi_2'
 
-CREATE MATERIALIZED VIEW gn_exports.lo_parvi AS
+CREATE MATERIALIZED VIEW gn_exports.lo_parvi_2 AS
 WITH
     lo_parvi AS (
         SELECT
@@ -28,6 +28,7 @@ WITH
                 ON cas.id_area = a.id_area
             JOIN lo_parvi AS lp
                 ON a.area_code = lp.code
+        WHERE s.date_min >= '2015-01-01'
 )
 SELECT
     s.id_synthese,
@@ -134,8 +135,8 @@ WHERE s.the_geom_4326 IS NOT NULL
     AND n14.cd_nomenclature = '0'
 ;
 
-CREATE UNIQUE INDEX unique_idx_lo_parvi
-ON gn_exports.lo_parvi (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_lo_parvi_2
+ON gn_exports.lo_parvi_2 (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
