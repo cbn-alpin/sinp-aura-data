@@ -32,8 +32,24 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_communes;
 -- DATA
 
 \echo '----------------------------------------------------------------'
-\echo 'Refreshing atlas.vm_cor_synthese_area:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.vm_cor_synthese_area;
+\echo 'Refreshing atlas.municipality_subdivided:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.municipality_subdivided;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing atlas.observations_blurred:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.observations_blurred;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing atlas.observations_blurred_geometry:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.observations_blurred_geometry;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing atlas.observations_blurred_centroid:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.observations_blurred_centroid;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing atlas.observations_blurred_centroid:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY atlas.observations_blurred_insee;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing atlas.vm_observations:'
