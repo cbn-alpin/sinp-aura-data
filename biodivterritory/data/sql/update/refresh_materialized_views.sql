@@ -1,9 +1,26 @@
 -- Script to refresh Materialized Views of Biodiv'territory.
 
-REFRESH MATERIALIZED VIEW gn_biodivterritory.mv_l_areas_autocomplete;
+-- Enable timing
+\timing
 
-REFRESH MATERIALIZED VIEW gn_biodivterritory.mv_territory_general_stats;
+BEGIN ;
 
-REFRESH MATERIALIZED VIEW gn_biodivterritory.mv_area_ntile_limit;
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_biodivterritory.mv_l_areas_autocomplete:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_biodivterritory.mv_l_areas_autocomplete;
 
-REFRESH MATERIALIZED VIEW gn_biodivterritory.mv_general_stats;
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_biodivterritory.mv_territory_general_stats:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_biodivterritory.mv_territory_general_stats;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_biodivterritory.mv_area_ntile_limit:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_biodivterritory.mv_area_ntile_limit;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_biodivterritory.mv_general_stats:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_biodivterritory.mv_general_stats;
+
+\echo '----------------------------------------------------------------'
+\echo 'COMMIT if all is ok:'
+COMMIT;

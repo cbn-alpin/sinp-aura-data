@@ -680,3 +680,9 @@ ALTER TABLE ONLY gn_biodivterritory.t_released_datas
 -- PostgreSQL database dump complete
 --
 
+CREATE UNIQUE INDEX mv_l_areas_autocomplete_pk ON gn_biodivterritory.mv_l_areas_autocomplete USING btree (id);
+
+CREATE UNIQUE INDEX mv_general_stats_pk ON gn_biodivterritory.mv_general_stats USING btree (id);
+
+CREATE UNIQUE INDEX mv_area_ntile_limit_pk ON gn_biodivterritory.mv_area_ntile_limit USING btree (id);
+
