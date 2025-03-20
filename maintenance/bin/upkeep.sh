@@ -80,8 +80,9 @@ function main() {
         if [[ "${has_new_data}" == "true" ]]; then
             updateOutsideObservations
             updateInpnImages
-            refreshMaterializedViews
-            refreshGeoNature
+            refreshGeoNatureCore
+            refreshGeoNatureExport
+            refreshBiodivTerritory
             refreshAtlas
         else
             printError "No new data => stop upkeeping !"
@@ -255,18 +256,22 @@ function updateFirstImages() {
             -f "${sql_dir}/update_first_images.sql"
 }
 
-function refreshMaterializedViews() {
-    notify "Run the refresh of core GeoNature materialized views..."
-    export PGPASSWORD="${db_pass}"; \
-        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_dir}/geonature_refresh.sql"
-
-    notify "Run the refresh of the GeoNature materialized views of the AURA SINP instance..."
+function refreshGeoNatureCore() {
+    notify "Refresh GeoNature core materialized views on db-srv..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_shared_dir}/refresh_materialized_view.sql"
+}
 
-    notify "Run the refresh of Biodiv'territory materialized views..."
+function refreshGeoNatureExport() {
+    notify "Refresh GeoNature Export materialized views on db-srv..."
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -f "${sql_dir}/geonature_refresh.sql"
+}
+
+function refreshBiodivTerritory() {
+    notify "Refresh Biodiv'territory materialized views on db-srv..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
@@ -277,13 +282,6 @@ function refreshAtlas() {
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
             -f "${sql_dir}/atlas_refresh.sql"
-}
-
-function refreshGeoNature() {
-    notify "Refresh GeoNature materialized views on db-srv..."
-    export PGPASSWORD="${db_pass}"; \
-        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -f "${sql_dir}/geonature_refresh.sql"
 }
 
 function notify() {
