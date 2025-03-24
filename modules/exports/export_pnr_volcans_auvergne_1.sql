@@ -112,7 +112,7 @@ FROM gn_synthese.synthese AS s
     JOIN gn_meta.t_datasets AS td
         ON td.id_dataset = s.id_dataset
     JOIN gn_meta.t_acquisition_frameworks AS ta
-        ON ta.id_acquisition_framework = s.id_acquisition_framework
+        ON ta.id_acquisition_framework = td.id_acquisition_framework
     LEFT JOIN ref_habitats.habref AS h
         ON h.cd_hab = s.cd_hab
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS n1
