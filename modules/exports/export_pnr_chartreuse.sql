@@ -1,4 +1,4 @@
--- PNR massif des Bauges synthese export with precise geom
+-- PNR Chartreuse synthese export with precise geom
 
 -- Enable timing
 \timing
@@ -6,20 +6,20 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.pnr_massif_bauges'
+\echo 'Create materialized view gn_exports.pnr_chartreuse'
 
-CREATE MATERIALIZED VIEW gn_exports.pnr_massif_bauges AS
+CREATE MATERIALIZED VIEW gn_exports.pnr_chartreuse AS
 WITH
-pnr_massif_bauges AS (
+pnr_chartreuse AS (
     SELECT
         UNNEST(
-            ARRAY['74138','73263','73270','73151','74123','74135','74194','74242','74054','74002',
-            '73020','73086','73277','74097','74104','74108','74111','73081','74072','73182',
-            '73154','73301','73293','73005','73153','73090','73208','73265','73010','73310',
-            '73097','74148','74310','73014','74060','73196','73036','73120','73129','74219',
-            '74147','73162','74142','73247','74232','74167','73139','73171','73084','73210',
-            '73018','74004','73098','73243','73096','73294','73164','73004','73312','73202',
-            '73178','73234','73146','73101','73106','73292','74267','73192']
+            ARRAY['38027','38039','38045','38061','38075','38126','38133','38140','38155','38166',
+            '38170','38214','38228','38229','38236','38258','38325','38328','38362','38376','38382',
+            '38383','38395','38397','38405','38407','38412','38417','38418','38423','38431','38432',
+            '38442','38446','38466','38471','38472','38503','38511','38516','38564','38565','73017',
+            '73022','73027','73029','73033','73087','73092','73104','73105','73107','73122','73137',
+            '73145','73151','73152','73160','73183','73184','73191','73219','73225','73228','73229',
+            '73233','73246','73274','73275','73281','73282','73326']
         ) AS code
 ),
 synthese_export AS (
@@ -31,7 +31,7 @@ synthese_export AS (
             ON s.id_synthese = cas.id_synthese
         LEFT JOIN ref_geo.l_areas AS a
             ON cas.id_area = a.id_area
-        JOIN pnr_massif_bauges AS p
+        JOIN pnr_chartreuse AS p
             ON a.area_code = p.code
 )
 SELECT
@@ -65,7 +65,7 @@ SELECT
     s.place_name AS nom_lieu,
     s.precision,
     s.additional_data AS donnees_additionnelles,
-    st_astext(s.the_geom_4326) AS wkt_4326,
+	st_astext(s.the_geom_4326) AS wkt_4326,
     n1.cd_nomenclature AS nature_objet_geo,
     n2.cd_nomenclature AS type_regroupement,
     s.grp_method AS methode_regroupement,
@@ -88,70 +88,69 @@ SELECT
     n19.cd_nomenclature AS methode_determination,
     n20.cd_nomenclature AS statut_validation,
     CASE
-        WHEN n14.cd_nomenclature > '0' THEN
-            'donnée sensible'
-        ELSE 'donnée non sensible'
+    	WHEN n14.cd_nomenclature > '0' THEN
+    		'donnée sensible'
+    	ELSE 'donnée non sensible'
     END
     AS sensibilite,
     coalesce(s.meta_update_date, s.meta_create_date) AS derniere_action
 FROM gn_synthese.synthese AS s
-    JOIN synthese_export se
+    JOIN synthese_export AS se
         ON se.id_synthese = s.id_synthese
-    JOIN gn_meta.t_datasets td
+    JOIN gn_meta.t_datasets AS td
         ON td.id_dataset = s.id_dataset
-    JOIN gn_meta.t_acquisition_frameworks ta
+    JOIN gn_meta.t_acquisition_frameworks AS ta
         ON ta.id_acquisition_framework = td.id_acquisition_framework
-    LEFT JOIN ref_habitats.habref h
+    LEFT JOIN ref_habitats.habref AS h
         ON h.cd_hab = s.cd_hab
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n1
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n1
         ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n2
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n2
         ON s.id_nomenclature_grp_typ = n2.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n3
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n3
         ON s.id_nomenclature_behaviour = n3.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n4
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n4
         ON s.id_nomenclature_obs_technique = n4.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n5
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n5
         ON s.id_nomenclature_bio_status = n5.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n6
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n6
         ON s.id_nomenclature_bio_condition = n6.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n7
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n7
         ON s.id_nomenclature_naturalness = n7.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n8
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n8
         ON s.id_nomenclature_exist_proof = n8.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n9
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n9
         ON s.id_nomenclature_diffusion_level = n9.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n10
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n10
         ON s.id_nomenclature_life_stage = n10.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n11
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n11
         ON s.id_nomenclature_sex = n11.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n12
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n12
         ON s.id_nomenclature_obj_count = n12.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n13
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n13
         ON s.id_nomenclature_type_count = n13.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n14
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n14
         ON s.id_nomenclature_sensitivity = n14.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n15
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n15
         ON s.id_nomenclature_observation_status = n15.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n16
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n16
         ON s.id_nomenclature_blurring = n16.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n17
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n17
         ON s.id_nomenclature_source_status = n17.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n18
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n18
         ON s.id_nomenclature_info_geo_type = n18.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n19
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n19
         ON s.id_nomenclature_determination_method = n19.id_nomenclature
-    LEFT JOIN ref_nomenclatures.t_nomenclatures n20
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS n20
         ON s.id_nomenclature_valid_status = n20.id_nomenclature
-WHERE
-    s.the_geom_4326 IS NOT NULL
+WHERE s.the_geom_4326 IS NOT NULL
     AND n15.cd_nomenclature = 'Pr' -- Présence
-    AND n9.cd_nomenclature != '4' -- Aucune diffusion
+    AND n9.cd_nomenclature != '4'-- Aucune diffusion
     AND n14.cd_nomenclature NOT IN ('4', '2.8') -- Aucune diffusion
 ;
 
-CREATE UNIQUE INDEX unique_idx_pnr_massif_bauges
-ON gn_exports.pnr_massif_bauges (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_pnr_chartreuse
+ON gn_exports.pnr_chartreuse (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'

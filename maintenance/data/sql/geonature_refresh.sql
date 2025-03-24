@@ -57,6 +57,9 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.lo_parvi_1 ;
 \echo 'Refreshing gn_exports.lo_parvi_2:'
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.lo_parvi_2 ;
 
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_exports.pnr_chartreuse:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_chartreuse ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'

@@ -41,6 +41,15 @@ ON gn_exports.pnr_volcans_auvergne_blurred_2 (id_synthese) ;
 CREATE UNIQUE INDEX IF NOT EXISTS unique_idx_pnr_volcans_auvergne_blurred_3
 ON gn_exports.pnr_volcans_auvergne_blurred_3 (id_synthese) ;
 
+CREATE UNIQUE INDEX IF NOT EXISTS unique_idx_lo_parvi_1
+ON gn_exports.lo_parvi_1 (id_synthese) ;
+
+CREATE UNIQUE INDEX IF NOT EXISTS unique_idx_lo_parvi_2
+ON gn_exports.lo_parvi_2 (id_synthese) ;
+
+CREATE UNIQUE INDEX IF NOT EXISTS unique_idx_pnr_chartreuse
+ON gn_exports.pnr_chartreuse (id_synthese) ;
+
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'

@@ -1,4 +1,4 @@
--- PNR Haut Jura synthese export with geom blurred depending on sensitivity level
+-- PNR Haut Jura synthese export with precise geom
 
 -- Enable timing
 \timing
@@ -6,17 +6,10 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.pnr_haut_jura_blurred'
+\echo 'Create materialized view gn_exports.pnr_haut_jura'
 
-CREATE MATERIALIZED VIEW gn_exports.pnr_haut_jura_blurred AS
+CREATE MATERIALIZED VIEW gn_exports.pnr_haut_jura AS
 WITH
-blurred_centroid AS (
-    SELECT
-        sb.id_synthese,
-        st_centroid(st_union(sb.geom_4326)) AS geom_point
-    FROM gn_exports.synthese_blurred AS sb
-    GROUP BY sb.id_synthese
-),
 pnr_haut_jura AS (
     SELECT
         UNNEST(
@@ -62,17 +55,15 @@ SELECT
     s.comment_description AS comment_occurrence,
     td.dataset_shortname AS jdd_nom_court,
     td.unique_dataset_id AS jdd_uuid,
+    ta.acquisition_framework_name AS ca_name,
+    ta.unique_acquisition_framework_id AS ca_uuid,
     s.reference_biblio,
     s.cd_hab AS code_habitat,
     h.lb_hab_fr AS habitat,
     s.place_name AS nom_lieu,
     s.precision,
     s.additional_data AS donnees_additionnelles,
-    CASE
-        WHEN bc.geom_point IS NOT NULL
-            THEN st_astext(bc.geom_point)
-        ELSE st_astext(s.the_geom_point)
-    END AS the_geom_point,
+	st_astext(s.the_geom_4326) AS wkt_4326,
     n1.cd_nomenclature AS nature_objet_geo,
     n2.cd_nomenclature AS type_regroupement,
     s.grp_method AS methode_regroupement,
@@ -94,14 +85,20 @@ SELECT
     n18.cd_nomenclature AS type_info_geo,
     n19.cd_nomenclature AS methode_determination,
     n20.cd_nomenclature AS statut_validation,
+    CASE
+    	WHEN n14.cd_nomenclature > '0' THEN
+    		'donnée sensible'
+    	ELSE 'donnée non sensible'
+    END
+    AS sensibilite,
     coalesce(s.meta_update_date, s.meta_create_date) AS derniere_action
 FROM gn_synthese.synthese AS s
     JOIN synthese_export AS se
         ON se.id_synthese = s.id_synthese
     JOIN gn_meta.t_datasets AS td
         ON td.id_dataset = s.id_dataset
-    LEFT JOIN blurred_centroid AS bc
-        ON bc.id_synthese = s.id_synthese
+    JOIN gn_meta.t_acquisition_frameworks AS ta
+        ON ta.id_acquisition_framework = td.id_acquisition_framework
     LEFT JOIN ref_habitats.habref AS h
         ON h.cd_hab = s.cd_hab
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS n1
@@ -144,14 +141,14 @@ FROM gn_synthese.synthese AS s
         ON s.id_nomenclature_determination_method = n19.id_nomenclature
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS n20
         ON s.id_nomenclature_valid_status = n20.id_nomenclature
-WHERE s.the_geom_point IS NOT NULL
-    AND n15.cd_nomenclature = 'Pr'
-    AND n9.cd_nomenclature != '4'
-    AND n14.cd_nomenclature NOT IN ('4', '2.8')
+WHERE s.the_geom_4326 IS NOT NULL
+    AND n15.cd_nomenclature = 'Pr' -- Présence
+    AND n9.cd_nomenclature != '4'-- Aucune diffusion
+    AND n14.cd_nomenclature NOT IN ('4', '2.8') -- Aucune diffusion
 ;
 
-CREATE UNIQUE INDEX unique_idx_pnr_haut_jura_blurred
-ON gn_exports.pnr_haut_jura_blurred (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_pnr_haut_jura
+ON gn_exports.pnr_haut_jura (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
