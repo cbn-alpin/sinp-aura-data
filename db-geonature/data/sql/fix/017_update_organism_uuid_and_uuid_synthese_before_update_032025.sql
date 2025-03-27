@@ -2,7 +2,7 @@
  * 
  */ 
 
-SELECT * FROM utilisateurs.bib_organismes bo WHERE bo.nom_organisme ILIKE '%méditerranéen%'
+BEGIN;
 
 WITH org_update(org_id,uuid_actuel,uuid_national) AS ( values 
 	(
@@ -1888,3 +1888,5 @@ WITH uuid_synthese_remplace (uuid_fichier,uuid_synthese) AS ( VALUES
     unique_id_sinp = usr.uuid_fichier
  FROM uuid_synthese_remplace usr 
  WHERE s.unique_id_sinp = usr.uuid_synthese;
+ 
+ COMMIT;
