@@ -130,9 +130,9 @@ function runStatusMessenger() {
     extractDownloadDates
     while true; do
         extractDownloadedData
-        sendTelegram "Data already downloaded: ${downloaded_data_count}
-            ${errors_msg}
-            Elapsed time: ${elapsed_time}"
+        sendTelegram "${gn2pg_source_name^^} - Data already downloaded: ${downloaded_data_count}
+            Elapsed time: ${elapsed_time}
+            ${errors_msg}"
         sleep ${gn2pg_messenger_pause}
     done
 }
@@ -179,7 +179,7 @@ function extractDownloadDates() {
             ORDER BY last_ts DESC ;"
     )
     last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
-    sendTelegram "⌚ Last download date: ${last_download_date}
+    sendTelegram "⌚ ${gn2pg_source_name^^} last download date: ${last_download_date}
         Actual download date used: ${actual_download_date}"
 }
 
