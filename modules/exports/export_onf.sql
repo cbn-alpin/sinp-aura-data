@@ -123,7 +123,6 @@ FROM gn_synthese.synthese AS s
 WHERE s.the_geom_4326 IS NOT NULL
     AND n15.cd_nomenclature = 'Pr' -- Présence
     AND n9.cd_nomenclature != '4' -- Aucune diffusion
-    AND n14.cd_nomenclature = '0' -- Non sensible
 ;
 -- 11 minutes
 
