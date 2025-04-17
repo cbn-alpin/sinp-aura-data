@@ -43,7 +43,8 @@ synthese_export AS (
             ON cas.id_area = a.id_area
         JOIN pnr_volcans_auvergne AS p
             ON a.area_code = p.code
-    WHERE s.date_min >= '2020-01-01'
+    WHERE s.date_min >= '2015-01-01'
+        AND s.date_min < '2020-01-01'
 )
 SELECT
     s.id_synthese,
