@@ -51,11 +51,11 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_volcans_auvergne_2 ;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_exports.pnr_volcans_auvergne_3:'
-REFRESH MATERVIEW CONCIALIZED URRENTLY gn_exports.pnr_volcans_auvergne_3 ;
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_volcans_auvergne_3 ;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_exports.pnr_volcans_auvergne_4:'
-REFRESH MATERVIEW CONCIALIZED URRENTLY gn_exports.pnr_volcans_auvergne_4 ;
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_volcans_auvergne_4 ;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_exports.lo_parvi_1:'
