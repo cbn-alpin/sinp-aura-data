@@ -198,22 +198,28 @@ function buildNewDataDetails() {
 }
 
 function updateOutsideObservations() {
-    notify "Create outside all tmp table..."
+    msg="Creating outside all tmp table..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${root_dir}/area-outside/data/sql/01_create_outside_all.sql"
+    alert $? "${msg}"
 
-    notify "Fix outside observations geometries..."
+    msg="Fixing outside observations geometries..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${root_dir}/area-outside/data/sql/03_fix_outside_geom.sql"
+    alert $? "${msg}"
 }
 
 function updateInpnImages() {
-    notify "Update bib_noms table with new observations scientific names..."
+    msg="Updating bib_noms table with new observations scientific names..."
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${sql_dir}/update_scinames_list.sql"
+    alert $? "${msg}"
 
     local readonly inpn_media_script_dir="${gnuk_inpn_media_script_dir}"
     if  [[ "${gnuk_local_inpn_import_media_script}" = true ]] && \
@@ -250,38 +256,53 @@ function updateInpnImages() {
 }
 
 function updateFirstImages() {
-    notify "Update first images in taxonomie.t_medias..."
+    msg="Updating first images in taxonomie.t_medias..."
+    notify "${msg}"
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${sql_dir}/update_first_images.sql"
+    alert $? "${msg}"
 }
 
 function refreshGeoNatureCore() {
-    notify "Refresh GeoNature core materialized views on db-srv..."
+    msg="Refreshing GeoNature core materialized views on db-srv..."
+    notify "${msg}"
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${sql_shared_dir}/refresh_materialized_view.sql"
+    alert $? "${msg}"
 }
 
 function refreshGeoNatureExport() {
-    notify "Refresh GeoNature Export materialized views on db-srv..."
+    msg="Refreshing GeoNature Export materialized views on db-srv..."
+    notify "${msg}"
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${sql_dir}/geonature_refresh.sql"
+    alert $? "${msg}"
 }
 
 function refreshBiodivTerritory() {
-    notify "Refresh Biodiv'territory materialized views on db-srv..."
+    msg="Refreshing Biodiv'territory materialized views on db-srv..."
+    notify "${msg}"
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${root_dir}/biodivterritory/data/sql/update/refresh_materialized_views.sql"
+    alert $? "${msg}"
 }
 
 function refreshAtlas() {
-    notify "Refresh Atlas materialized views on db-srv..."
+    msg="Refreshing Atlas materialized views on db-srv..."
+    notify "${msg}"
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
+            -v ON_ERROR_STOP=1 \
             -f "${sql_dir}/atlas_refresh.sql"
+    alert $? "${msg}"
 }
 
 function notify() {
@@ -293,6 +314,29 @@ function notify() {
     computeElapsedTime
     sendTelegram "🔵 ${message}
         Elapsed time: ${elapsed_time}"
+}
+
+function alert() {
+    if [[ $# -lt 2 ]]; then
+        exitScript "Missing required argument to ${FUNCNAME[0]}()!" 2
+    fi
+    local status="${1}"
+    local action="${2,}"
+
+    local message=""
+    if [[ "${status}" == "0" ]]; then
+        message="🟢 SUCCESS of ${action}"
+    elif [[ "${status}" == "1" ]]; then
+        message="🔴 FATAL ERROR occurred while ${action}"
+    elif [[ "${status}" == "2" ]]; then
+        message="🔴 BAD CONNECTION to server occurred while ${action}"
+    elif [[ "${status}" == "3" ]]; then
+        message="🔴 ERROR IN SCRIPT occurred while ${action}"
+    fi
+
+    printMsg "${message}"
+    sendTelegram "${message}
+        Time: $(date)"
 }
 
 function sendStopMessage() {
