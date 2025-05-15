@@ -10,8 +10,8 @@ BEGIN ;
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.catalog_taxa_region ;
 
 \echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.synthese:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.synthese ;
+\echo 'Refreshing gn_exports.synthese_blurred:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.synthese_blurred ;
 
 \echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_exports.pnr_haut_jura:'
