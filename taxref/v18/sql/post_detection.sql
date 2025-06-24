@@ -14,3 +14,5 @@ WHERE parameter_name = 'taxref_version' ;
 -- Avoid to crash script when we retry applying this script
 DELETE FROM taxonomie.t_meta_taxref
 WHERE referencial_name = 'Taxref' AND version = '18' ;
+
+
