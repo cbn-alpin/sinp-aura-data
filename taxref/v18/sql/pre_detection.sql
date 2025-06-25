@@ -76,6 +76,9 @@ DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomi
 DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (128275,142037,142038);
 
 
+-- 1. Désactiver la contrainte FK
+ALTER TABLE gn_synthese.synthese DROP CONSTRAINT fk_synthese_cd_nom;
+
 -- TABLE : gn_sensitivity.t_sensitivity_rules
 DELETE FROM gn_sensitivity.t_sensitivity_rules WHERE cd_nom = 124413;
 UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726;
@@ -122,7 +125,10 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
   660054,660095,719293,873328,945104,138395
 );
 
--- =====================================================================
 
+-- 4. Réactiver la contrainte FK (il faut la recréer, voir la doc)
+ALTER TABLE gn_synthese.synthese
+    ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom)
+    REFERENCES taxonomie.bib_noms(cd_nom);
 
 COMMIT;
