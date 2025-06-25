@@ -99,18 +99,31 @@ UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
 );
 
 -- TABLE : taxonomie.bib_noms
+-- Avant chaque UPDATE, suppression de la cible si elle existe déjà (sauf la ligne à migrer)
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 159607 AND cd_nom <> 92267;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 110473 AND cd_nom <> 110474;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 1056537 AND cd_nom <> 117281;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 614188 AND cd_nom <> 125814;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 457300 AND cd_nom <> 233651;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 233652 AND cd_nom <> 457301;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 233656 AND cd_nom <> 457302;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 57077 AND cd_nom <> 658461;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 59428 AND cd_nom <> 660113;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 773729 AND cd_nom <> 136960;
+DELETE FROM taxonomie.bib_noms WHERE cd_nom = 621429 AND cd_nom <> 129770;
+
 -- Remplacement des cd_nom (cd_raison_suppression = 1 et cd_nom_remplacement NON NULL)
-UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
-UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
-UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
-UPDATE taxonomie.bib_noms SET cd_nom = 614188 WHERE cd_nom = 125814 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 614188);
-UPDATE taxonomie.bib_noms SET cd_nom = 457300 WHERE cd_nom = 233651 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 457300);
-UPDATE taxonomie.bib_noms SET cd_nom = 233652 WHERE cd_nom = 457301 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233652);
-UPDATE taxonomie.bib_noms SET cd_nom = 233656 WHERE cd_nom = 457302 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233656);
-UPDATE taxonomie.bib_noms SET cd_nom = 57077 WHERE cd_nom = 658461 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
-UPDATE taxonomie.bib_noms SET cd_nom = 59428 WHERE cd_nom = 660113 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
-UPDATE taxonomie.bib_noms SET cd_nom = 773729 WHERE cd_nom = 136960 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 773729);
-UPDATE taxonomie.bib_noms SET cd_nom = 621429 WHERE cd_nom = 129770 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 621429);
+UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267;
+UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474;
+UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281;
+UPDATE taxonomie.bib_noms SET cd_nom = 614188 WHERE cd_nom = 125814;
+UPDATE taxonomie.bib_noms SET cd_nom = 457300 WHERE cd_nom = 233651;
+UPDATE taxonomie.bib_noms SET cd_nom = 233652 WHERE cd_nom = 457301;
+UPDATE taxonomie.bib_noms SET cd_nom = 233656 WHERE cd_nom = 457302;
+UPDATE taxonomie.bib_noms SET cd_nom = 57077 WHERE cd_nom = 658461;
+UPDATE taxonomie.bib_noms SET cd_nom = 59428 WHERE cd_nom = 660113;
+UPDATE taxonomie.bib_noms SET cd_nom = 773729 WHERE cd_nom = 136960;
+UPDATE taxonomie.bib_noms SET cd_nom = 621429 WHERE cd_nom = 129770;
 
 -- Suppression des anciennes entrées devenues orphelines dans cor_nom_liste
 DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (
@@ -139,3 +152,4 @@ UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718
 -- ----------------------------------------------------------------
 
 COMMIT;
+
