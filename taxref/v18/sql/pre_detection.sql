@@ -77,10 +77,10 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (128275,142037,142038);
 
 
 -- ----------------------------------------------------------------
--- Traitement des remplacements et suppressions de cd_nom pour la migration SINP AURA (selon missing_cd_nom_into_database.csv)
+-- Migration TaxRef v17 vers v18 – Traitement SINP AURA
+-- MISE À JOUR DES RÉFÉRENCES AVANT SUPPRESSION/UPDATE DANS bib_noms
 
--- TABLE : gn_synthese.synthese
--- Remplacement des cd_nom (cd_raison_suppression = 1 et cd_nom_remplacement NON NULL)
+-- TABLE : gn_synthese.synthese (mise à jour classique)
 UPDATE gn_synthese.synthese SET cd_nom = 159607 WHERE cd_nom = 92267 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
 UPDATE gn_synthese.synthese SET cd_nom = 110473 WHERE cd_nom = 110474 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
 UPDATE gn_synthese.synthese SET cd_nom = 1056537 WHERE cd_nom = 117281 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
@@ -92,14 +92,26 @@ UPDATE gn_synthese.synthese SET cd_nom = 233656 WHERE cd_nom = 457302 AND EXISTS
 UPDATE gn_synthese.synthese SET cd_nom = 57077 WHERE cd_nom = 658461 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
 UPDATE gn_synthese.synthese SET cd_nom = 59428 WHERE cd_nom = 660113 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
 
--- Mise à NULL des cd_nom orphelins (cd_raison_suppression = 2 ou 3)
+-- Mise à NULL des cd_nom orphelins
 UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
   41508,46412,46608,59404,96518,98692,99589,104154,110344,110424,110991,114417,117011,119429,
   122827,124262,124413,126163,126212,129108,129226,129579,131837,138395,660054,660095,873328,945104,233536,234037,147083,162283
 );
 
--- TABLE : taxonomie.bib_noms
--- Avant chaque UPDATE, suppression de la cible si elle existe déjà (sauf la ligne à migrer)
+-- TABLE : t_medias (mise à jour des références AVANT de toucher à bib_noms)
+UPDATE taxonomie.t_medias SET cd_nom = 159607 WHERE cd_nom = 92267;
+UPDATE taxonomie.t_medias SET cd_nom = 110473 WHERE cd_nom = 110474;
+UPDATE taxonomie.t_medias SET cd_nom = 1056537 WHERE cd_nom = 117281;
+UPDATE taxonomie.t_medias SET cd_nom = 614188 WHERE cd_nom = 125814;
+UPDATE taxonomie.t_medias SET cd_nom = 457300 WHERE cd_nom = 233651;
+UPDATE taxonomie.t_medias SET cd_nom = 233652 WHERE cd_nom = 457301;
+UPDATE taxonomie.t_medias SET cd_nom = 233656 WHERE cd_nom = 457302;
+UPDATE taxonomie.t_medias SET cd_nom = 57077 WHERE cd_nom = 658461;
+UPDATE taxonomie.t_medias SET cd_nom = 59428 WHERE cd_nom = 660113;
+UPDATE taxonomie.t_medias SET cd_nom = 773729 WHERE cd_nom = 136960;
+UPDATE taxonomie.t_medias SET cd_nom = 621429 WHERE cd_nom = 129770;
+
+-- TABLE : bib_noms (suppression de la cible avant update pour éviter les doublons de clé unique)
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 159607 AND cd_nom <> 92267;
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 110473 AND cd_nom <> 110474;
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 1056537 AND cd_nom <> 117281;
@@ -112,7 +124,7 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom = 59428 AND cd_nom <> 660113;
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 773729 AND cd_nom <> 136960;
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 621429 AND cd_nom <> 129770;
 
--- Remplacement des cd_nom (cd_raison_suppression = 1 et cd_nom_remplacement NON NULL)
+-- Mise à jour finale dans bib_noms
 UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267;
 UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474;
 UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281;
@@ -152,4 +164,3 @@ UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718
 -- ----------------------------------------------------------------
 
 COMMIT;
-
