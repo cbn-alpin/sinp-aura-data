@@ -76,14 +76,9 @@ DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomi
 DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (128275,142037,142038);
 
 
--- 1. Désactiver la contrainte FK
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT fk_synthese_cd_nom;
-
--- TABLE : gn_sensitivity.t_sensitivity_rules
-DELETE FROM gn_sensitivity.t_sensitivity_rules WHERE cd_nom = 124413;
-UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726;
-
--- TABLE : gn_synthese.synthese
+-- ----------------------------------------------------------------
+-- Traitement des remplacements et suppressions de cd_nom pour la migration
+-- Remplacement des cd_nom dans les tables référentes (synthese et cor_nom_liste)
 UPDATE gn_synthese.synthese SET cd_nom = 159607 WHERE cd_nom = 92267;
 UPDATE gn_synthese.synthese SET cd_nom = 110473 WHERE cd_nom = 110474;
 UPDATE gn_synthese.synthese SET cd_nom = 1056537 WHERE cd_nom = 117281;
@@ -94,30 +89,35 @@ UPDATE gn_synthese.synthese SET cd_nom = 233652 WHERE cd_nom = 457301;
 UPDATE gn_synthese.synthese SET cd_nom = 233656 WHERE cd_nom = 457302;
 UPDATE gn_synthese.synthese SET cd_nom = 57077 WHERE cd_nom = 658461;
 UPDATE gn_synthese.synthese SET cd_nom = 59428 WHERE cd_nom = 660113;
+
+-- Mise à NULL des cd_nom orphelins dans synthese (non migrables)
 UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
   41508,46412,46608,59404,96518,98692,99589,104154,110344,110424,110991,114417,117011,119429,
   122827,124262,124413,126163,126212,129108,129226,129579,131837,138395,660054,660095,873328,945104,233536,234037,147083,162283
 );
 
--- TABLE : taxonomie.bib_noms et cor_nom_liste
-UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267;
-UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474;
-UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281;
-UPDATE taxonomie.bib_noms SET cd_nom = 614188 WHERE cd_nom = 125814;
-UPDATE taxonomie.bib_noms SET cd_nom = 457300 WHERE cd_nom = 233651;
-UPDATE taxonomie.bib_noms SET cd_nom = 233652 WHERE cd_nom = 457301;
-UPDATE taxonomie.bib_noms SET cd_nom = 233656 WHERE cd_nom = 457302;
-UPDATE taxonomie.bib_noms SET cd_nom = 57077 WHERE cd_nom = 658461;
-UPDATE taxonomie.bib_noms SET cd_nom = 59428 WHERE cd_nom = 660113;
-UPDATE taxonomie.bib_noms SET cd_nom = 773729 WHERE cd_nom = 136960;
-UPDATE taxonomie.bib_noms SET cd_nom = 621429 WHERE cd_nom = 129770;
+-- Remplacement des cd_nom dans cor_nom_liste
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 159607 WHERE cd_nom = 92267;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 110473 WHERE cd_nom = 110474;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 1056537 WHERE cd_nom = 117281;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 614188 WHERE cd_nom = 125814;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 457300 WHERE cd_nom = 233651;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 233652 WHERE cd_nom = 457301;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 233656 WHERE cd_nom = 457302;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 57077 WHERE cd_nom = 658461;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 59428 WHERE cd_nom = 660113;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 773729 WHERE cd_nom = 136960;
+UPDATE taxonomie.cor_nom_liste SET cd_nom = 621429 WHERE cd_nom = 129770;
 
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (
-  41508,46412,46608,59404,83018,87931,88315,96518,98692,99589,103706,104146,104154,104286,
-  110344,110424,110991,114417,117011,119398,119429,121607,122827,124262,124413,126163,
-  126212,129108,129226,129530,129579,130237,130415,131837,147083,162283,233536,234037,461959,620446,
-  660054,660095,719293,873328,945104,138395
-));
+-- Suppression des anciennes entrées bib_noms et cor_nom_liste devenues orphelines
+DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (
+  SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (
+    41508,46412,46608,59404,83018,87931,88315,96518,98692,99589,103706,104146,104154,104286,
+    110344,110424,110991,114417,117011,119398,119429,121607,122827,124262,124413,126163,
+    126212,129108,129226,129530,129579,130237,130415,131837,147083,162283,233536,234037,461959,620446,
+    660054,660095,719293,873328,945104,138395
+  )
+);
 DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
   41508,46412,46608,59404,83018,87931,88315,96518,98692,99589,103706,104146,104154,104286,
   110344,110424,110991,114417,117011,119398,119429,121607,122827,124262,124413,126163,
@@ -125,10 +125,11 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
   660054,660095,719293,873328,945104,138395
 );
 
+-- ----------------------------------------------------------------
+-- Traitement des cd_nom spécifiques pour les règles de sensibilité
+DELETE FROM gn_sensitivity.t_sensitivity_rules WHERE cd_nom = 124413;
+UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726;
 
--- 4. Réactiver la contrainte FK (il faut la recréer, voir la doc)
-ALTER TABLE gn_synthese.synthese
-    ADD CONSTRAINT fk_synthese_cd_nom FOREIGN KEY (cd_nom)
-    REFERENCES taxonomie.bib_noms(cd_nom);
+-- ----------------------------------------------------------------
 
 COMMIT;
