@@ -77,8 +77,23 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (128275,142037,142038);
 
 
 -- ----------------------------------------------------------------
--- Migration TaxRef v17 vers v18 – Traitement SINP AURA
--- Correction du mapping t_medias : colonne cd_ref au lieu de cd_nom
+-- Traitement des remplacements et suppressions de cd_nom pour la migration SINP AURA (selon missing_cd_nom_into_database.csv)
+
+-- 1. Mettre à jour d'abord toutes les dépendances dans t_medias
+
+UPDATE taxonomie.t_medias SET cd_nom = 159607 WHERE cd_nom = 92267;
+UPDATE taxonomie.t_medias SET cd_nom = 110473 WHERE cd_nom = 110474;
+UPDATE taxonomie.t_medias SET cd_nom = 1056537 WHERE cd_nom = 117281;
+UPDATE taxonomie.t_medias SET cd_nom = 614188 WHERE cd_nom = 125814;
+UPDATE taxonomie.t_medias SET cd_nom = 457300 WHERE cd_nom = 233651;
+UPDATE taxonomie.t_medias SET cd_nom = 233652 WHERE cd_nom = 457301;
+UPDATE taxonomie.t_medias SET cd_nom = 233656 WHERE cd_nom = 457302;
+UPDATE taxonomie.t_medias SET cd_nom = 57077 WHERE cd_nom = 658461;
+UPDATE taxonomie.t_medias SET cd_nom = 59428 WHERE cd_nom = 660113;
+UPDATE taxonomie.t_medias SET cd_nom = 773729 WHERE cd_nom = 136960;
+UPDATE taxonomie.t_medias SET cd_nom = 621429 WHERE cd_nom = 129770;
+
+-- 2. Update des autres tables (synthese, bib_noms...)
 
 -- TABLE : gn_synthese.synthese (mise à jour classique)
 UPDATE gn_synthese.synthese SET cd_nom = 159607 WHERE cd_nom = 92267 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
@@ -98,20 +113,7 @@ UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
   122827,124262,124413,126163,126212,129108,129226,129579,131837,138395,660054,660095,873328,945104,233536,234037,147083,162283
 );
 
--- TABLE : t_medias (mise à jour des références AVANT de toucher à bib_noms)
-UPDATE taxonomie.t_medias SET cd_ref = 159607 WHERE cd_ref = 92267;
-UPDATE taxonomie.t_medias SET cd_ref = 110473 WHERE cd_ref = 110474;
-UPDATE taxonomie.t_medias SET cd_ref = 1056537 WHERE cd_ref = 117281;
-UPDATE taxonomie.t_medias SET cd_ref = 614188 WHERE cd_ref = 125814;
-UPDATE taxonomie.t_medias SET cd_ref = 457300 WHERE cd_ref = 233651;
-UPDATE taxonomie.t_medias SET cd_ref = 233652 WHERE cd_ref = 457301;
-UPDATE taxonomie.t_medias SET cd_ref = 233656 WHERE cd_ref = 457302;
-UPDATE taxonomie.t_medias SET cd_ref = 57077 WHERE cd_ref = 658461;
-UPDATE taxonomie.t_medias SET cd_ref = 59428 WHERE cd_ref = 660113;
-UPDATE taxonomie.t_medias SET cd_ref = 773729 WHERE cd_ref = 136960;
-UPDATE taxonomie.t_medias SET cd_ref = 621429 WHERE cd_ref = 129770;
-
--- TABLE : bib_noms (suppression de la cible avant update pour éviter les doublons de clé unique)
+-- 3. Nettoyage de bib_noms (supprimer la cible avant update pour éviter les doublons de clé unique)
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 159607 AND cd_nom <> 92267;
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 110473 AND cd_nom <> 110474;
 DELETE FROM taxonomie.bib_noms WHERE cd_nom = 1056537 AND cd_nom <> 117281;
