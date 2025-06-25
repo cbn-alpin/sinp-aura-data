@@ -98,19 +98,19 @@ UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
   122827,124262,124413,126163,126212,129108,129226,129579,131837,138395,660054,660095,873328,945104,233536,234037,147083,162283
 );
 
--- TABLE : taxonomie.cor_nom_liste
--- Remplacement des cd_nom dans cor_nom_liste (cd_raison_suppression = 1 et cd_nom_remplacement NON NULL)
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 159607 WHERE cd_nom = 92267 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 110473 WHERE cd_nom = 110474 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 1056537 WHERE cd_nom = 117281 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 614188 WHERE cd_nom = 125814 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 614188);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 457300 WHERE cd_nom = 233651 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 457300);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 233652 WHERE cd_nom = 457301 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233652);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 233656 WHERE cd_nom = 457302 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233656);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 57077 WHERE cd_nom = 658461 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 59428 WHERE cd_nom = 660113 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 773729 WHERE cd_nom = 136960 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 773729);
-UPDATE taxonomie.cor_nom_liste SET cd_nom = 621429 WHERE cd_nom = 129770 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 621429);
+-- TABLE : taxonomie.bib_noms
+-- Remplacement des cd_nom (cd_raison_suppression = 1 et cd_nom_remplacement NON NULL)
+UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
+UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
+UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
+UPDATE taxonomie.bib_noms SET cd_nom = 614188 WHERE cd_nom = 125814 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 614188);
+UPDATE taxonomie.bib_noms SET cd_nom = 457300 WHERE cd_nom = 233651 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 457300);
+UPDATE taxonomie.bib_noms SET cd_nom = 233652 WHERE cd_nom = 457301 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233652);
+UPDATE taxonomie.bib_noms SET cd_nom = 233656 WHERE cd_nom = 457302 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233656);
+UPDATE taxonomie.bib_noms SET cd_nom = 57077 WHERE cd_nom = 658461 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
+UPDATE taxonomie.bib_noms SET cd_nom = 59428 WHERE cd_nom = 660113 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
+UPDATE taxonomie.bib_noms SET cd_nom = 773729 WHERE cd_nom = 136960 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 773729);
+UPDATE taxonomie.bib_noms SET cd_nom = 621429 WHERE cd_nom = 129770 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 621429);
 
 -- Suppression des anciennes entrées devenues orphelines dans cor_nom_liste
 DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (
@@ -127,8 +127,7 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
   41508,46412,46608,59404,83018,87931,88315,96518,98692,99589,103706,104146,104154,104286,
   110344,110424,110991,114417,117011,119398,119429,121607,122827,124262,124413,126163,
   126212,129108,129226,129530,129579,130237,130415,131837,147083,162283,233536,234037,461959,620446,
-  660054,660095,719293,873328,945104,138395,
-  92267,110474,117281,125814,233651,457301,457302,658461,660113,136960,129770 -- lignes remplacées à supprimer
+  660054,660095,719293,873328,945104,138395
 );
 
 -- TABLE : gn_sensitivity.t_sensitivity_rules
