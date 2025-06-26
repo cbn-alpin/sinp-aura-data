@@ -1,170 +1,121 @@
 -- Migration TaxRef v17 vers v18 – PRÉ-DÉTECTION (par grappes, cas 3) – SINP AURA
+-- Adapté pour n'utiliser que la logique dynamique sur les attributs (robuste/portable)
+-- NE PAS toucher à taxonomie.bib_noms et taxonomie.cor_nom_liste ici (nettoyage post-migration)
+
 BEGIN;
 
 -- Désactivation des triggers sur la table synthese
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese ;
 ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_update_calculate_sensitivity ;
+
+-- Attributs concernés pour les suppressions cas 3
+-- (ajoute ou retire ici selon besoin : tous les noms sont dynamiques, pas d'id en dur)
+-- Par défaut, on traite les attributs classiques de fusion/finalité
+-- ('sinp_description', 'sinp_ecology', 'sinp_habitat' sont des exemples fréquents)
+-- Tu peux factoriser la liste dans chaque grappe si besoin (ou la mettre en variable si tu fais du SQL dynamique)
 
 -- ----------------------------------------------------------------
 -- 1. Asparagus officinalis (cible : 84279)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (131756) AND id_attribut IN (106,107);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (131756)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 84279 WHERE cd_ref IN (131756);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (131756));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (131756);
 
 -- ----------------------------------------------------------------
 -- 2. Juncus bulbosus (cible : 104145)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (104156,104225,104345,104367,113317,136927,136928,136955,136957,147921,147923) AND id_attribut IN (107,106);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (104156,104225,104345,104367,113317,136927,136928,136955,136957,147921,147923)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 104145 WHERE cd_ref IN (104156,104225,104345,104367,113317,136927,136928,136955,136957,147921,147923);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (104156,104225,104345,104367,113317,136927,136928,136955,136957,147921,147923));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (104156,104225,104345,104367,113317,136927,136928,136955,136957,147921,147923);
 
 -- ----------------------------------------------------------------
 -- 3. Neotinea ustulata (cible : 109501)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (111012,138429,162137,718722) AND id_attribut IN (107,106);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (111012,138429,162137,718722)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 109501 WHERE cd_ref IN (111012,138429,162137,718722);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (111012,138429,162137,718722));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (111012,138429,162137,718722);
 
 -- ----------------------------------------------------------------
 -- 4. Pulsatilla rubra (cible : 116456)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (82660,131408,139522,150342,150343,150351,155095,161705,718641,718642) AND id_attribut IN (107,106);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (82660,131408,139522,150342,150343,150351,155095,161705,718641,718642)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 116456 WHERE cd_ref IN (82660,131408,139522,150342,150343,150351,155095,161705,718641,718642);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (82660,131408,139522,150342,150343,150351,155095,161705,718641,718642));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (82660,131408,139522,150342,150343,150351,155095,161705,718641,718642);
 
 -- ----------------------------------------------------------------
 -- 5. Reseda lutea (cible : 117458)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (117447,139857,150557) AND id_attribut IN (106,107,108);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (117447,139857,150557)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology'),
+        taxonomie.get_id_attribut_by_name('sinp_habitat')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 117458 WHERE cd_ref IN (117447,139857,150557);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (117447,139857,150557));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (117447,139857,150557);
 
 -- ----------------------------------------------------------------
 -- 6. Rubia peregrina (cible : 118916)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (118909,140175) AND id_attribut IN (106,107);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (118909,140175)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 118916 WHERE cd_ref IN (118909,140175);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (118909,140175));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (118909,140175);
 
 -- ----------------------------------------------------------------
 -- 7. Salix fragilis (cible : 120040)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (119946,119950,120263,120512,140439,151070,151071) AND id_attribut IN (107,106);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (119946,119950,120263,120512,140439,151070,151071)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 120040 WHERE cd_ref IN (119946,119950,120263,120512,140439,151070,151071);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (119946,119950,120263,120512,140439,151070,151071));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (119946,119950,120263,120512,140439,151070,151071);
 
 -- ----------------------------------------------------------------
 -- 8. Solanum nigrum (cible : 124080)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (124017,124083,141265,141273,141275,151896) AND id_attribut IN (107);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (124017,124083,141265,141273,141275,151896)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 124080 WHERE cd_ref IN (124017,124083,141265,141273,141275,151896);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (124017,124083,141265,141273,141275,151896));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (124017,124083,141265,141273,141275,151896);
 
 -- ----------------------------------------------------------------
 -- 9. Thalictrum simplex (cible : 126213)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (126089,141635,141636,141638,718422) AND id_attribut IN (107,106);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (126089,141635,141636,141638,718422)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 126213 WHERE cd_ref IN (126089,141635,141636,141638,718422);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (126089,141635,141636,141638,718422));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (126089,141635,141636,141638,718422);
 
 -- ----------------------------------------------------------------
 -- 10. Urtica dioica (cible : 128268)
-DELETE FROM taxonomie.cor_taxon_attribut WHERE cd_ref IN (128275,142037,142038) AND id_attribut IN (107,108,106);
+DELETE FROM taxonomie.cor_taxon_attribut 
+WHERE cd_ref IN (128275,142037,142038)
+  AND id_attribut IN (
+        taxonomie.get_id_attribut_by_name('sinp_description'),
+        taxonomie.get_id_attribut_by_name('sinp_ecology'),
+        taxonomie.get_id_attribut_by_name('sinp_habitat')
+  );
 UPDATE taxonomie.t_medias SET cd_ref = 128268 WHERE cd_ref IN (128275,142037,142038);
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (128275,142037,142038));
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (128275,142037,142038);
-
 
 -- ----------------------------------------------------------------
--- Migration TaxRef v17 vers v18 – Traitement SINP AURA
-
-BEGIN;
-
--- Désactivation des triggers sur la table synthese
-ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese ;
-ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_update_calculate_sensitivity ;
-
--- ----------------------------------------------------------------
--- MISE À JOUR DES REFERENCES AVANT SUPPRESSION/UPDATE DANS bib_noms
-
--- TABLE : taxonomie.t_medias (MAJ cd_ref, PAS cd_nom !)
-UPDATE taxonomie.t_medias SET cd_ref = 159607 WHERE cd_ref = 92267;
-UPDATE taxonomie.t_medias SET cd_ref = 110473 WHERE cd_ref = 110474;
-UPDATE taxonomie.t_medias SET cd_ref = 1056537 WHERE cd_ref = 117281;
-UPDATE taxonomie.t_medias SET cd_ref = 614188 WHERE cd_ref = 125814;
-UPDATE taxonomie.t_medias SET cd_ref = 457300 WHERE cd_ref = 233651;
-UPDATE taxonomie.t_medias SET cd_ref = 233652 WHERE cd_ref = 457301;
-UPDATE taxonomie.t_medias SET cd_ref = 233656 WHERE cd_ref = 457302;
-UPDATE taxonomie.t_medias SET cd_ref = 57077 WHERE cd_ref = 658461;
-UPDATE taxonomie.t_medias SET cd_ref = 59428 WHERE cd_ref = 660113;
-UPDATE taxonomie.t_medias SET cd_ref = 773729 WHERE cd_ref = 136960;
-UPDATE taxonomie.t_medias SET cd_ref = 621429 WHERE cd_ref = 129770;
-
--- TABLE : gn_synthese.synthese (mise à jour classique)
-UPDATE gn_synthese.synthese SET cd_nom = 159607 WHERE cd_nom = 92267 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
-UPDATE gn_synthese.synthese SET cd_nom = 110473 WHERE cd_nom = 110474 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
-UPDATE gn_synthese.synthese SET cd_nom = 1056537 WHERE cd_nom = 117281 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
-UPDATE gn_synthese.synthese SET cd_nom = 621429 WHERE cd_nom = 129770 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 621429);
-UPDATE gn_synthese.synthese SET cd_nom = 773729 WHERE cd_nom = 136960 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 773729);
-UPDATE gn_synthese.synthese SET cd_nom = 457300 WHERE cd_nom = 233651 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 457300);
-UPDATE gn_synthese.synthese SET cd_nom = 233652 WHERE cd_nom = 457301 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233652);
-UPDATE gn_synthese.synthese SET cd_nom = 233656 WHERE cd_nom = 457302 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233656);
-UPDATE gn_synthese.synthese SET cd_nom = 57077 WHERE cd_nom = 658461 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
-UPDATE gn_synthese.synthese SET cd_nom = 59428 WHERE cd_nom = 660113 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
-
--- Mise à NULL des cd_nom orphelins
-UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
-  41508,46412,46608,59404,96518,98692,99589,104154,110344,110424,110991,114417,117011,119429,
-  122827,124262,124413,126163,126212,129108,129226,129579,131837,138395,660054,660095,873328,945104,233536,234037,147083,162283
-);
-
--- TABLE : bib_noms (suppression de la cible avant update pour éviter les doublons de clé unique)
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 159607 AND cd_nom <> 92267;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 110473 AND cd_nom <> 110474;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 1056537 AND cd_nom <> 117281;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 614188 AND cd_nom <> 125814;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 457300 AND cd_nom <> 233651;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 233652 AND cd_nom <> 457301;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 233656 AND cd_nom <> 457302;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 57077 AND cd_nom <> 658461;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 59428 AND cd_nom <> 660113;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 773729 AND cd_nom <> 136960;
-DELETE FROM taxonomie.bib_noms WHERE cd_nom = 621429 AND cd_nom <> 129770;
-
--- Mise à jour finale dans bib_noms
-UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267;
-UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474;
-UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281;
-UPDATE taxonomie.bib_noms SET cd_nom = 614188 WHERE cd_nom = 125814;
-UPDATE taxonomie.bib_noms SET cd_nom = 457300 WHERE cd_nom = 233651;
-UPDATE taxonomie.bib_noms SET cd_nom = 233652 WHERE cd_nom = 457301;
-UPDATE taxonomie.bib_noms SET cd_nom = 233656 WHERE cd_nom = 457302;
-UPDATE taxonomie.bib_noms SET cd_nom = 57077 WHERE cd_nom = 658461;
-UPDATE taxonomie.bib_noms SET cd_nom = 59428 WHERE cd_nom = 660113;
-UPDATE taxonomie.bib_noms SET cd_nom = 773729 WHERE cd_nom = 136960;
-UPDATE taxonomie.bib_noms SET cd_nom = 621429 WHERE cd_nom = 129770;
-
--- Suppression des anciennes entrées devenues orphelines dans cor_nom_liste
-DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (
-  SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (
-    41508,46412,46608,59404,83018,87931,88315,96518,98692,99589,103706,104146,104154,104286,
-    110344,110424,110991,114417,117011,119398,119429,121607,122827,124262,124413,126163,
-    126212,129108,129226,129530,129579,130237,130415,131837,147083,162283,233536,234037,461959,620446,
-    660054,660095,719293,873328,945104,138395
-  )
-);
-
--- Suppression des anciennes entrées devenues orphelines dans bib_noms
-DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
-  41508,46412,46608,59404,83018,87931,88315,96518,98692,99589,103706,104146,104154,104286,
-  110344,110424,110991,114417,117011,119398,119429,121607,122827,124262,124413,126163,
-  126212,129108,129226,129530,129579,130237,130415,131837,147083,162283,233536,234037,461959,620446,
-  660054,660095,719293,873328,945104,138395
-);
-
--- TABLE : gn_sensitivity.t_sensitivity_rules
-DELETE FROM gn_sensitivity.t_sensitivity_rules WHERE cd_nom = 124413;
-UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726 AND EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 138121);
 
 COMMIT;
