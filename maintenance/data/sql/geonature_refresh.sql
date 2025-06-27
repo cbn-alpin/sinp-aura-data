@@ -74,5 +74,21 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_chartreuse ;
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.onf ;
 
 \echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_synthese.synthese_municipality:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.synthese_municipality ;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing taxonomie.taxon_area_status:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY taxonomie.taxon_area_status ;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_synthese.synthese_status:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.synthese_status ;
+
+\echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_synthese.v_synthese_for_export:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_synthese.v_synthese_for_export ;
+
+\echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
 COMMIT;
