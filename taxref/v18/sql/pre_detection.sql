@@ -2,10 +2,18 @@
 
 BEGIN;
 
--- Désactivation des triggers sur la table synthese
-ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese ;
-ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_update_calculate_sensitivity ;
+-- ----------------------------------------------------------------
+-- 0. Désactivation des triggers sur la table synthese
+ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese;
+ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_update_calculate_sensitivity;
 
+-- ----------------------------------------------------------------
+-- 0bis. Suppression des contraintes FK et CHECK (pour t_medias, synthese, bib_noms)
+ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS fk_synthese_cd_nom;
+ALTER TABLE taxonomie.t_medias DROP CONSTRAINT IF EXISTS fk_t_media_bib_noms;
+ALTER TABLE taxonomie.t_medias DROP CONSTRAINT IF EXISTS check_is_cd_ref;
+ALTER TABLE taxonomie.bib_noms DROP CONSTRAINT IF EXISTS bib_noms_cd_nom_key;
+ALTER TABLE taxonomie.bib_noms DROP CONSTRAINT IF EXISTS fk_bib_nom_taxref;
 -- ----------------------------------------------------------------
 -- 1. Asparagus officinalis (cible : 84279)
 DELETE FROM taxonomie.cor_taxon_attribut 
@@ -130,11 +138,11 @@ UPDATE taxonomie.t_medias SET cd_ref = 128268 WHERE cd_ref IN (128275,142037,142
 -- Résolution des orphelins et remplacements génériques
 
 -- gn_sensitivity.t_sensitivity_rules
-UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = NULL WHERE cd_nom = 124413;
+DELETE FROM gn_sensitivity.t_sensitivity_rules WHERE cd_nom = 124413;
 UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726;
 
 -- gn_synthese.synthese : neutralisation/remplacement
-UPDATE gn_synthese.synthese SET cd_nom = NULL WHERE cd_nom IN (
+DELETE FROM gn_synthese.synthese WHERE cd_nom IN (
     41508, 46412, 46608, 59404, 96518, 98692, 99589, 104154, 110344, 110424, 110991, 114417,
     117011, 119429, 122827, 124262, 124413, 126163, 126212, 129108, 129226, 129579, 131837, 233536,
     234037, 138395, 147083, 162283, 660054, 660095, 873328, 945104, 103706, 83018, 87931, 88315,
@@ -152,17 +160,51 @@ UPDATE gn_synthese.synthese SET cd_nom = 57077 WHERE cd_nom = 658461;
 UPDATE gn_synthese.synthese SET cd_nom = 59428 WHERE cd_nom = 660113;
 
 -- Remplacements dans bib_noms si remplaçant
-UPDATE taxonomie.bib_noms SET cd_nom = 159607 WHERE cd_nom = 92267;
-UPDATE taxonomie.bib_noms SET cd_nom = 110473 WHERE cd_nom = 110474;
-UPDATE taxonomie.bib_noms SET cd_nom = 1056537 WHERE cd_nom = 117281;
-UPDATE taxonomie.bib_noms SET cd_nom = 621429 WHERE cd_nom = 129770;
-UPDATE taxonomie.bib_noms SET cd_nom = 773729 WHERE cd_nom = 136960;
-UPDATE taxonomie.bib_noms SET cd_nom = 457300 WHERE cd_nom = 233651;
-UPDATE taxonomie.bib_noms SET cd_nom = 233652 WHERE cd_nom = 457301;
-UPDATE taxonomie.bib_noms SET cd_nom = 233656 WHERE cd_nom = 457302;
-UPDATE taxonomie.bib_noms SET cd_nom = 57077 WHERE cd_nom = 658461;
-UPDATE taxonomie.bib_noms SET cd_nom = 59428 WHERE cd_nom = 660113;
-UPDATE taxonomie.bib_noms SET cd_nom = 614188 WHERE cd_nom = 125814;
+-- On fait un UPDATE uniquement si la clé n'existe pas déjà pour éviter les erreurs d'unicité
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 159607
+ WHERE cd_nom = 92267
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 110473
+ WHERE cd_nom = 110474
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 1056537
+ WHERE cd_nom = 117281
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 621429
+ WHERE cd_nom = 129770
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 621429);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 773729
+ WHERE cd_nom = 136960
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 773729);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 457300
+ WHERE cd_nom = 233651
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 457300);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 233652
+ WHERE cd_nom = 457301
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233652);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 233656
+ WHERE cd_nom = 457302
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233656);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 57077
+ WHERE cd_nom = 658461
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 59428
+ WHERE cd_nom = 660113
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
+UPDATE taxonomie.bib_noms
+   SET cd_nom = 614188
+ WHERE cd_nom = 125814
+   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 614188);
 
 -- Nettoyage cor_nom_liste puis bib_noms pour les orphelins
 DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (
@@ -181,3 +223,23 @@ DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
 );
 
 COMMIT;
+
+-- ----------------------------------------------------------------
+-- *** IMPORTANT ***
+-- Après l'import de la nouvelle table TaxRef (v18) et vérification des données,
+-- rétablir les contraintes :
+--
+-- ALTER TABLE gn_synthese.synthese
+--     ADD CONSTRAINT fk_synthese_cd_nom
+--     FOREIGN KEY (cd_nom) REFERENCES taxonomie.taxref(cd_nom);
+--
+-- ALTER TABLE taxonomie.t_medias
+--     ADD CONSTRAINT fk_t_media_bib_noms
+--     FOREIGN KEY (cd_ref) REFERENCES taxonomie.bib_noms(cd_nom);
+--
+-- (si besoin)
+-- ALTER TABLE taxonomie.t_medias
+--     ADD CONSTRAINT check_is_cd_ref CHECK (cd_ref IS NULL OR cd_ref IN (SELECT cd_nom FROM taxonomie.taxref));
+--
+-- ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_meta_dates_change_synthese;
+-- ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_update_calculate_sensitivity;
