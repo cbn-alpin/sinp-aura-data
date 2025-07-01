@@ -142,7 +142,9 @@ UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 124412 WHERE cd_nom = 124
 UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726;
 
 -- gn_synthese.synthese : neutralisation/remplacement
-DELETE FROM gn_synthese.synthese WHERE cd_nom IN (
+UPDATE gn_synthese.synthese
+SET cd_nom = NULL
+WHERE cd_nom IN (
     41508, 46412, 46608, 59404, 96518, 98692, 99589, 104154, 110344, 110424, 110991, 114417,
     117011, 119429, 122827, 124262, 124413, 126163, 126212, 129108, 129226, 129579, 131837, 233536,
     234037, 138395, 147083, 162283, 660054, 660095, 873328, 945104, 103706, 83018, 87931, 88315,
