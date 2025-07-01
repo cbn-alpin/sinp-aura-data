@@ -138,7 +138,7 @@ UPDATE taxonomie.t_medias SET cd_ref = 128268 WHERE cd_ref IN (142037,142038);
 -- Résolution des orphelins et remplacements génériques
 
 -- gn_sensitivity.t_sensitivity_rules
-DELETE FROM gn_sensitivity.t_sensitivity_rules WHERE cd_nom = 124413;
+UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 124412 WHERE cd_nom = 124413;
 UPDATE gn_sensitivity.t_sensitivity_rules SET cd_nom = 138121 WHERE cd_nom = 718726;
 
 -- gn_synthese.synthese : neutralisation/remplacement
