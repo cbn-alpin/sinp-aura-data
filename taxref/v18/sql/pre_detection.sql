@@ -161,67 +161,32 @@ UPDATE gn_synthese.synthese SET cd_nom = 233656 WHERE cd_nom = 457302;
 UPDATE gn_synthese.synthese SET cd_nom = 57077 WHERE cd_nom = 658461;
 UPDATE gn_synthese.synthese SET cd_nom = 59428 WHERE cd_nom = 660113;
 
--- Remplacements dans bib_noms si remplaçant
--- On fait un UPDATE uniquement si la clé n'existe pas déjà pour éviter les erreurs d'unicité
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 159607
- WHERE cd_nom = 92267
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 159607);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 110473
- WHERE cd_nom = 110474
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 110473);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 1056537
- WHERE cd_nom = 117281
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 1056537);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 621429
- WHERE cd_nom = 129770
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 621429);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 773729
- WHERE cd_nom = 136960
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 773729);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 457300
- WHERE cd_nom = 233651
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 457300);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 233652
- WHERE cd_nom = 457301
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233652);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 233656
- WHERE cd_nom = 457302
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 233656);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 57077
- WHERE cd_nom = 658461
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 57077);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 59428
- WHERE cd_nom = 660113
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 59428);
-UPDATE taxonomie.bib_noms
-   SET cd_nom = 614188
- WHERE cd_nom = 125814
-   AND NOT EXISTS (SELECT 1 FROM taxonomie.bib_noms WHERE cd_nom = 614188);
-
 -- Nettoyage cor_nom_liste puis bib_noms pour les orphelins
 DELETE FROM taxonomie.cor_nom_liste WHERE id_nom IN (
     SELECT id_nom FROM taxonomie.bib_noms WHERE cd_nom IN (
-        41508, 46412, 46608, 59404, 96518, 98692, 99589, 104154, 110344, 110424, 110991, 114417,
-        117011, 119429, 122827, 124262, 124413, 126163, 126212, 129108, 129226, 129579, 131837, 233536,
-        234037, 138395, 147083, 162283, 660054, 660095, 873328, 945104, 103706, 83018, 87931, 88315,
-        119398, 121607, 130237, 130415, 620446, 129530, 719293, 461959
+        41508, 46412, 46608, 59404, 96518, 98692,
+        99589, 104154, 110344, 110424, 110991, 114417,
+        117011, 119429, 122827, 124262, 124413, 126163,
+        126212, 129108, 129226, 129579, 131837, 233536,
+        234037, 138395, 147083, 162283, 660054, 660095,
+        873328, 945104, 103706, 83018, 87931, 88315,
+        119398, 121607, 130237, 130415, 620446, 129530,
+        719293, 461959, 92267, 110474, 117281, 129770,
+        136960, 233651, 457301, 457302, 658461, 660113,
+        125814
     )
 );
 DELETE FROM taxonomie.bib_noms WHERE cd_nom IN (
-    41508, 46412, 46608, 59404, 96518, 98692, 99589, 104154, 110344, 110424, 110991, 114417,
-    117011, 119429, 122827, 124262, 124413, 126163, 126212, 129108, 129226, 129579, 131837, 233536,
-    234037, 138395, 147083, 162283, 660054, 660095, 873328, 945104, 103706, 83018, 87931, 88315,
-    119398, 121607, 130237, 130415, 620446, 129530, 719293, 461959
+    41508, 46412, 46608, 59404, 96518, 98692,
+    99589, 104154, 110344, 110424, 110991, 114417,
+    117011, 119429, 122827, 124262, 124413, 126163,
+    126212, 129108, 129226, 129579, 131837, 233536,
+    234037, 138395, 147083, 162283, 660054, 660095,
+    873328, 945104, 103706, 83018, 87931, 88315,
+    119398, 121607, 130237, 130415, 620446, 129530,
+    719293, 461959, 92267, 110474, 117281, 129770,
+    136960, 233651, 457301, 457302, 658461, 660113,
+    125814
 );
 
 COMMIT;
