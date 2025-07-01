@@ -1,0 +1,102 @@
+table_name,cd_nom,nom_complet,nb_occurence,plus_recente_diffusion,cd_nom_remplacement,cd_raison_suppression
+gn_sensitivity.t_sensitivity_rules,124413,"Sparganium natans L., 1754",1,17.0,,3
+gn_sensitivity.t_sensitivity_rules,718726,Odontites jaubertianus var. chrysanthus (Boreau) Bolliger,1,17.0,138121,1
+gn_synthese.synthese,41508,"Athelia alnicola (Bourdot & Galzin) Jülich, 1972",1,17.0,,2
+gn_synthese.synthese,46412,"Coniochaeta ligniaria (Grev.) Cooke, 1887",1,17.0,,2
+gn_synthese.synthese,46608,"Cryptodiscus rhopaloides Sacc., 1881",1,17.0,,2
+gn_synthese.synthese,59404,"Caloplaca cerinoides (Anzi) Jatta, 1900",1,17.0,,2
+gn_synthese.synthese,92267,"Consolida orientalis auct. non (J.Gay) Schrödinger, 1909, sensu Chater, 1964",1,17.0,159607,1
+gn_synthese.synthese,96518,"Equisetum fluviatile L., 1754",1,17.0,,3
+gn_synthese.synthese,98692,"Filago montana L., 1754",1,17.0,,3
+gn_synthese.synthese,99589,"Galium viridulum Jord., 1852",1,17.0,,3
+gn_synthese.synthese,104154,"Juncus communis E.Mey., 1819",1,17.0,,3
+gn_synthese.synthese,110344,"Ophrys araneola Rchb., 1830",1,17.0,,3
+gn_synthese.synthese,110424,"Ophrys lutea Biv., 1806",1,17.0,,3
+gn_synthese.synthese,110474,"Ophrys speculum auct. non Link, 1799",1,17.0,110473,1
+gn_synthese.synthese,110991,Orchis speciosa Rchb.,1,17.0,,3
+gn_synthese.synthese,114417,"Poa trivialis L., 1754",1,17.0,,3
+gn_synthese.synthese,117011,"Ranunculus elongatus F.W.Schultz, 1869",1,17.0,,3
+gn_synthese.synthese,117281,"Ranunculus x gelidus Hoffmanns. ex Rchb., 1832",1,17.0,1056537,1
+gn_synthese.synthese,119429,"Rumex acutus L., 1754",1,17.0,,3
+gn_synthese.synthese,122827,"Serapias pallidiflora Lojac., 1909",1,17.0,,3
+gn_synthese.synthese,124262,"Sonchus oleraceus L., 1754",1,17.0,,3
+gn_synthese.synthese,124413,"Sparganium natans L., 1754",1,17.0,,3
+gn_synthese.synthese,126163,Thalictrum montanum Sennen,1,17.0,,3
+gn_synthese.synthese,126212,Thalictrum silvaticum Sennen,1,17.0,,3
+gn_synthese.synthese,129108,"Vicia angustifolia L., 1754",1,17.0,,3
+gn_synthese.synthese,129226,"Vicia lutea L., 1754",1,17.0,,3
+gn_synthese.synthese,129579,"Viola grandiflora L., 1771",1,17.0,,3
+gn_synthese.synthese,129770,Viola x contempta Jord.,1,17.0,621429,1
+gn_synthese.synthese,131837,Asplenium ruta-muraria subsp. ellipticum (Christ) Podp.,1,17.0,,3
+gn_synthese.synthese,136960,"Juncus tenuis subsp. bicornis sensu P.Fourn., 1935",1,17.0,773729,1
+gn_synthese.synthese,138395,"Orchis mascula subsp. signifera (Vest) Soó, 1927",1,17.0,,2
+gn_synthese.synthese,147083,Ficaria verna var. grandiflora (Robert) Rchb.,1,17.0,,
+gn_synthese.synthese,162283,"Polystichum tanacetifolium auct. non Lam. & DC., 1805",1,17.0,,
+gn_synthese.synthese,233536,"Diplocephalus pullinus Simon, 1918",1,14.0,,3
+gn_synthese.synthese,233651,"Meioneta gulosa (L.Koch, 1869)",1,17.0,457300,1
+gn_synthese.synthese,234037,"Salticus truncatus Simon, 1937",1,15.0,,3
+gn_synthese.synthese,457301,"Meioneta innotabilis (O. Pickard-Cambridge, 1863)",1,17.0,233652,1
+gn_synthese.synthese,457302,"Meioneta rurestris (C.L. Koch, 1836)",1,17.0,233656,1
+gn_synthese.synthese,658461,Lecidea atrobrunnea (Ramond ex Lam. & DC.) Schaer.,1,17.0,57077,1
+gn_synthese.synthese,660054,"Carbonea halacsyi (J.Steiner) Hafellner & Sancho, 1990",1,17.0,,2
+gn_synthese.synthese,660095,"Caloplaca oxfordensis Fink, 1934",1,17.0,,2
+gn_synthese.synthese,660113,Caloplaca herbidella (Hue) H. Magn.,1,17.0,59428,1
+gn_synthese.synthese,873328,"Coniochaeta vagans (De Not.) N.Lundq., 1981",1,17.0,,2
+gn_synthese.synthese,945104,"Karstenia rhopaloides (Sacc.) Baral, 2015",1,17.0,,2
+taxonomie.bib_noms,41508,"Athelia alnicola (Bourdot & Galzin) Jülich, 1972",1,17.0,,2
+taxonomie.bib_noms,46412,"Coniochaeta ligniaria (Grev.) Cooke, 1887",1,17.0,,2
+taxonomie.bib_noms,46608,"Cryptodiscus rhopaloides Sacc., 1881",1,17.0,,2
+taxonomie.bib_noms,59404,"Caloplaca cerinoides (Anzi) Jatta, 1900",1,17.0,,2
+taxonomie.bib_noms,83018,"Antirrhinum arvense L., 1754",1,17.0,,3
+taxonomie.bib_noms,87931,"Cardamine hirsuta L., 1754",1,17.0,,3
+taxonomie.bib_noms,88315,"Carex acuta L., 1754",1,17.0,,3
+taxonomie.bib_noms,92267,"Consolida orientalis auct. non (J.Gay) Schrödinger, 1909, sensu Chater, 1964",1,17.0,159607,1
+taxonomie.bib_noms,96518,"Equisetum fluviatile L., 1754",1,17.0,,3
+taxonomie.bib_noms,98692,"Filago montana L., 1754",1,17.0,,3
+taxonomie.bib_noms,99589,"Galium viridulum Jord., 1852",1,17.0,,3
+taxonomie.bib_noms,103706,"Iris aphylla L., 1753",1,17.0,,2
+taxonomie.bib_noms,104146,"Juncus bulbosus L., 1762",1,17.0,,3
+taxonomie.bib_noms,104154,"Juncus communis E.Mey., 1819",1,17.0,,3
+taxonomie.bib_noms,104286,"Juncus pallidiflorus Becker, 1858",1,17.0,,3
+taxonomie.bib_noms,110344,"Ophrys araneola Rchb., 1830",1,17.0,,3
+taxonomie.bib_noms,110424,"Ophrys lutea Biv., 1806",1,17.0,,3
+taxonomie.bib_noms,110474,"Ophrys speculum auct. non Link, 1799",1,17.0,110473,1
+taxonomie.bib_noms,110991,Orchis speciosa Rchb.,1,17.0,,3
+taxonomie.bib_noms,114417,"Poa trivialis L., 1754",1,17.0,,3
+taxonomie.bib_noms,117011,"Ranunculus elongatus F.W.Schultz, 1869",1,17.0,,3
+taxonomie.bib_noms,117281,"Ranunculus x gelidus Hoffmanns. ex Rchb., 1832",1,17.0,1056537,1
+taxonomie.bib_noms,119398,"Rubus x pulverulentus Sudre, 1899",1,17.0,,3
+taxonomie.bib_noms,119429,"Rumex acutus L., 1754",1,17.0,,3
+taxonomie.bib_noms,121607,"Scilla bifolia L., 1754",1,17.0,,3
+taxonomie.bib_noms,122827,"Serapias pallidiflora Lojac., 1909",1,17.0,,3
+taxonomie.bib_noms,124262,"Sonchus oleraceus L., 1754",1,17.0,,3
+taxonomie.bib_noms,124413,"Sparganium natans L., 1754",1,17.0,,3
+taxonomie.bib_noms,125814,Taxodium sempervirens Lamb.,1,17.0,614188,1
+taxonomie.bib_noms,126163,Thalictrum montanum Sennen,1,17.0,,3
+taxonomie.bib_noms,126212,Thalictrum silvaticum Sennen,1,17.0,,3
+taxonomie.bib_noms,129108,"Vicia angustifolia L., 1754",1,17.0,,3
+taxonomie.bib_noms,129226,"Vicia lutea L., 1754",1,17.0,,3
+taxonomie.bib_noms,129530,"Viola canina L., 1754",1,17.0,,3
+taxonomie.bib_noms,129579,"Viola grandiflora L., 1771",1,17.0,,3
+taxonomie.bib_noms,129770,Viola x contempta Jord.,1,17.0,621429,1
+taxonomie.bib_noms,130237,"x Dactylodenia klingeana (Asch. & Graebn.) Peitz, 1972",1,17.0,,2
+taxonomie.bib_noms,130415,"x Orchiplatanthera chevalleriana E.G.Camus, 1892",1,17.0,,3
+taxonomie.bib_noms,131837,Asplenium ruta-muraria subsp. ellipticum (Christ) Podp.,1,17.0,,3
+taxonomie.bib_noms,136960,"Juncus tenuis subsp. bicornis sensu P.Fourn., 1935",1,17.0,773729,1
+taxonomie.bib_noms,138395,"Orchis mascula subsp. signifera (Vest) Soó, 1927",1,17.0,,2
+taxonomie.bib_noms,147083,Ficaria verna var. grandiflora (Robert) Rchb.,1,17.0,,
+taxonomie.bib_noms,162283,"Polystichum tanacetifolium auct. non Lam. & DC., 1805",1,17.0,,
+taxonomie.bib_noms,233536,"Diplocephalus pullinus Simon, 1918",1,14.0,,3
+taxonomie.bib_noms,233651,"Meioneta gulosa (L.Koch, 1869)",1,17.0,457300,1
+taxonomie.bib_noms,234037,"Salticus truncatus Simon, 1937",1,15.0,,3
+taxonomie.bib_noms,457301,"Meioneta innotabilis (O. Pickard-Cambridge, 1863)",1,17.0,233652,1
+taxonomie.bib_noms,457302,"Meioneta rurestris (C.L. Koch, 1836)",1,17.0,233656,1
+taxonomie.bib_noms,461959,"Hebeloma stenocystis J.Favre ex Quadr., 1989",1,17.0,,2
+taxonomie.bib_noms,620446,"x Dactylanthera chevallieriana (E.G.Camus) J.M.H.Shaw, 2005",1,17.0,,3
+taxonomie.bib_noms,658461,Lecidea atrobrunnea (Ramond ex Lam. & DC.) Schaer.,1,17.0,57077,1
+taxonomie.bib_noms,660054,"Carbonea halacsyi (J.Steiner) Hafellner & Sancho, 1990",1,17.0,,2
+taxonomie.bib_noms,660095,"Caloplaca oxfordensis Fink, 1934",1,17.0,,2
+taxonomie.bib_noms,660113,Caloplaca herbidella (Hue) H. Magn.,1,17.0,59428,1
+taxonomie.bib_noms,719293,"Thalictrum minus subsp. minus L., 1753",1,17.0,,2
+taxonomie.bib_noms,873328,"Coniochaeta vagans (De Not.) N.Lundq., 1981",1,17.0,,2
+taxonomie.bib_noms,945104,"Karstenia rhopaloides (Sacc.) Baral, 2015",1,17.0,,2
