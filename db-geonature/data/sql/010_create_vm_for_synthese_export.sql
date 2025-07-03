@@ -213,7 +213,7 @@ TABLESPACE pg_default AS
     LEFT JOIN gn_synthese.synthese_status AS ss
       ON s.id_synthese = ss.id_synthese
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS nb
-      ON s.id_nomenclature_blurring = nb.id_nomenclature;
+      ON s.id_nomenclature_blurring = nb.id_nomenclature
 WITH DATA;
 
 -- View indexes:
