@@ -79,14 +79,46 @@ CREATE MATERIALIZED VIEW gn_synthese.synthese_status
 TABLESPACE pg_default AS
   SELECT
     s.id_synthese,
-    tas.status -> 'PN'::text AS status_pn,
-    tas.status -> 'PR'::text AS status_pr,
-    tas.status -> 'PD'::text AS status_pd,
-    tas.status -> 'LRM'::text AS status_lrm,
-    tas.status -> 'LRE'::text AS status_lre,
-    tas.status -> 'LRN'::text AS status_lrn,
-    tas.status -> 'LRR'::text AS status_lrr,
-    tas.status -> 'LRD'::text AS status_lrd
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'PN') AS tmp(status)
+    ) AS status_pn,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'PR') AS tmp(status)
+    ) AS status_pr,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'PD') AS tmp(status)
+    ) AS status_pd,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'LRN') AS tmp(status)
+    ) AS status_lrn,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'LRR') AS tmp(status)
+    ) AS status_lrr,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'LRD') AS tmp(status)
+    ) AS status_lrd,
+    CASE (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'ZDET') AS tmp(status)
+      )
+      WHEN 'true' THEN 'OUI'
+      WHEN 'false' THEN 'NON'
+      ELSE NULL
+    END AS status_zdet,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'DH') AS tmp(status)
+    ) AS status_dh,
+    (
+      SELECT string_agg(status, ', ')
+      FROM jsonb_array_elements_text(tas.status -> 'DO') AS tmp(status)
+    ) AS status_do
   FROM gn_synthese.synthese AS s
     LEFT JOIN taxonomie.taxref AS t
       ON t.cd_nom = s.cd_nom
@@ -116,6 +148,7 @@ TABLESPACE pg_default AS
     sd.unique_dataset_id AS jdd_uuid,
     sd.organisms AS fournisseur,
     s.observers AS observateurs,
+    s.determiner AS determinateurs,
     t.cd_ref,
     t.nom_valide,
     t.nom_vern AS nom_vernaculaire,
@@ -139,31 +172,33 @@ TABLESPACE pg_default AS
     n11.label_default AS sexe,
     n20.label_default AS comportement,
     n17.label_default AS type_source,
-    s.additional_data ->> 'precisionLabel'::text AS type_precision,
+    s.additional_data ->> 'precisionLabel' AS type_precision,
     CASE
-      WHEN ns.cd_nomenclature::text = '0'::text THEN 'donnée non sensible'::text
-      WHEN s.id_nomenclature_sensitivity IS NULL THEN ''::text
-      ELSE 'donnée sensible'::text
+      WHEN ns.cd_nomenclature::text = '0'::text THEN 'donnée non sensible'
+      WHEN s.id_nomenclature_sensitivity IS NULL THEN ''
+      ELSE 'donnée sensible'
     END AS sensibilite,
     CASE
-      WHEN ns.cd_nomenclature::text <> '0'::text OR dl.cd_nomenclature::text <> '5'::text
-        THEN 'donnée confidentielle'::text
-      ELSE 'donnée non confidentielle'::text
+      WHEN ns.cd_nomenclature::text <> '0' OR dl.cd_nomenclature::text <> '5'
+        THEN 'donnée confidentielle'
+      ELSE 'donnée non confidentielle'
     END AS confidentialite,
-    COALESCE(nb.cd_nomenclature, 'NON'::character varying) AS floutage,
+    COALESCE(nb.cd_nomenclature, 'NON') AS floutage,
+    vs.cd_nomenclature AS statut_validation,
+    ss.status_pn AS statut_pn,
+    ss.status_pr AS statut_pr,
+    ss.status_pd AS statut_pd,
+    ss.status_lrn AS statut_lrn,
+    ss.status_lrr AS statut_lrr,
+    ss.status_lrd AS statut_lrd,
+    ss.status_zdet AS statut_zdet,
+    ss.status_dh AS statut_dh,
+    ss.status_do AS statut_do,
     sd.id_dataset AS jdd_id,
     s.id_digitiser,
     st_asgeojson(s.the_geom_local) AS geojson_local,
     s.id_nomenclature_sensitivity,
-    s.id_nomenclature_diffusion_level,
-    ss.status_pn,
-    ss.status_pr,
-    ss.status_pd,
-    ss.status_lrm,
-    ss.status_lre,
-    ss.status_lrn,
-    ss.status_lrr,
-    ss.status_lrd
+    s.id_nomenclature_diffusion_level
   FROM gn_synthese.synthese AS s
     JOIN taxonomie.taxref AS t
       ON t.cd_nom = s.cd_nom
@@ -179,12 +214,12 @@ TABLESPACE pg_default AS
             ON cad.id_dataset = td.id_dataset
               AND (
                 cad.id_nomenclature_actor_role = ref_nomenclatures.get_id_nomenclature(
-                  'ROLE_ACTEUR'::character varying,
-                  '5'::character varying
+                  'ROLE_ACTEUR',
+                  '5'
                 )
                 OR cad.id_nomenclature_actor_role = ref_nomenclatures.get_id_nomenclature(
-                  'ROLE_ACTEUR'::character varying,
-                  '6'::character varying
+                  'ROLE_ACTEUR',
+                  '6'
                 )
               )
           LEFT JOIN utilisateurs.bib_organismes AS bo
@@ -210,13 +245,16 @@ TABLESPACE pg_default AS
       ON s.id_nomenclature_sensitivity = ns.id_nomenclature
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS dl
       ON s.id_nomenclature_diffusion_level = dl.id_nomenclature
-    LEFT JOIN gn_synthese.synthese_status AS ss
-      ON s.id_synthese = ss.id_synthese
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS nb
       ON s.id_nomenclature_blurring = nb.id_nomenclature
+    LEFT JOIN ref_nomenclatures.t_nomenclatures AS vs
+      ON s.id_nomenclature_valid_status = vs.id_nomenclature
+    LEFT JOIN gn_synthese.synthese_status AS ss
+      ON s.id_synthese = ss.id_synthese
 WITH DATA;
 
--- View indexes:
+DROP INDEX IF EXISTS v_synthese_for_export_id_synthese_idx ;
+
 CREATE INDEX v_synthese_for_export_id_synthese_idx ON gn_synthese.v_synthese_for_export_tmp
 USING btree (id_synthese);
 
