@@ -1,19 +1,52 @@
-
 -- Create materialized views to enhance synthese export view
 -- Required rights: DB OWNER
 -- Transfert this script on server this way:
 -- rsync -av ./010_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/ --dry-run
 -- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db -f ~/data/db-geonature/data/sql/010_*
 
+\timing on
+
 BEGIN;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create function to drop any type of view if exists'
+
+CREATE OR REPLACE FUNCTION drop_any_type_of_view_if_exists(IN viewToDelete text)
+RETURNS VOID AS
+$$
+DECLARE viewKind TEXT ;
+DECLARE viewSchema TEXT ;
+BEGIN
+    RAISE LOG 'Looking for (materialized) view named %', viewToDelete;
+    SELECT relkind INTO viewKind FROM pg_class WHERE relname = viewToDelete ;
+    IF viewKind = 'm' THEN
+        SELECT schemaname INTO viewSchema FROM pg_matviews WHERE matviewname = viewToDelete ;
+        RAISE NOTICE 'Dropping MATERIALIZED VIEW %.%', viewSchema, viewToDelete ;
+        EXECUTE 'DROP MATERIALIZED VIEW ' ||  quote_ident(viewSchema) || '.' || quote_ident(viewToDelete);
+    ELSEIF viewKind = 'v' THEN
+        SELECT schemaname INTO viewSchema FROM pg_views WHERE viewname = viewToDelete ;
+        RAISE NOTICE 'Dropping VIEW %.%', viewSchema, viewToDelete;
+        EXECUTE 'DROP VIEW ' ||  quote_ident(viewSchema) || '.' || quote_ident(viewToDelete);
+    ELSE
+        RAISE NOTICE 'NO VIEW % found', viewToDelete;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create MATERIALIZED VIEW gn_synthese.synthese_municipality'
+\echo 'Drop all TMP materialized views if exist'
 
-DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_municipality ;
+DROP MATERIALIZED VIEW IF EXISTS gn_synthese.v_synthese_for_export_tmp ;
+DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_status_tmp ;
+DROP MATERIALIZED VIEW IF EXISTS taxonomie.taxon_area_status_tmp ;
+DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_municipality_tmp ;
 
-CREATE MATERIALIZED VIEW gn_synthese.synthese_municipality
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create MATERIALIZED VIEW gn_synthese.synthese_municipality_tmp'
+
+CREATE MATERIALIZED VIEW gn_synthese.synthese_municipality_tmp
 TABLESPACE pg_default AS
   SELECT
     cas.id_synthese,
@@ -26,17 +59,14 @@ TABLESPACE pg_default AS
   GROUP BY cas.id_synthese
 WITH DATA;
 
--- View indexes:
-CREATE INDEX synthese_municipality_id_synthese_idx ON gn_synthese.synthese_municipality
+CREATE INDEX synthese_municipality_id_synthese_idx_tmp ON gn_synthese.synthese_municipality_tmp
 USING btree (id_synthese);
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create MATERIALIZED VIEW taxonomie.taxon_area_status'
+\echo 'Create MATERIALIZED VIEW taxonomie.taxon_area_status_tmp'
 
-DROP MATERIALIZED VIEW IF EXISTS taxonomie.taxon_area_status ;
-
-CREATE MATERIALIZED VIEW taxonomie.taxon_area_status
+CREATE MATERIALIZED VIEW taxonomie.taxon_area_status_tmp
 TABLESPACE pg_default AS
   WITH agg_code_status AS (
     SELECT
@@ -63,19 +93,16 @@ TABLESPACE pg_default AS
   GROUP BY acs.cd_ref, acs.id_area
 WITH DATA;
 
--- View indexes:
-CREATE INDEX taxon_area_status_cd_ref_id_area_idx ON taxonomie.taxon_area_status
+CREATE INDEX taxon_area_status_cd_ref_id_area_idx_tmp ON taxonomie.taxon_area_status_tmp
 USING btree (cd_ref, id_area);
-CREATE INDEX taxon_area_status_status_idx ON taxonomie.taxon_area_status
+CREATE INDEX taxon_area_status_status_idx_tmp ON taxonomie.taxon_area_status_tmp
 USING gin (status);
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create MATERIALIZED VIEW gn_synthese.synthese_status'
+\echo 'Create MATERIALIZED VIEW gn_synthese.synthese_status_tmp'
 
-DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_status ;
-
-CREATE MATERIALIZED VIEW gn_synthese.synthese_status
+CREATE MATERIALIZED VIEW gn_synthese.synthese_status_tmp
 TABLESPACE pg_default AS
   SELECT
     s.id_synthese,
@@ -124,19 +151,16 @@ TABLESPACE pg_default AS
       ON t.cd_nom = s.cd_nom
     LEFT JOIN gn_synthese.cor_area_synthese AS cas
       ON s.id_synthese = cas.id_synthese
-    JOIN taxonomie.taxon_area_status AS tas
+    JOIN taxonomie.taxon_area_status_tmp AS tas
       ON cas.id_area = tas.id_area AND t.cd_ref = tas.cd_ref
 WITH DATA;
 
--- View indexes:
-CREATE INDEX synthese_status_id_synthese_idx ON gn_synthese.synthese_status
+CREATE INDEX synthese_status_id_synthese_idx_tmp ON gn_synthese.synthese_status_tmp
 USING btree (id_synthese);
 
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Create MATERIALIZED VIEW gn_synthese.v_synthese_for_export_tmp'
-
-DROP MATERIALIZED VIEW IF EXISTS gn_synthese.v_synthese_for_export_tmp ;
 
 CREATE MATERIALIZED VIEW gn_synthese.v_synthese_for_export_tmp
 TABLESPACE pg_default AS
@@ -184,7 +208,7 @@ TABLESPACE pg_default AS
       ELSE 'donnée non confidentielle'
     END AS confidentialite,
     COALESCE(nb.cd_nomenclature, 'NON') AS floutage,
-    vs.cd_nomenclature AS statut_validation,
+    vs.label_default AS statut_validation,
     ss.status_pn AS statut_pn,
     ss.status_pr AS statut_pr,
     ss.status_pd AS statut_pd,
@@ -202,7 +226,7 @@ TABLESPACE pg_default AS
   FROM gn_synthese.synthese AS s
     JOIN taxonomie.taxref AS t
       ON t.cd_nom = s.cd_nom
-    LEFT JOIN gn_synthese.synthese_municipality AS sm
+    LEFT JOIN gn_synthese.synthese_municipality_tmp AS sm
       ON sm.id_synthese = s.id_synthese
     LEFT JOIN LATERAL (
         SELECT td.id_dataset,
@@ -249,27 +273,42 @@ TABLESPACE pg_default AS
       ON s.id_nomenclature_blurring = nb.id_nomenclature
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS vs
       ON s.id_nomenclature_valid_status = vs.id_nomenclature
-    LEFT JOIN gn_synthese.synthese_status AS ss
+    LEFT JOIN gn_synthese.synthese_status_tmp AS ss
       ON s.id_synthese = ss.id_synthese
 WITH DATA;
 
-DROP INDEX IF EXISTS v_synthese_for_export_id_synthese_idx ;
-
-CREATE INDEX v_synthese_for_export_id_synthese_idx ON gn_synthese.v_synthese_for_export_tmp
+CREATE INDEX v_synthese_for_export_id_synthese_idx_tmp ON gn_synthese.v_synthese_for_export_tmp
 USING btree (id_synthese);
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Drop VIEW gn_synthese.v_synthese_for_export'
+\echo 'Drop VIEW or MATERIALIZED VIEW gn_synthese.v_synthese_for_export if exists'
 
-DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
+SELECT drop_any_type_of_view_if_exists('v_synthese_for_export');
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Rename VIEW gn_synthese.v_synthese_for_export_tmp to gn_synthese.v_synthese_for_export'
+\echo 'Drop all other FINAL materialized views'
 
+DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_status ;
+DROP MATERIALIZED VIEW IF EXISTS taxonomie.taxon_area_status ;
+DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_municipality ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Rename all TMP materialized views'
+
+ALTER MATERIALIZED VIEW gn_synthese.synthese_municipality_tmp RENAME TO synthese_municipality;
+ALTER INDEX synthese_municipality_id_synthese_idx_tmp RENAME TO synthese_municipality_id_synthese_idx ;
+ALTER MATERIALIZED VIEW gn_synthese.synthese_status_tmp RENAME TO synthese_status;
+ALTER INDEX taxon_area_status_cd_ref_id_area_idx_tmp RENAME TO taxon_area_status_cd_ref_id_area_idx ;
+ALTER INDEX taxon_area_status_status_idx_tmp RENAME TO taxon_area_status_status_idx ;
+ALTER MATERIALIZED VIEW taxonomie.taxon_area_status_tmp RENAME TO taxon_area_status;
+ALTER INDEX synthese_status_id_synthese_idx_tmp RENAME TO synthese_status_id_synthese_idx ;
 ALTER MATERIALIZED VIEW gn_synthese.v_synthese_for_export_tmp RENAME TO v_synthese_for_export;
+ALTER INDEX v_synthese_for_export_id_synthese_idx_tmp RENAME TO v_synthese_for_export_id_synthese_idx ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'COMMIT if all is ok:'
 COMMIT;
