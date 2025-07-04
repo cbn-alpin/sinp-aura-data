@@ -298,15 +298,27 @@ DROP MATERIALIZED VIEW IF EXISTS gn_synthese.synthese_municipality ;
 \echo '----------------------------------------------------------------------------'
 \echo 'Rename all TMP materialized views'
 
-ALTER MATERIALIZED VIEW gn_synthese.synthese_municipality_tmp RENAME TO synthese_municipality;
-ALTER INDEX synthese_municipality_id_synthese_idx_tmp RENAME TO synthese_municipality_id_synthese_idx ;
-ALTER MATERIALIZED VIEW gn_synthese.synthese_status_tmp RENAME TO synthese_status;
-ALTER INDEX taxon_area_status_cd_ref_id_area_idx_tmp RENAME TO taxon_area_status_cd_ref_id_area_idx ;
-ALTER INDEX taxon_area_status_status_idx_tmp RENAME TO taxon_area_status_status_idx ;
-ALTER MATERIALIZED VIEW taxonomie.taxon_area_status_tmp RENAME TO taxon_area_status;
-ALTER INDEX synthese_status_id_synthese_idx_tmp RENAME TO synthese_status_id_synthese_idx ;
-ALTER MATERIALIZED VIEW gn_synthese.v_synthese_for_export_tmp RENAME TO v_synthese_for_export;
-ALTER INDEX v_synthese_for_export_id_synthese_idx_tmp RENAME TO v_synthese_for_export_id_synthese_idx ;
+ALTER MATERIALIZED VIEW gn_synthese.synthese_municipality_tmp RENAME
+TO synthese_municipality ;
+ALTER INDEX gn_synthese.synthese_municipality_id_synthese_idx_tmp RENAME
+TO synthese_municipality_id_synthese_idx ;
+
+ALTER MATERIALIZED VIEW taxonomie.taxon_area_status_tmp RENAME
+TO taxon_area_status ;
+ALTER INDEX taxonomie.taxon_area_status_cd_ref_id_area_idx_tmp RENAME
+TO taxon_area_status_cd_ref_id_area_idx ;
+ALTER INDEX taxonomie.taxon_area_status_status_idx_tmp RENAME
+TO taxon_area_status_status_idx ;
+
+ALTER MATERIALIZED VIEW gn_synthese.synthese_status_tmp RENAME
+TO synthese_status ;
+ALTER INDEX gn_synthese.synthese_status_id_synthese_idx_tmp RENAME
+TO synthese_status_id_synthese_idx ;
+
+ALTER MATERIALIZED VIEW gn_synthese.v_synthese_for_export_tmp RENAME
+TO v_synthese_for_export ;
+ALTER INDEX gn_synthese.v_synthese_for_export_id_synthese_idx_tmp RENAME
+TO v_synthese_for_export_id_synthese_idx ;
 
 
 \echo '----------------------------------------------------------------------------'
