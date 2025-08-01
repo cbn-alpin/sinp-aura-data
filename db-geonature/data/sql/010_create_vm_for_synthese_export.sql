@@ -277,7 +277,7 @@ TABLESPACE pg_default AS
       ON s.id_synthese = ss.id_synthese
 WITH DATA;
 
-CREATE INDEX v_synthese_for_export_id_synthese_idx_tmp ON gn_synthese.v_synthese_for_export_tmp
+CREATE UNIQUE INDEX v_synthese_for_export_id_synthese_idx_tmp ON gn_synthese.v_synthese_for_export_tmp
 USING btree (id_synthese);
 
 
