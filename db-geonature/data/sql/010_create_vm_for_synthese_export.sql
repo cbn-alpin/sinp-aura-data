@@ -59,7 +59,7 @@ TABLESPACE pg_default AS
   GROUP BY cas.id_synthese
 WITH DATA;
 
-CREATE INDEX synthese_municipality_id_synthese_idx_tmp ON gn_synthese.synthese_municipality_tmp
+CREATE UNIQUE INDEX synthese_municipality_id_synthese_idx_tmp ON gn_synthese.synthese_municipality_tmp
 USING btree (id_synthese);
 
 
@@ -93,7 +93,7 @@ TABLESPACE pg_default AS
   GROUP BY acs.cd_ref, acs.id_area
 WITH DATA;
 
-CREATE INDEX taxon_area_status_cd_ref_id_area_idx_tmp ON taxonomie.taxon_area_status_tmp
+CREATE UNIQUE INDEX taxon_area_status_cd_ref_id_area_idx_tmp ON taxonomie.taxon_area_status_tmp
 USING btree (cd_ref, id_area);
 CREATE INDEX taxon_area_status_status_idx_tmp ON taxonomie.taxon_area_status_tmp
 USING gin (status);
@@ -104,58 +104,181 @@ USING gin (status);
 
 CREATE MATERIALIZED VIEW gn_synthese.synthese_status_tmp
 TABLESPACE pg_default AS
-  SELECT
-    s.id_synthese,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'PN') AS tmp(status)
-    ) AS status_pn,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'PR') AS tmp(status)
-    ) AS status_pr,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'PD') AS tmp(status)
-    ) AS status_pd,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'LRN') AS tmp(status)
-    ) AS status_lrn,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'LRR') AS tmp(status)
-    ) AS status_lrr,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'LRD') AS tmp(status)
-    ) AS status_lrd,
-    CASE (
+  WITH depts AS (
+    SELECT id_area
+    FROM ref_geo.l_areas
+    WHERE id_type = ref_geo.get_id_area_type_by_code('DEP')
+      AND "enable" = TRUE
+  ),
+  obs_multi_depts AS (
+    SELECT cas.id_synthese
+    FROM gn_synthese.cor_area_synthese AS cas
+      JOIN depts AS d
+        ON d.id_area = cas.id_area
+    GROUP BY cas.id_synthese
+    HAVING COUNT(cas.id_area) > 1
+    ORDER BY cas.id_synthese
+  ),
+  obs_status_by_dept AS (
+    SELECT
+      s.id_synthese,
+      a.area_code,
+      (
         SELECT string_agg(status, ', ')
-        FROM jsonb_array_elements_text(tas.status -> 'ZDET') AS tmp(status)
-      )
-      WHEN 'true' THEN 'OUI'
-      WHEN 'false' THEN 'NON'
-      ELSE NULL
+        FROM jsonb_array_elements_text(tas.status -> 'PN') AS tmp(status)
+      ) AS status_pn,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'PR') AS tmp(status)
+      ) AS status_pr,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'PD') AS tmp(status)
+      ) AS status_pd,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'LRN') AS tmp(status)
+      ) AS status_lrn,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'LRR') AS tmp(status)
+      ) AS status_lrr,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'LRD') AS tmp(status)
+      ) AS status_lrd,
+      CASE (
+          SELECT string_agg(status, ', ')
+          FROM jsonb_array_elements_text(tas.status -> 'ZDET') AS tmp(status)
+        )
+        WHEN 'true' THEN 'OUI'
+        WHEN 'false' THEN 'NON'
+        ELSE NULL
+      END AS status_zdet,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'DH') AS tmp(status)
+      ) AS status_dh,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'DO') AS tmp(status)
+      ) AS status_do
+    FROM gn_synthese.synthese AS s
+      LEFT JOIN taxonomie.taxref AS t
+        ON t.cd_nom = s.cd_nom
+      LEFT JOIN gn_synthese.cor_area_synthese AS cas
+        ON s.id_synthese = cas.id_synthese
+      JOIN taxonomie.taxon_area_status AS tas
+        ON cas.id_area = tas.id_area AND t.cd_ref = tas.cd_ref
+      JOIN ref_geo.l_areas AS a
+        ON cas.id_area = a.id_area
+    WHERE s.id_synthese IN (SELECT id_synthese FROM obs_multi_depts)
+  )
+  SELECT
+    id_synthese,
+    CASE
+      WHEN count(DISTINCT status_pn) > 1
+        THEN string_agg(concat(status_pn, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_pn, '|')
+    END AS status_pn,
+    CASE
+      WHEN count(DISTINCT status_pr) > 1
+        THEN string_agg(concat(status_pr, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_pr, '|')
+    END AS status_pr,
+    CASE
+      WHEN count(DISTINCT status_pd) > 1
+        THEN string_agg(concat(status_pd, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_pd, '|')
+    END AS status_pd,
+    CASE
+      WHEN count(DISTINCT status_lrn) > 1
+        THEN string_agg(concat(status_lrn, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_lrn, '|')
+    END AS status_lrn,
+    CASE
+      WHEN count(DISTINCT status_lrr) > 1
+        THEN string_agg(concat(status_lrr, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_lrr, '|')
+    END AS status_lrr,
+    CASE
+      WHEN count(DISTINCT status_lrd) > 1
+        THEN string_agg(concat(status_lrd, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_lrd, '|')
+    END AS status_lrd,
+    CASE
+      WHEN count(DISTINCT status_zdet) > 1
+        THEN string_agg(concat(status_zdet, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_zdet, '|')
     END AS status_zdet,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'DH') AS tmp(status)
-    ) AS status_dh,
-    (
-      SELECT string_agg(status, ', ')
-      FROM jsonb_array_elements_text(tas.status -> 'DO') AS tmp(status)
-    ) AS status_do
-  FROM gn_synthese.synthese AS s
-    LEFT JOIN taxonomie.taxref AS t
-      ON t.cd_nom = s.cd_nom
-    LEFT JOIN gn_synthese.cor_area_synthese AS cas
-      ON s.id_synthese = cas.id_synthese
-    JOIN taxonomie.taxon_area_status_tmp AS tas
-      ON cas.id_area = tas.id_area AND t.cd_ref = tas.cd_ref
+    CASE
+      WHEN count(DISTINCT status_dh) > 1
+        THEN string_agg(concat(status_dh, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_dh, '|')
+    END AS status_dh,
+    CASE
+      WHEN count(DISTINCT status_do) > 1
+        THEN string_agg(concat(status_do, ' (', area_code, ')'), '|')
+        ELSE string_agg(DISTINCT status_do, '|')
+    END AS status_do
+  FROM obs_status_by_dept
+  GROUP BY id_synthese
+
+  UNION
+
+  SELECT
+      s.id_synthese,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'PN') AS tmp(status)
+      ) AS status_pn,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'PR') AS tmp(status)
+      ) AS status_pr,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'PD') AS tmp(status)
+      ) AS status_pd,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'LRN') AS tmp(status)
+      ) AS status_lrn,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'LRR') AS tmp(status)
+      ) AS status_lrr,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'LRD') AS tmp(status)
+      ) AS status_lrd,
+      CASE (
+          SELECT string_agg(status, ', ')
+          FROM jsonb_array_elements_text(tas.status -> 'ZDET') AS tmp(status)
+        )
+        WHEN 'true' THEN 'OUI'
+        WHEN 'false' THEN 'NON'
+        ELSE NULL
+      END AS status_zdet,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'DH') AS tmp(status)
+      ) AS status_dh,
+      (
+        SELECT string_agg(status, ', ')
+        FROM jsonb_array_elements_text(tas.status -> 'DO') AS tmp(status)
+      ) AS status_do
+    FROM gn_synthese.synthese AS s
+      LEFT JOIN taxonomie.taxref AS t
+        ON t.cd_nom = s.cd_nom
+      LEFT JOIN gn_synthese.cor_area_synthese AS cas
+        ON s.id_synthese = cas.id_synthese
+      JOIN taxonomie.taxon_area_status AS tas
+        ON cas.id_area = tas.id_area AND t.cd_ref = tas.cd_ref
+    WHERE s.id_synthese NOT IN (SELECT id_synthese FROM obs_multi_depts)
 WITH DATA;
 
-CREATE INDEX synthese_status_id_synthese_idx_tmp ON gn_synthese.synthese_status_tmp
+CREATE UNIQUE INDEX synthese_status_id_synthese_idx_tmp ON gn_synthese.synthese_status_tmp
 USING btree (id_synthese);
 
 
