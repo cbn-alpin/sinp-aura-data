@@ -168,7 +168,7 @@ TABLESPACE pg_default AS
         ON t.cd_nom = s.cd_nom
       LEFT JOIN gn_synthese.cor_area_synthese AS cas
         ON s.id_synthese = cas.id_synthese
-      JOIN taxonomie.taxon_area_status AS tas
+      JOIN taxonomie.taxon_area_status_tmp AS tas
         ON cas.id_area = tas.id_area AND t.cd_ref = tas.cd_ref
       JOIN ref_geo.l_areas AS a
         ON cas.id_area = a.id_area
@@ -273,7 +273,7 @@ TABLESPACE pg_default AS
         ON t.cd_nom = s.cd_nom
       LEFT JOIN gn_synthese.cor_area_synthese AS cas
         ON s.id_synthese = cas.id_synthese
-      JOIN taxonomie.taxon_area_status AS tas
+      JOIN taxonomie.taxon_area_status_tmp AS tas
         ON cas.id_area = tas.id_area AND t.cd_ref = tas.cd_ref
     WHERE s.id_synthese NOT IN (SELECT id_synthese FROM obs_multi_depts)
 WITH DATA;
