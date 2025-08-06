@@ -234,6 +234,14 @@ function updateInpnImages() {
         notify "Copy update_sinp_image.sh script on web-srv..."
         scp "${data_dir}/bash/update_sinp_images.sh" geonat@web-aura-sinp:~/dwl/
 
+        ssh -q geonat@web-aura-sinp [[ -f ${inpn_media_script_dir}/config.py ]] && \
+            printVerbose "INPN Img config file exists." || \
+            printError "🔴 INPN Img config file does not exist!";
+
+        ssh -q geonat@web-aura-sinp [[ -d ${inpn_media_script_dir}/venv ]] && \
+            printVerbose "INPN Img venv dir exists." || \
+            printError "🔴 INPN Img venv dir does not exist!";
+
         notify "Run SINP update images on web-srv..."
         ssh geonat@web-aura-sinp ~/dwl/update_sinp_images.sh
 
