@@ -13,3 +13,6 @@ max_line_length = 110
 [*.md]
 trim_trailing_whitespace = false
 max_line_length = 110
+
+[*.sql]
+indent_size = 4
