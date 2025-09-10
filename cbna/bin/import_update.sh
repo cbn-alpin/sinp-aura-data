@@ -225,12 +225,19 @@ function executeCopy() {
 
     printMsg "Copy ${type^^} in GeoNature database..."
     checkSuperuser
+    set +e
     export PGPASSWORD="${db_super_pass}"; \
         psql -h "${db_host}" -U "${db_super_user}" -d "${db_name}" \
+            -v "ON_ERROR_STOP=1" \
             -v "${psql_var}=${table}" \
             -v gnDbOwner="${db_user}" \
             -v csvFilePath="${raw_dir}/${csv_to_import}" \
             -f "${sql_file}"
+    script_result=$?
+    if [[ ${script_result} -ne 0 ]]; then
+        exitScript "ERROR: failed to execute COPY with ${data_type^^} !" 1
+    fi
+    set -e
 }
 
 function displayStats() {
@@ -287,11 +294,18 @@ function executeUpgradeScript() {
     local psql_var="${data_type_abbr}ImportTable"
 
     printMsg "${action^} ${type^^} in destination table..."
+    set +e
     export PGPASSWORD="${db_pass}"; \
         sed "s/\${${psql_var}}/${table}/g" "${sql_file}" | \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v "ON_ERROR_STOP=1" \
             -v "${psql_var}=${table}" \
             -f -
+    script_result=$?
+    if [[ ${script_result} -ne 0 ]]; then
+        exitScript "ERROR: failed to execute ${action^^} with ${data_type^^} !" 1
+    fi
+    set -e
 }
 
 function reloadCorAreaSynthese() {
