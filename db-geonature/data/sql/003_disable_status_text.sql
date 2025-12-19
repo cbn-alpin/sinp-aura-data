@@ -14,7 +14,7 @@ UPDATE taxonomie.bdc_statut_text
 SET "enable" = false ;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Enalbe all status text used for SINP AURA territory'
+\echo 'Enable status text used for SINP AURA territory : departements'
 UPDATE taxonomie.bdc_statut_text AS s
 SET "enable" = true
 FROM taxonomie.bdc_statut_cor_text_area AS ct
@@ -23,7 +23,16 @@ FROM taxonomie.bdc_statut_cor_text_area AS ct
 WHERE s.id_text = ct.id_text
     AND la.id_type = ref_geo.get_id_area_type('DEP')
     AND la.area_code IN ('01', '03', '07', '15', '26', '38', '42', '43', '63', '69', '73', '74')
-    AND cd_type_statut IN (
+    AND s.cd_type_statut IN (
+        'LRM', 'LRE', 'LRN', 'LRR', 'ZDET', 'DO', 'DH', 'REGL', 'REGLLUTTE', 'PN', 'PR', 'PD'
+    ) ;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Enable status text used for SINP AURA territory : region'
+UPDATE taxonomie.bdc_statut_text AS s
+SET "enable" = true
+WHERE s.cd_iso3166_2 = 'FR-ARA'
+    AND s.cd_type_statut IN (
         'LRM', 'LRE', 'LRN', 'LRR', 'ZDET', 'DO', 'DH', 'REGL', 'REGLLUTTE', 'PN', 'PR', 'PD'
     ) ;
 
