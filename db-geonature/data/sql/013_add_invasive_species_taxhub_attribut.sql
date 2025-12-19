@@ -110,7 +110,7 @@ INSERT INTO taxonomie.bib_attributs (
     ordre
 ) VALUES (
     'taxa_lists_invasive',
-    'Listes Espèces exotiques envahissantes réglementées',
+    'Espèces exotiques envahissantes',
     '{"values": ["Espèces végétales exotiques envahissantes", "Espèces animales exotiques envahissantes"]}',
     false,
     'Listes de taxons exotiques envahissants réglementés.',
