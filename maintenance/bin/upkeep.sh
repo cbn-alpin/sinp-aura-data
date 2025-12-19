@@ -279,7 +279,9 @@ function refreshGeoNatureCore() {
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -v ON_ERROR_STOP=1 \
-            -f "${sql_shared_dir}/refresh_materialized_view.sql"
+            -f "${sql_dir}/geonature_core_refresh.sql"
+            # Don't use shared sql file to be able to set temp_tablespaces
+            #-f "${sql_shared_dir}/refresh_materialized_view.sql"
     alert $? "${msg}"
 }
 
