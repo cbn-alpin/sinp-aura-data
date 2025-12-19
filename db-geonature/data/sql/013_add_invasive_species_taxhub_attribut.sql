@@ -130,7 +130,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
 )
     SELECT DISTINCT
         taxonomie.get_id_attribut_by_name('taxa_lists_invasive'),
-        'Flora',
+        'Espèces végétales exotiques envahissantes',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
@@ -149,7 +149,7 @@ INSERT INTO taxonomie.cor_taxon_attribut (
 )
     SELECT DISTINCT
         taxonomie.get_id_attribut_by_name('taxa_lists_invasive'),
-        'Fauna',
+        'Espèces animales exotiques envahissantes',
         t.cd_ref
     FROM taxonomie.taxref AS t
     WHERE t.cd_nom IN (
