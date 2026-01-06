@@ -3,8 +3,8 @@
 --      add forgotten field id_nomenclature_biogeo_status
 -- Required rights: DB OWNER
 -- Transfert this script on server this way:
--- rsync -av ./014_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/2.10/ --dry-run
--- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db -f ~/data/db-geonature/data/sql/2.10/014_*
+-- rsync -av ./018_* geonat@db-aura-sinp:~/data/db-geonature/data/sql/fix/ --dry-run
+-- Use this script this way: psql -h localhost -U geonatadmin -d geonature2db -f ~/data/db-geonature/data/sql/fix/018_*
 
 BEGIN;
 
