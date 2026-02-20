@@ -1,4 +1,4 @@
--- CEN Savoie synthese export flore fonge
+-- CEN Savoie synthese export flore fonge des données < 2015 
 
 -- Enable timing
 \timing
@@ -6,9 +6,9 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.cen_savoie_flore_fonge'
+\echo 'Create materialized view gn_exports.cen_savoie_flore_fonge_1'
 
-CREATE MATERIALIZED VIEW gn_exports.cen_savoie_flore_fonge AS
+CREATE MATERIALIZED VIEW gn_exports.cen_savoie_flore_fonge_1 AS
 WITH
 synthese_export AS (
     SELECT DISTINCT
@@ -21,6 +21,7 @@ synthese_export AS (
             ON cas.id_area = a.id_area
         LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom 
     WHERE a.area_code = '73' AND t.regne IN ('Plantae', 'Fungi', 'Protozoa') 
+    AND s.date_min < '2015-01-01'
 )
 SELECT
     s.id_synthese,
@@ -137,8 +138,8 @@ WHERE s.the_geom_4326 IS NOT NULL
     AND n14.cd_nomenclature NOT IN ('4', '2.8') -- Aucune diffusion
 ;
 
-CREATE UNIQUE INDEX unique_idx_cen_savoie_flore_fonge
-ON gn_exports.cen_savoie_flore_fonge (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_cen_savoie_flore_fonge_1
+ON gn_exports.cen_savoie_flore_fonge_1 (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
