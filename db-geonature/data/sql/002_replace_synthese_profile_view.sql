@@ -8,7 +8,6 @@ BEGIN;
 \echo '----------------------------------------------------------------------------'
 \echo 'Recreate VIEW gn_profiles.v_synthese_for_profiles'
 
---
 DROP VIEW IF EXISTS gn_synthese.v_synthese_for_profiles ;
 
 CREATE OR REPLACE VIEW gn_profiles.v_synthese_for_profiles AS

@@ -68,14 +68,24 @@ function main() {
     # Start script
     printInfo "${app_name} migrate script started at: ${fmt_time_start}"
 
+    insertUtilsFunctionsToDestinationDb
     initializeDestinationDb
     exportCsvFilesFromSourceDb
     importCsvFilesToDestinationDb
+    cleanRefGeoInDestinationDb
     executeSqlScripts
 
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
     displayTimeElapsed
+}
+
+function insertUtilsFunctionsToDestinationDb() {
+    printMsg "Insert utils functions into destination database..."
+    PGPASSWORD="${dbgn_db_destination_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -f "${sql_shared_dir}/utils_functions.sql"
 }
 
 function initializeDestinationDb()  {
@@ -84,29 +94,30 @@ function initializeDestinationDb()  {
     PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${sql_dir}/000_initialize_destination_db.sql"
+        -f "${sql_dir}/000a_initialize_destination_db.sql"
 }
 
 function exportCsvFilesFromSourceDb() {
     printMsg "Export to CSV files data from source database..."
 
     exportCsvFromSrc "ref_geo.bib_areas_types"
-    exportCsvFromSrc "ref_geo.l_areas"
+    exportCsvFromSrc "ref_geo.l_areas" "id_area, id_type, area_name, area_code, geom, centroid, source, comment, enable, additional_data, meta_create_date, meta_update_date, geom_4326, description"
     exportCsvFromSrc "ref_geo.li_grids"
     exportCsvFromSrc "ref_geo.li_municipalities"
 }
 
 function exportCsvFromSrc() {
     local schema_table="${1}"
+    local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
     local table="${schema_table#*.}"
     local output="${raw_dir}/${table}.csv"
 
     printInfo "Export CSV for table ${schema_table}"
 
-    PGPASSWORD="${dbgn_db_source_password}" psql \
+    PGPASSWORD="${dbgn_db_source_password}" psql -AXqt \
         -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
         -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
-        -c "\COPY ${schema_table} TO STDOUT WITH CSV HEADER" > "${output}"
+        -c "\COPY ${schema_table} ${fields} TO STDOUT WITH CSV HEADER DELIMITER E'\t'" > "${output}"
     printVerbose "${output} file created"
 }
 
@@ -121,6 +132,7 @@ function importCsvFilesToDestinationDb() {
 
 function importCsvToDst() {
     local schema_table="${1}"
+    local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
     local table="${schema_table#*.}"
     local input="${raw_dir}/${table}.csv"
 
@@ -129,8 +141,18 @@ function importCsvToDst() {
     PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -c "\COPY ${schema_table} FROM STDIN WITH CSV HEADER" < "${input}"
+        -c "\COPY ${schema_table} ${fields} FROM STDIN WITH CSV HEADER DELIMITER E'\t'" < "${input}"
+
     printVerbose "Data loaded into ${schema_table} from ${input} file."
+}
+
+function cleanRefGeoInDestinationDb()  {
+    printMsg "Clean ref geo data in destination database..."
+
+    PGPASSWORD="${dbgn_db_destination_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -f "${sql_dir}/000b_clean_ref_geo_data.sql"
 }
 
 function executeSqlScripts() {
@@ -141,26 +163,61 @@ function executeSqlScripts() {
     executeSqlFile "002_replace_synthese_profile_view.sql"
     executeSqlFile "003_disable_status_text.sql"
     executeSqlFile "004_populate_bdc_statut_cor_text_area.sql"
-    executeSqlFile "005_add_new_sensitivity_nomenclatures.sql"
+    executeSqlFileWithInterpolatedVar "005_add_new_sensitivity_nomenclatures.sql"
     executeSqlFile "006_disable_permanently_sensitivity_triggers.sql"
-    executeSqlFile "007_add_forest_flora_taxhub_attribut.sql"
-    executeSqlFile "008_add_taxa_lists_taxhub_attribut.sql"
+    executeSqlFileWithInterpolatedVar "007_add_forest_flora_taxhub_attribut.sql"
+    executeSqlFileWithInterpolatedVar "008_add_taxa_lists_taxhub_attribut.sql"
     executeSqlFile "009_update_sensitivity_area.sql"
     executeSqlFile "010_create_vm_for_synthese_export.sql"
     executeSqlFile "011_add_values_to_campanule_nomenclature.sql"
     executeSqlFile "012_updates_for_atlas_2.sql"
-    executeSqlFile "013_add_invasive_species_taxhub_attribut.sql"
+    executeSqlFileWithInterpolatedVar "013_add_invasive_species_taxhub_attribut.sql"
 }
 
 function executeSqlFile() {
     local sql_script="${1}"
 
-    printInfo "Execute SQL script ${sql_script} on destination database"
+    printInfo "\nExecute SQL script ${sql_script} on destination database"
 
-    PGPASSWORD="${dbgn_db_destination_password}" psql \
+    local output
+    output=$(PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${sql_dir}/${sql_script}"
+        -f "${sql_dir}/${sql_script}" 2>&1 | tee /dev/tty)
+
+    analyseSqlExecutionOutput "${output}" "${sql_script}"
+}
+
+function executeSqlFileWithInterpolatedVar() {
+    local sql_script="${1}"
+
+    printInfo "\nExecute SQL script ${sql_script} with interpolated variables on destination database"
+
+    local output
+    output=$({
+        cat "${sql_dir}/${sql_script}" | \
+        sed "s#\${csvDirectory}#${data_dir}/csv#g" | \
+        PGPASSWORD="${dbgn_db_destination_password}" psql \
+            -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+            -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}"
+    } 2>&1 | tee /dev/tty)
+
+    analyseSqlExecutionOutput "${output}" "${sql_script}"
+}
+
+function analyseSqlExecutionOutput() {
+    local output="${1}"
+    local sql_script="${2}"
+
+    # Check for ROLLBACK or COMMIT in the output
+    if echo "${output}" | grep -q -E "^(ROLLBACK|FATAL|ERROR)"; then
+        printError "SQL script ${sql_script} failed and was rolled back."
+        exitScript "Migration script aborted due to SQL error." 1
+    elif echo "${output}" | grep -q -E "^COMMIT$"; then
+        printInfo "${Gre}SQL script ${sql_script} executed successfully.${RCol}"
+    else
+        printPretty "SQL script ${sql_script} execution status unknown." ${Yel}
+    fi
 }
 
 main "${@}"

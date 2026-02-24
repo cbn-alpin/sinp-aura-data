@@ -9,81 +9,6 @@
 
 BEGIN ;
 
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Create table ref_geo.cor_areas:'
-
-CREATE TABLE IF NOT EXISTS ref_geo.cor_areas (
-    id_area_group int4 NULL,
-    id_area int4 NULL,
-    CONSTRAINT fk_ref_geo_cor_areas_id_area
-        FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_ref_geo_cor_areas_id_area_group
-        FOREIGN KEY (id_area_group) REFERENCES ref_geo.l_areas(id_area)
-        ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS ref_geo_cor_areas_id_area ON ref_geo.cor_areas USING btree (id_area);
-
-CREATE INDEX IF NOT EXISTS ref_geo_cor_areas_id_area_group ON ref_geo.cor_areas USING btree (id_area_group);
-
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Add column geom_4326 to table ref_geo.l_areas:'
-ALTER TABLE ref_geo.l_areas ADD COLUMN IF NOT EXISTS geom_4326 public.geometry(multipolygon, 4326) NULL;
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Add column description to table ref_geo.l_areas:'
-ALTER TABLE ref_geo.l_areas ADD COLUMN IF NOT EXISTS "description" text NULL;
-
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Update values of column geom_4326 in ref_geo.l_areas:'
-UPDATE ref_geo.l_areas
-SET geom_4326 = st_transform(geom, 4326)
-WHERE geom_4326 IS NULL ;
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Enable the PNR geometries in ref_geo.l_areas:'
-UPDATE ref_geo.l_areas AS a
-SET "enable" = TRUE
-FROM ref_geo.bib_areas_types AS t
-WHERE a.id_type = t.id_type
-    AND t.type_code = 'PNR'
-    AND a."enable" IS FALSE ;
-
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Add PNR type size_hierarchy value in ref_geo.bib_areas_types:'
-
-WITH diameters AS (
-    SELECT
-        a.id_area,
-        a.area_name,
-        (round(AVG(ST_Distance(st_centroid(a.geom), perimeters.geom))) * 2) AS avg_diameter
-    FROM ref_geo.l_areas AS a
-        JOIN ref_geo.bib_areas_types AS t
-            ON a.id_type = t.id_type
-        JOIN (
-            SELECT id_area, (ST_DumpPoints(geom)).*
-            FROM ref_geo.l_areas
-            WHERE id_type = ref_geo.get_id_area_type('PNR')
-        ) AS perimeters
-            ON a.id_area = perimeters.id_area
-    WHERE t.type_code IN ('PNR')
-    GROUP BY a.id_area, a.area_name
-),
-type_diameter AS (
-    SELECT AVG(avg_diameter) AS type_diameter
-    FROM diameters
-)
-UPDATE ref_geo.bib_areas_types AS t
-SET size_hierarchy = d.type_diameter
-FROM type_diameter AS d
-WHERE t.type_code = 'PNR' ;
-
-
 \echo '----------------------------------------------------------------------------'
 \echo 'Insert data in ref_geo.cor_areas:'
 
@@ -164,6 +89,7 @@ INSERT INTO ref_geo.cor_areas (id_area_group, id_area)
             AND a."enable" IS TRUE
     ) AS entries(id_area_group, id_area)
     ORDER BY id_area_group, id_area ;
+
 
 \echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'

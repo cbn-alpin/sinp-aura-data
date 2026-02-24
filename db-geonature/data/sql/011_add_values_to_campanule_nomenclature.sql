@@ -237,7 +237,8 @@ VALUES
     0,
     ref_nomenclatures.get_id_nomenclature_type('METHO_RECUEIL')||'.'||'2015',
     TRUE
-);
+)
+ON CONFLICT DO NOTHING ;
 
 
 \echo '----------------------------------------------------------------------------'
