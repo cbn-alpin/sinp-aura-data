@@ -68,11 +68,22 @@ function main() {
     # Start script
     printInfo "${app_name} migrate script started at: ${fmt_time_start}"
 
-    insertUtilsFunctionsToDestinationDb
-    initializeDestinationDb
+    local backup_db_name="${dbgn_db_destination_name}_backup"
+
+    insertUtilsFunctionsToSrcDb
     exportCsvFilesFromSourceDb
+    if isDbExists "${backup_db_name}"; then
+        restoreDestinationDbFromBackup
+        backupDefaultDataFromDestinationDb
+        insertUtilsFunctionsToDestinationDb
+    else
+        backupDestinationDb "${backup_db_name}"
+    fi
+    initializeDestinationDb
+    restoreDefaultDataToDestinationDb
     importCsvFilesToDestinationDb
     cleanRefGeoInDestinationDb
+    cleanUsersInDestinationDb
     executeSqlScripts
 
     #+----------------------------------------------------------------------------------------------------------+
@@ -80,21 +91,13 @@ function main() {
     displayTimeElapsed
 }
 
-function insertUtilsFunctionsToDestinationDb() {
-    printMsg "Insert utils functions into destination database..."
-    PGPASSWORD="${dbgn_db_destination_password}" psql \
-        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
-        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+function insertUtilsFunctionsToSrcDb() {
+    printMsg "Insert utils functions into source database..."
+
+    PGPASSWORD="${dbgn_db_source_password}" psql \
+        -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
+        -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
         -f "${sql_shared_dir}/utils_functions.sql"
-}
-
-function initializeDestinationDb()  {
-    printMsg "Initialize destination database..."
-
-    PGPASSWORD="${dbgn_db_destination_password}" psql \
-        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
-        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${sql_dir}/000a_initialize_destination_db.sql"
 }
 
 function exportCsvFilesFromSourceDb() {
@@ -104,21 +107,195 @@ function exportCsvFilesFromSourceDb() {
     exportCsvFromSrc "ref_geo.l_areas" "id_area, id_type, area_name, area_code, geom, centroid, source, comment, enable, additional_data, meta_create_date, meta_update_date, geom_4326, description"
     exportCsvFromSrc "ref_geo.li_grids"
     exportCsvFromSrc "ref_geo.li_municipalities"
+
+    exportCsvFromSrcByQuery "utilisateurs.bib_organismes" \
+        "SELECT
+            uuid_organisme,
+            nom_organisme,
+            adresse_organisme,
+            cp_organisme,
+            ville_organisme,
+            tel_organisme,
+            fax_organisme,
+            email_organisme,
+            url_organisme,
+            url_logo,
+            additional_data,
+            now() AS meta_create_date,
+            now() AS meta_update_date
+        FROM utilisateurs.bib_organismes
+        ORDER BY id_organisme"
+
+    exportCsvFromSrcByQuery "utilisateurs.t_roles" \
+        "SELECT
+            groupe,
+            uuid_role,
+            identifiant,
+            nom_role,
+            prenom_role,
+            desc_role,
+            pass,
+            pass_plus,
+            email,
+            remarques,
+            active,
+            jsonb_set(
+                COALESCE(champs_addi, '{}'::jsonb),
+                '{migrate2026}',
+                jsonb_build_object(
+                    'idOrganismSrc', id_organisme,
+                    'idRoleSrc', id_role
+                )
+            ) AS champs_addi,
+            date_insert,
+            date_update
+        FROM utilisateurs.t_roles
+        ORDER BY groupe, id_role"
+
+    exportCsvFromSrcByQuery "utilisateurs.tmp_cor_roles" \
+        "SELECT
+            utilisateurs.get_uuid_by_id_role(id_role_utilisateur) AS uuid_utilisateur,
+            utilisateurs.get_uuid_by_id_role(id_role_groupe) AS uuid_groupe
+        FROM utilisateurs.cor_roles"
+
+    exportCsvFromSrcByQuery "utilisateurs.tmp_cor_role_token" \
+        "SELECT
+            utilisateurs.get_uuid_by_id_role(id_role) AS uuid_role,
+            token
+        FROM utilisateurs.cor_role_token"
 }
 
 function exportCsvFromSrc() {
     local schema_table="${1}"
     local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
-    local table="${schema_table#*.}"
-    local output="${raw_dir}/${table}.csv"
+    local csv_filename="${schema_table//./_}"
+    local output="${raw_dir}/${csv_filename}.csv"
 
-    printInfo "Export CSV for table ${schema_table}"
+    printInfo "Export CSV for table ${schema_table} from SRC DB"
 
     PGPASSWORD="${dbgn_db_source_password}" psql -AXqt \
         -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
         -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
         -c "\COPY ${schema_table} ${fields} TO STDOUT WITH CSV HEADER DELIMITER E'\t'" > "${output}"
     printVerbose "${output} file created"
+}
+
+function exportCsvFromSrcByQuery() {
+    local csv_filename="${1//./_}"
+    local query="${2}"
+    local output="${raw_dir}/${csv_filename}.csv"
+
+    printInfo "Export ${csv_filename} by query from SRC DB"
+
+    PGPASSWORD="${dbgn_db_source_password}" psql -AXqt \
+        -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
+        -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
+        -c "\COPY (${query}) TO STDOUT WITH CSV HEADER DELIMITER E'\t'" > "${output}"
+    printVerbose "${output} file created"
+}
+
+function isDbExists() {
+    local db_name="${1}"
+
+    if executeSuperAdminPsqlOnDst "-lqt" | grep -qw "${db_name}"; then
+        printVerbose "Database '${db_name}' already exists."
+        return 1 # Explicitly return 1 for success
+    else
+        printVerbose "Database '${db_name}' does not exist."
+        return 0 # Explicitly return 0 for failure
+    fi
+}
+
+function executeSuperAdminPsqlOnDst() {
+    local psql_command="${1}"
+
+    PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_superadmin_name}" \
+        ${psql_command}
+}
+
+function restoreDestinationDbFromBackup() {
+    printMsg "Restore destination database ${dbgn_db_destination_name} from backup template DB..."
+    local backup_db_name="${dbgn_db_destination_name}_backup"
+
+    executeSuperAdminQueryOnDst "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${backup_db_name}' AND pid <> pg_backend_pid();"
+    executeSuperAdminQueryOnDst "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${dbgn_db_destination_name}' AND pid <> pg_backend_pid();"
+
+    printInfo "Dropping destination database '${dbgn_db_destination_name}'..."
+    executeSuperAdminQueryOnDst "DROP DATABASE IF EXISTS ${dbgn_db_destination_name} ;"
+
+    printInfo "Restoring destination database '${dbgn_db_destination_name}' from backup '${backup_db_name}'..."
+    executeSuperAdminQueryOnDst "CREATE DATABASE ${dbgn_db_destination_name} WITH TEMPLATE ${backup_db_name} ;"
+}
+
+function backupDefaultDataFromDestinationDb() {
+    printMsg "Export to CSV files default data from destination database..."
+
+    exportCsvFromDst "gn_commons.t_parameters" "parameter_name, parameter_desc, parameter_value, parameter_extra_value"
+    exportCsvFromDst "gn_notifications.t_notifications_rules" "code_method, code_category, subscribed"
+    exportCsvFromDst "gn_synthese.defaults_nomenclatures_value"
+    exportCsvFromDst "ref_nomenclatures.defaults_nomenclatures_value"
+}
+
+function exportCsvFromDst() {
+    local schema_table="${1}"
+    local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
+    local csv_filename="${schema_table//./_}"
+    local output="${raw_dir}/${csv_filename}.csv"
+
+    printInfo "Export CSV for table ${schema_table} from DST DB"
+
+    PGPASSWORD="${dbgn_db_destination_password}" psql -AXqt \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -c "\COPY ${schema_table} ${fields} TO STDOUT WITH CSV HEADER DELIMITER E'\t'" > "${output}"
+    printVerbose "${output} file created"
+}
+
+function insertUtilsFunctionsToDestinationDb() {
+    printMsg "Insert utils functions into destination database..."
+
+    PGPASSWORD="${dbgn_db_destination_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -f "${sql_shared_dir}/utils_functions.sql"
+}
+
+function backupDestinationDb() {
+    local backup_db_name="${1}"
+
+    printMsg "Backup destination database ${dbgn_db_destination_name} to ${backup_db_name} template..."
+
+    executeSuperAdminQueryOnDst "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${dbgn_db_destination_name}' AND pid <> pg_backend_pid();"
+    executeSuperAdminQueryOnDst "CREATE DATABASE ${backup_db_name} WITH TEMPLATE ${dbgn_db_destination_name} ;"
+}
+
+function executeSuperAdminQueryOnDst() {
+    local sql_query="${1}"
+
+    PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_superadmin_name}" \
+        -c "${sql_query}"
+}
+
+function initializeDestinationDb()  {
+    printMsg "Initialize destination database..."
+
+    executeSqlFile "000a_initialize_destination_db.sql"
+}
+
+function restoreDefaultDataToDestinationDb() {
+    printMsg "Restore default data to destination database..."
+
+    executeQuery "INSERT INTO utilisateurs.bib_organismes (id_organisme, uuid_organisme, nom_organisme) VALUES
+        ('2', 'e101b223-1354-4388-bdf9-cec5b189985e'::uuid, 'ALL (temp)');"
+
+    importCsvToDst "gn_commons.t_parameters" "parameter_name, parameter_desc, parameter_value, parameter_extra_value"
+    importCsvToDst "gn_notifications.t_notifications_rules" "code_method, code_category, subscribed"
+    importCsvToDst "gn_synthese.defaults_nomenclatures_value"
+    importCsvToDst "ref_nomenclatures.defaults_nomenclatures_value"
 }
 
 function importCsvFilesToDestinationDb() {
@@ -128,13 +305,19 @@ function importCsvFilesToDestinationDb() {
     importCsvToDst "ref_geo.l_areas"
     importCsvToDst "ref_geo.li_grids"
     importCsvToDst "ref_geo.li_municipalities"
+
+    importCsvToDst "utilisateurs.bib_organismes" "uuid_organisme, nom_organisme, adresse_organisme, cp_organisme, ville_organisme, tel_organisme, fax_organisme, email_organisme, url_organisme, url_logo, additional_data, meta_create_date, meta_update_date"
+    importCsvToDst "utilisateurs.t_roles" "groupe, uuid_role, identifiant, nom_role, prenom_role, desc_role, pass, pass_plus, email, remarques, active, champs_addi, date_insert, date_update"
+
+    importCorRolesCsvToDst
+    importCorRoleTokenCsvToDst
 }
 
 function importCsvToDst() {
     local schema_table="${1}"
     local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
-    local table="${schema_table#*.}"
-    local input="${raw_dir}/${table}.csv"
+    local csv_filename="${schema_table//./_}"
+    local input="${raw_dir}/${csv_filename}.csv"
 
     printInfo "Import CSV to table ${schema_table}"
 
@@ -143,16 +326,62 @@ function importCsvToDst() {
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
         -c "\COPY ${schema_table} ${fields} FROM STDIN WITH CSV HEADER DELIMITER E'\t'" < "${input}"
 
-    printVerbose "Data loaded into ${schema_table} from ${input} file."
+    printVerbose "Data loaded into ${schema_table} from ${input} file"
+}
+
+function importCorRolesCsvToDst() {
+    printInfo "Import CSV to table utilisateurs.cor_roles"
+
+    executeQuery "CREATE TABLE utilisateurs.tmp_cor_roles (
+            uuid_utilisateur UUID,
+            uuid_groupe UUID
+        );"
+    importCsvToDst "utilisateurs.tmp_cor_roles"
+    executeQuery "INSERT INTO utilisateurs.cor_roles (id_role_utilisateur, id_role_groupe)
+        SELECT
+            utilisateurs.get_id_role_by_uuid(t.uuid_utilisateur) AS id_role_utilisateur,
+            utilisateurs.get_id_role_by_uuid(t.uuid_groupe) AS id_role_groupe
+        FROM utilisateurs.tmp_cor_roles AS t;"
+    executeQuery "DROP TABLE utilisateurs.tmp_cor_roles"
+}
+
+function importCorRoleTokenCsvToDst() {
+    printInfo "Import CSV to table utilisateurs.cor_role_token"
+
+    executeQuery "CREATE TABLE utilisateurs.tmp_cor_role_token (
+            uuid_role UUID,
+            token TEXT
+        );"
+    importCsvToDst "utilisateurs.tmp_cor_role_token"
+    executeQuery "INSERT INTO utilisateurs.cor_role_token (id_role, token)
+        SELECT
+            utilisateurs.get_id_role_by_uuid(t.uuid_role) AS id_role,
+            t.token
+        FROM utilisateurs.tmp_cor_role_token AS t;"
+    executeQuery "DROP TABLE utilisateurs.tmp_cor_role_token"
+}
+
+function executeQuery() {
+    local query="${1}"
+
+    printInfo "\nExecute SQL query on destination database"
+
+    PGPASSWORD="${dbgn_db_destination_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -c "${query}"
 }
 
 function cleanRefGeoInDestinationDb()  {
     printMsg "Clean ref geo data in destination database..."
 
-    PGPASSWORD="${dbgn_db_destination_password}" psql \
-        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
-        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${sql_dir}/000b_clean_ref_geo_data.sql"
+    executeSqlFile "000b_clean_ref_geo_data.sql"
+}
+
+function cleanUsersInDestinationDb()  {
+    printMsg "Clean users data in destination database..."
+
+    executeSqlFile "000c_clean_users_data.sql"
 }
 
 function executeSqlScripts() {
