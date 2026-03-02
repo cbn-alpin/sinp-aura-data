@@ -6,9 +6,9 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.cen_savoie_flore_fonge_2'
+\echo 'Create materialized view gn_exports.cen_savoie_flore_fonge_3'
 
-CREATE MATERIALIZED VIEW gn_exports.cen_savoie_flore_fonge_2 AS
+CREATE MATERIALIZED VIEW gn_exports.cen_savoie_flore_fonge_3 AS
 WITH
 synthese_export AS (
     SELECT DISTINCT
@@ -138,8 +138,8 @@ WHERE s.the_geom_4326 IS NOT NULL
     AND n14.cd_nomenclature NOT IN ('4', '2.8') -- Aucune diffusion
 ;
 
-CREATE UNIQUE INDEX unique_idx_cen_savoie_flore_fonge_2
-ON gn_exports.cen_savoie_flore_fonge_2 (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_cen_savoie_flore_fonge_3
+ON gn_exports.cen_savoie_flore_fonge_3 (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
