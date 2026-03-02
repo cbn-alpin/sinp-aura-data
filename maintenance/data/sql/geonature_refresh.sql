@@ -82,6 +82,10 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.cen_savoie_flore_fonge_1 ;
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.cen_savoie_flore_fonge_2 ;
 
 \echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_exports.cen_savoie_flore_fonge_3:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.cen_savoie_flore_fonge_3 ;
+
+\echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_synthese.v_synthese_for_export already executed !'
 
 \echo '----------------------------------------------------------------'

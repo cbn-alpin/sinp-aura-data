@@ -1,4 +1,4 @@
--- CEN Savoie synthese export flore fonge des données >= 2015 
+-- CEN Savoie synthese export flore fonge des données < 2015 
 
 -- Enable timing
 \timing
@@ -21,7 +21,7 @@ synthese_export AS (
             ON cas.id_area = a.id_area
         LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom 
     WHERE a.area_code = '73' AND t.regne IN ('Plantae', 'Fungi', 'Protozoa') 
-    AND s.date_min >= '2015-01-01'
+    AND s.date_min >= '2000-01-01' and s.date_min < '2015-01-01'
 )
 SELECT
     s.id_synthese,
