@@ -28,6 +28,7 @@ TRUNCATE
 \echo '----------------------------------------------------------------------------'
 \echo 'Truncate utilisateurs tables and their linked tables'
 TRUNCATE
+    gn_exports.cor_exports_roles, -- empty
     utilisateurs.cor_role_provider, -- DATA: (Sample data) NEED to insert new data.
     gn_monitoring.cor_individual_module, -- empty
     gn_monitoring.t_individuals, --empty
@@ -37,8 +38,8 @@ TRUNCATE
     gn_permissions.backup_cor_role_action_filter_module_object, -- DATA: (Sample data) NEED to insert new data (?).
     gn_notifications.t_notifications_rules, -- DATA: (default) NEED to restore.
     gn_notifications.t_notifications,
-    --gn_permissions.t_permissions_requests, -- TEST module: empty (TODO: remove this line)
-    --pr_permission_request.t_permission_request, -- TEST module: empty (TODO: remove this line)
+    gn_permissions.t_permissions_requests, -- TEST module: empty (TODO: remove this line)
+    pr_permission_request.t_permission_request, -- TEST module: empty (TODO: remove this line)
     gn_permissions.cor_permission_taxref, -- empty
     gn_permissions.cor_permission_area, -- empty
     gn_permissions.t_permissions, -- DATA: (Sample data) NEED to migrate.
@@ -85,8 +86,8 @@ TRUNCATE
 \echo 'Reset all sequences of database'
 
 SELECT
-    substring(column_default, '''(.*)'''),
-    reset_sequence(table_schema, table_name, column_name, substring(column_default, '''(.*)'''))
+    substring(column_default, '''(.*)''') AS sequence_name,
+    reset_sequence(table_schema, table_name, column_name)
 FROM information_schema.columns
 WHERE column_default LIKE 'nextval%' ;
 

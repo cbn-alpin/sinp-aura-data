@@ -88,5 +88,74 @@ ON CONFLICT DO NOTHING ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Re-insert link between roles and organisms'
+
+WITH organism_mapping AS (
+    SELECT
+        (additional_data -> 'migrate2026' ->> 'idOrganismSrc')::integer AS old_id,
+        id_organisme AS new_id
+    FROM utilisateurs.bib_organismes
+    WHERE additional_data ? 'migrate2026'
+)
+UPDATE utilisateurs.t_roles AS r
+SET id_organisme = o.new_id
+FROM organism_mapping AS o
+WHERE (r.champs_addi -> 'migrate2026' ->> 'idOrganismSrc')::integer = o.old_id ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Clean t_roles champs_addi JSON'
+
+UPDATE utilisateurs.t_roles AS r
+SET champs_addi = (r.champs_addi - 'validate_charte') || '{"validateCharte": true}'::jsonb
+WHERE r.champs_addi -> 'validate_charte' = '["true"]'::jsonb;
+
+
+\echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'
 COMMIT ;
+
+
+
+BEGIN;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Reorder id_organisme in bib_organisme'
+
+UPDATE utilisateurs.bib_organismes
+SET id_organisme = -id_organisme ;
+
+UPDATE utilisateurs.bib_organismes
+SET id_organisme = ABS(id_organisme) - 2 ;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Deduplicate bib_organismes ALL entry'
+
+UPDATE utilisateurs.bib_organismes SET
+    id_organisme = -2,
+    nom_organisme = 'ALL (save)'
+WHERE id_organisme = 2 ;
+
+UPDATE utilisateurs.bib_organismes SET
+    id_organisme = 2,
+    nom_organisme = 'ALL',
+    additional_data = jsonb_set(
+        COALESCE(additional_data, '{}'::jsonb),
+        '{migrate2026}',
+        jsonb_build_object(
+            'uuidOrganismSrc', (SELECT uuid_organisme FROM utilisateurs.bib_organismes WHERE id_organisme = -2)
+        )
+    )
+WHERE id_organisme = 0 AND nom_organisme = 'ALL (temp)';
+
+DELETE FROM utilisateurs.bib_organismes
+WHERE id_organisme = -2 AND nom_organisme = 'ALL (save)';
+
+CLUSTER utilisateurs.bib_organismes USING pk_bib_organismes ;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Reset bib_organisme sequence'
+
+SELECT reset_sequence('utilisateurs', 'bib_organismes', 'id_organisme') ;
+
+COMMIT;

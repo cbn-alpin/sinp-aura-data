@@ -69,21 +69,26 @@ function main() {
     printInfo "${app_name} migrate script started at: ${fmt_time_start}"
 
     local backup_db_name="${dbgn_db_destination_name}_backup"
+    local is_db_exists=$(isDbExists "${backup_db_name}")
 
     insertUtilsFunctionsToSrcDb
+    fixSourceDb
     exportCsvFilesFromSourceDb
-    if isDbExists "${backup_db_name}"; then
+    if [[ "${is_db_exists}" == "true" ]]; then
         restoreDestinationDbFromBackup
-        backupDefaultDataFromDestinationDb
-        insertUtilsFunctionsToDestinationDb
     else
         backupDestinationDb "${backup_db_name}"
     fi
+    backupDefaultDataFromDestinationDb
+    insertUtilsFunctionsToDestinationDb
     initializeDestinationDb
     restoreDefaultDataToDestinationDb
+
     importCsvFilesToDestinationDb
     cleanRefGeoInDestinationDb
     cleanUsersInDestinationDb
+    addPermissions
+
     executeSqlScripts
 
     #+----------------------------------------------------------------------------------------------------------+
@@ -98,6 +103,26 @@ function insertUtilsFunctionsToSrcDb() {
         -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
         -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
         -f "${sql_shared_dir}/utils_functions.sql"
+}
+
+function fixSourceDb()  {
+    printMsg "Fix errors in source database..."
+
+    executeSqlFile "010_fix_source_db.sql"
+}
+
+function executeSqlFileOnSrcDb() {
+    local sql_script="${1}"
+
+    printInfo "\nExecute SQL script ${sql_script} on source database"
+
+    local output
+    output=$(PGPASSWORD="${dbgn_db_source_password}" psql \
+        -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
+        -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
+        -f "${dbgn_sql_migrate_dir}/${sql_script}" 2>&1 | tee /dev/tty)
+
+    analyseSqlExecutionOutput "${output}" "${sql_script}"
 }
 
 function exportCsvFilesFromSourceDb() {
@@ -120,7 +145,13 @@ function exportCsvFilesFromSourceDb() {
             email_organisme,
             url_organisme,
             url_logo,
-            additional_data,
+            jsonb_set(
+                COALESCE(additional_data, '{}'::jsonb),
+                '{migrate2026}',
+                jsonb_build_object(
+                    'idOrganismSrc', id_organisme
+                )
+            ) AS additional_data,
             now() AS meta_create_date,
             now() AS meta_update_date
         FROM utilisateurs.bib_organismes
@@ -142,15 +173,17 @@ function exportCsvFilesFromSourceDb() {
             jsonb_set(
                 COALESCE(champs_addi, '{}'::jsonb),
                 '{migrate2026}',
-                jsonb_build_object(
-                    'idOrganismSrc', id_organisme,
-                    'idRoleSrc', id_role
+                jsonb_strip_nulls(
+                    jsonb_build_object(
+                        'idOrganismSrc', id_organisme,
+                        'idRoleSrc', id_role
+                    )
                 )
             ) AS champs_addi,
             date_insert,
             date_update
         FROM utilisateurs.t_roles
-        ORDER BY groupe, id_role"
+        ORDER BY groupe DESC, id_role"
 
     exportCsvFromSrcByQuery "utilisateurs.tmp_cor_roles" \
         "SELECT
@@ -195,14 +228,14 @@ function exportCsvFromSrcByQuery() {
 }
 
 function isDbExists() {
+    # Don't print anything in this function, as its output is used in a condition to check if the DB exists or not
     local db_name="${1}"
+    local exists=$(executeSuperAdminPsqlOnDst "-lqt" | grep -w "${db_name}" | wc -l)
 
-    if executeSuperAdminPsqlOnDst "-lqt" | grep -qw "${db_name}"; then
-        printVerbose "Database '${db_name}' already exists."
-        return 1 # Explicitly return 1 for success
+    if [[ "${exists}" -gt 0 ]]; then
+        printf '%s' "true"
     else
-        printVerbose "Database '${db_name}' does not exist."
-        return 0 # Explicitly return 0 for failure
+        printf '%s' "false"
     fi
 }
 
@@ -271,19 +304,10 @@ function backupDestinationDb() {
     executeSuperAdminQueryOnDst "CREATE DATABASE ${backup_db_name} WITH TEMPLATE ${dbgn_db_destination_name} ;"
 }
 
-function executeSuperAdminQueryOnDst() {
-    local sql_query="${1}"
-
-    PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
-        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
-        -U "${dbgn_db_destination_superadmin_name}" \
-        -c "${sql_query}"
-}
-
 function initializeDestinationDb()  {
     printMsg "Initialize destination database..."
 
-    executeSqlFile "000a_initialize_destination_db.sql"
+    executeSqlFile "020_initialize_destination_db.sql"
 }
 
 function restoreDefaultDataToDestinationDb() {
@@ -291,6 +315,7 @@ function restoreDefaultDataToDestinationDb() {
 
     executeQuery "INSERT INTO utilisateurs.bib_organismes (id_organisme, uuid_organisme, nom_organisme) VALUES
         ('2', 'e101b223-1354-4388-bdf9-cec5b189985e'::uuid, 'ALL (temp)');"
+    executeQuery "SELECT reset_sequence('utilisateurs', 'bib_organismes', 'id_organisme', 'utilisateurs.bib_organismes_id_organisme_seq')"
 
     importCsvToDst "gn_commons.t_parameters" "parameter_name, parameter_desc, parameter_value, parameter_extra_value"
     importCsvToDst "gn_notifications.t_notifications_rules" "code_method, code_category, subscribed"
@@ -311,22 +336,6 @@ function importCsvFilesToDestinationDb() {
 
     importCorRolesCsvToDst
     importCorRoleTokenCsvToDst
-}
-
-function importCsvToDst() {
-    local schema_table="${1}"
-    local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
-    local csv_filename="${schema_table//./_}"
-    local input="${raw_dir}/${csv_filename}.csv"
-
-    printInfo "Import CSV to table ${schema_table}"
-
-    PGPASSWORD="${dbgn_db_destination_password}" psql \
-        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
-        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -c "\COPY ${schema_table} ${fields} FROM STDIN WITH CSV HEADER DELIMITER E'\t'" < "${input}"
-
-    printVerbose "Data loaded into ${schema_table} from ${input} file"
 }
 
 function importCorRolesCsvToDst() {
@@ -361,6 +370,68 @@ function importCorRoleTokenCsvToDst() {
     executeQuery "DROP TABLE utilisateurs.tmp_cor_role_token"
 }
 
+
+function cleanRefGeoInDestinationDb()  {
+    printMsg "Clean ref geo data in destination database..."
+
+    executeSqlFile "030_clean_ref_geo_data.sql"
+}
+
+function cleanUsersInDestinationDb()  {
+    printMsg "Clean users data in destination database..."
+
+    executeSqlFile "040_clean_users_data.sql"
+}
+
+function addPermissions() {
+    printMsg "Add permissions in destination database..."
+
+    executeSqlFile "050_add_permissions.sql"
+}
+
+function executeSqlScripts() {
+    printMsg "Execute SQL scripts to update destination database..."
+
+    executeSqlFile "060_replace_synthese_export_view.sql"
+    executeSqlFile "070_replace_synthese_profile_view.sql"
+    executeSqlFile "080_disable_status_text.sql"
+    executeSqlFile "090_populate_bdc_statut_cor_text_area.sql"
+    executeSqlFileWithInterpolatedVar "100_add_new_sensitivity_nomenclatures.sql"
+    executeSqlFile "110_disable_permanently_sensitivity_triggers.sql"
+    executeSqlFileWithInterpolatedVar "120_add_forest_flora_taxhub_attribut.sql"
+    executeSqlFileWithInterpolatedVar "130_add_taxa_lists_taxhub_attribut.sql"
+    executeSqlFile "140_update_sensitivity_area.sql"
+    executeSqlFile "150_create_vm_for_synthese_export.sql"
+    executeSqlFile "160_add_values_to_campanule_nomenclature.sql"
+    executeSqlFile "170_updates_for_atlas_2.sql"
+    executeSqlFileWithInterpolatedVar "180_add_invasive_species_taxhub_attribut.sql"
+}
+
+function executeSuperAdminQueryOnDst() {
+    local sql_query="${1}"
+
+    PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_superadmin_name}" \
+        -c "${sql_query}"
+}
+
+function importCsvToDst() {
+    local schema_table="${1}"
+    local fields=$([ -z "${2:-}" ] && echo "" || echo "($2)")
+    local csv_filename="${schema_table//./_}"
+    local input="${raw_dir}/${csv_filename}.csv"
+
+    printInfo "Import CSV to table ${schema_table}"
+
+    PGPASSWORD="${dbgn_db_destination_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -c "\COPY ${schema_table} ${fields} FROM STDIN WITH CSV HEADER DELIMITER E'\t'" < "${input}"
+
+    printVerbose "Data loaded into ${schema_table} from ${input} file"
+}
+
 function executeQuery() {
     local query="${1}"
 
@@ -372,37 +443,6 @@ function executeQuery() {
         -c "${query}"
 }
 
-function cleanRefGeoInDestinationDb()  {
-    printMsg "Clean ref geo data in destination database..."
-
-    executeSqlFile "000b_clean_ref_geo_data.sql"
-}
-
-function cleanUsersInDestinationDb()  {
-    printMsg "Clean users data in destination database..."
-
-    executeSqlFile "000c_clean_users_data.sql"
-}
-
-function executeSqlScripts() {
-    printMsg "Execute SQL scripts to update destination database..."
-
-    # TODO: update SQL code for this SQL scripts
-    executeSqlFile "001_replace_synthese_export_view.sql"
-    executeSqlFile "002_replace_synthese_profile_view.sql"
-    executeSqlFile "003_disable_status_text.sql"
-    executeSqlFile "004_populate_bdc_statut_cor_text_area.sql"
-    executeSqlFileWithInterpolatedVar "005_add_new_sensitivity_nomenclatures.sql"
-    executeSqlFile "006_disable_permanently_sensitivity_triggers.sql"
-    executeSqlFileWithInterpolatedVar "007_add_forest_flora_taxhub_attribut.sql"
-    executeSqlFileWithInterpolatedVar "008_add_taxa_lists_taxhub_attribut.sql"
-    executeSqlFile "009_update_sensitivity_area.sql"
-    executeSqlFile "010_create_vm_for_synthese_export.sql"
-    executeSqlFile "011_add_values_to_campanule_nomenclature.sql"
-    executeSqlFile "012_updates_for_atlas_2.sql"
-    executeSqlFileWithInterpolatedVar "013_add_invasive_species_taxhub_attribut.sql"
-}
-
 function executeSqlFile() {
     local sql_script="${1}"
 
@@ -412,7 +452,7 @@ function executeSqlFile() {
     output=$(PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${sql_dir}/${sql_script}" 2>&1 | tee /dev/tty)
+        -f "${dbgn_sql_migrate_dir}/${sql_script}" 2>&1 | tee /dev/tty)
 
     analyseSqlExecutionOutput "${output}" "${sql_script}"
 }
@@ -424,7 +464,7 @@ function executeSqlFileWithInterpolatedVar() {
 
     local output
     output=$({
-        cat "${sql_dir}/${sql_script}" | \
+        cat "${dbgn_sql_migrate_dir}/${sql_script}" | \
         sed "s#\${csvDirectory}#${data_dir}/csv#g" | \
         PGPASSWORD="${dbgn_db_destination_password}" psql \
             -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
