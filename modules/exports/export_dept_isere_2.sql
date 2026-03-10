@@ -1,14 +1,15 @@
--- CEN Savoie synthese export flore fonge des données < 2015 
+-- export de toutes les données comprises entre 2000 et 2015 sur le département de l'isère
 
 -- Enable timing
 \timing
+ 
 
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.dept_isere_1'
+\echo 'Create materialized view gn_exports.dept_isere_2'
 
-CREATE MATERIALIZED VIEW gn_exports.dept_isere_1 AS
+CREATE MATERIALIZED VIEW gn_exports.dept_isere_2 AS
 WITH
 synthese_export AS (
     SELECT DISTINCT
@@ -21,7 +22,7 @@ synthese_export AS (
             ON cas.id_area = a.id_area
         LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom 
     WHERE a.area_code = '38' 
-    AND s.date_min < '2000-01-01'
+    AND s.date_min BETWEEN  '2000-01-01' AND '2015-01-01'
 )
 SELECT
     s.id_synthese,
@@ -138,8 +139,8 @@ WHERE s.the_geom_4326 IS NOT NULL
     AND n14.cd_nomenclature NOT IN ('4', '2.8') -- Aucune diffusion
 ;
 
-CREATE UNIQUE INDEX unique_idx_dept_isere_1
-ON gn_exports.dept_isere_1 (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_dept_isere_2
+ON gn_exports.dept_isere_2 (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
