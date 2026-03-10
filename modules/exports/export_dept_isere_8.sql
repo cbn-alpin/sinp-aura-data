@@ -1,4 +1,4 @@
--- export de toutes les données comprises entre 2005 et 2010 sur le département de l'isère
+-- export de toutes les données supérieures à 2022 sur le département de l'isère
 
 -- Enable timing
 \timing
@@ -6,9 +6,9 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create materialized view gn_exports.dept_isere_3'
+\echo 'Create materialized view gn_exports.dept_isere_8'
 
-CREATE MATERIALIZED VIEW gn_exports.dept_isere_3 AS
+CREATE MATERIALIZED VIEW gn_exports.dept_isere_8 AS
 WITH
 synthese_export AS (
     SELECT DISTINCT
@@ -21,7 +21,7 @@ synthese_export AS (
             ON cas.id_area = a.id_area
         LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom 
     WHERE a.area_code = '38' 
-    AND s.date_min BETWEEN '2005-01-02' and '2010-01-01'
+    AND s.date_min > '2022-01-01'
 )
 SELECT
     s.id_synthese,
@@ -138,8 +138,8 @@ WHERE s.the_geom_4326 IS NOT NULL
     AND n14.cd_nomenclature NOT IN ('4', '2.8') -- Aucune diffusion
 ;
 
-CREATE UNIQUE INDEX unique_idx_dept_isere_3
-ON gn_exports.dept_isere_3 (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_dept_isere_8
+ON gn_exports.dept_isere_8 (id_synthese) ;
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'

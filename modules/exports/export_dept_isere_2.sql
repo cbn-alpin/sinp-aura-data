@@ -22,7 +22,7 @@ synthese_export AS (
             ON cas.id_area = a.id_area
         LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom 
     WHERE a.area_code = '38' 
-    AND s.date_min BETWEEN  '2000-01-01' AND '2015-01-01'
+    AND s.date_min BETWEEN  '2000-01-01' AND '2005-01-01'
 )
 SELECT
     s.id_synthese,
