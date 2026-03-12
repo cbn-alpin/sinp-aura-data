@@ -86,38 +86,6 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.cen_savoie_flore_fonge_2 ;
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.cen_savoie_flore_fonge_3 ;
 
 \echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_1:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_1 ;
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_2:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_2 ; 
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_3:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_3 ;
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_4:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_4 ;
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_5:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_5 ;
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_6:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_6 ;
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_7:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_7 ;
-
-\echo '----------------------------------------------------------------'
-\echo 'Refreshing gn_exports.dept_isere_8:'
-REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.dept_isere_8 ;
-
-\echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_synthese.v_synthese_for_export already executed !'
 
 \echo '----------------------------------------------------------------'
