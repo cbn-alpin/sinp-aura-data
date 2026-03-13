@@ -97,11 +97,11 @@ function main() {
     executeExportModuleScripts
 
     transfertFlaviaGn2PgSchemas
-    upgradeFlaviaGn2Pg
+    #upgradeFlaviaGn2Pg # Not needed, it's already done in source DB
     insertFlaviaGn2PgDataToGN
 
     transfertLpoGn2PgSchema
-    upgradeLpoGn2Pg
+    #upgradeLpoGn2Pg # Not needed, it's already done in source DB
     insertLpoGn2PgDataToGN
 
     insertCbnaDataToGN
