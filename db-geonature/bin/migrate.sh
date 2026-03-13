@@ -66,7 +66,7 @@ function main() {
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
-    printInfo "${app_name} migrate script started at: ${fmt_time_start}"
+    printInfo "🚀 ${app_name} migrate script started at: ${fmt_time_start}"
 
     local backup_db_name="${dbgn_db_destination_name}_backup"
     local is_db_exists=$(isDbExists "${backup_db_name}")
@@ -91,6 +91,26 @@ function main() {
 
     executeSqlScripts
 
+    migratePermissionRequests
+
+    transfertExportModuleTables
+    executeExportModuleScripts
+
+    transfertFlaviaGn2PgSchemas
+    upgradeFlaviaGn2Pg
+    insertFlaviaGn2PgDataToGN
+
+    transfertLpoGn2PgSchema
+    upgradeLpoGn2Pg
+    insertLpoGn2PgDataToGN
+
+    insertCbnaDataToGN
+    insertCbnmcDataToGN
+
+    reloadObservationsAreasLinks
+
+    startMaintenanceTask
+
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
     displayTimeElapsed
@@ -99,20 +119,18 @@ function main() {
 function insertUtilsFunctionsToSrcDb() {
     printMsg "Insert utils functions into source database..."
 
-    PGPASSWORD="${dbgn_db_source_password}" psql \
-        -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
-        -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
-        -f "${sql_shared_dir}/utils_functions.sql"
+    executeSqlFileOnSrcDb "${sql_shared_dir}" "utils_functions.sql"
 }
 
 function fixSourceDb()  {
     printMsg "Fix errors in source database..."
 
-    executeSqlFile "010_fix_source_db.sql"
+    executeSqlFileOnSrcDb "${dbgn_sql_migrate_dir}" "010_fix_source_db.sql"
 }
 
 function executeSqlFileOnSrcDb() {
-    local sql_script="${1}"
+    local sql_directory="${1}"
+    local sql_script="${2}"
 
     printInfo "\nExecute SQL script ${sql_script} on source database"
 
@@ -120,7 +138,7 @@ function executeSqlFileOnSrcDb() {
     output=$(PGPASSWORD="${dbgn_db_source_password}" psql \
         -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
         -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
-        -f "${dbgn_sql_migrate_dir}/${sql_script}" 2>&1 | tee /dev/tty)
+        -f "${sql_directory}/${sql_script}" 2>&1 | tee /dev/tty)
 
     analyseSqlExecutionOutput "${output}" "${sql_script}"
 }
@@ -196,6 +214,9 @@ function exportCsvFilesFromSourceDb() {
             utilisateurs.get_uuid_by_id_role(id_role) AS uuid_role,
             token
         FROM utilisateurs.cor_role_token"
+
+    exportCsvFromSrc "gn_synthese.t_sources" \
+        "name_source, desc_source, entity_source_pk_field, url_source, meta_create_date, meta_update_date"
 }
 
 function exportCsvFromSrc() {
@@ -336,6 +357,8 @@ function importCsvFilesToDestinationDb() {
 
     importCorRolesCsvToDst
     importCorRoleTokenCsvToDst
+
+    importSourceToDst
 }
 
 function importCorRolesCsvToDst() {
@@ -370,6 +393,14 @@ function importCorRoleTokenCsvToDst() {
     executeQuery "DROP TABLE utilisateurs.tmp_cor_role_token"
 }
 
+function importSourceToDst() {
+    printInfo "Import CSV to table gn_synthese.t_sources"
+
+    importCsvToDst "gn_synthese.t_sources" "name_source, desc_source, entity_source_pk_field, url_source, meta_create_date, meta_update_date"
+    executeQuery "UPDATE gn_synthese.t_sources
+        SET id_module = gn_commons.get_id_module_by_code('SYNTHESE')
+        WHERE id_module IS NULL ;"
+}
 
 function cleanRefGeoInDestinationDb()  {
     printMsg "Clean ref geo data in destination database..."
@@ -405,6 +436,253 @@ function executeSqlScripts() {
     executeSqlFile "160_add_values_to_campanule_nomenclature.sql"
     executeSqlFile "170_updates_for_atlas_2.sql"
     executeSqlFileWithInterpolatedVar "180_add_invasive_species_taxhub_attribut.sql"
+}
+
+function migratePermissionRequests() {
+    printMsg "Migrate permission requests in destination database..."
+
+    exportCsvFromSrcByQuery "pr_permission_request.tmp_permission_request" \
+        "SELECT
+            r."token",
+            ur.uuid_role AS requested_by,
+            r.processed_date,
+            pr.uuid_role AS processed_by,
+            r.end_date,
+            r.geographic_filter,
+            r.taxonomic_filter,
+            r.additional_data,
+            r.meta_create_date,
+            r.meta_update_date
+        FROM gn_permissions.t_requests AS r
+            JOIN utilisateurs.t_roles AS ur
+                ON r.id_role = ur.id_role
+            JOIN utilisateurs.t_roles AS pr
+                ON r.processed_by = pr.id_role
+        WHERE r.end_date > now()
+            AND r.sensitive_access = TRUE
+            AND r.processed_state = 'accepted'"
+
+    executeQuery "DROP TABLE IF EXISTS pr_permission_request.tmp_permission_request"
+    executeQuery "CREATE TABLE pr_permission_request.tmp_permission_request (
+            token UUID,
+            requested_by UUID,
+            processed_date TIMESTAMP,
+            processed_by UUID,
+            end_date DATE,
+            geographic_filter text,
+            taxonomic_filter text,
+            additional_data JSONB,
+            meta_create_date TIMESTAMP,
+            meta_update_date TIMESTAMP,
+            CONSTRAINT pk_tmp_permission_request PRIMARY KEY (token)
+        );"
+    importCsvToDst "pr_permission_request.tmp_permission_request"
+
+
+    executeSqlFile "190_migrate_permission_requests.sql"
+
+    executeQuery "DROP TABLE IF EXISTS pr_permission_request.tmp_permission_request"
+}
+
+function transfertExportModuleTables() {
+    printMsg "Transfert export module tables from source to destination database..."
+
+    local dump_file="${raw_dir}/module_exports_tables.dump"
+    local tables_to_export=(
+        "gn_exports.export_onf_contour"
+        "gn_exports.export_onf_taxon"
+    )
+
+    local dump_args=()
+    for table in "${tables_to_export[@]}"; do
+        dump_args+=("-t" "$table")
+    done
+
+    if [[ ! -f "${dump_file}" ]]; then
+        printVerbose "Dump Exports module tables to ${dump_file}"
+
+        PGPASSWORD="${dbgn_db_source_password}" pg_dump \
+            -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
+            -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" -F c \
+            "${dump_args[@]}" \
+            -f "${dump_file}"
+
+        if [ $? -ne 0 ]; then
+            exitScript "❌ An error occurred during pg_dump (Export module)."
+        fi
+    else
+        printVerbose "📍 Dump file ${dump_file} already exists. Skipping pg_dump for Export module."
+    fi
+
+    printVerbose "Restore Exports module tables to destination DB"
+    PGPASSWORD="${dbgn_db_destination_password}" pg_restore \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -1 "${dump_file}"
+
+    if [ $? -eq 0 ]; then
+        printInfo "✅ Migration of module Exports tables ended with success !"
+    else
+        exitScript "❌ An error occurred during pg_restore (Export module)."
+    fi
+}
+
+function executeExportModuleScripts() {
+    printMsg "Execute Exports module materialized views SQL script on destination database..."
+    # Don't dump materialized view from Source DB beacause there is also some functions to restore
+
+    local module_sql_dir="${root_dir}/modules/exports"
+    local files=(
+        "create_synthese_blurred.sql"
+        "export_catalogue_taxons_region.sql"
+        "export_cen_savoie_1.sql"
+        "export_cen_savoie_2.sql"
+        "export_cen_savoie_3.sql"
+        "export_lo_parvi_1.sql"
+        "export_lo_parvi_2.sql"
+        "export_onf.sql"
+        "export_pnr_chartreuse.sql"
+        "export_pnr_haut_jura.sql"
+        "export_pnr_livradois_forez_1.sql"
+        "export_pnr_livradois_forez_2.sql"
+        "export_pnr_massif_bauges.sql"
+        "export_pnr_pilat.sql"
+        "export_pnr_vercors_1.sql"
+        "export_pnr_vercors_2.sql"
+        "export_pnr_volcans_auvergne_1.sql"
+        "export_pnr_volcans_auvergne_2.sql"
+        "export_pnr_volcans_auvergne_3.sql"
+        "export_pnr_volcans_auvergne_4.sql"
+    )
+
+    for file in "${files[@]}"; do
+        executeSqlFile "${file}" "${module_sql_dir}"
+    done
+}
+
+function transfertFlaviaGn2PgSchema() {
+    printMsg "Transfert Flavia gn2pg schemas from source to destination database..."
+
+    transfertSchema "gn2pg_flavia"
+}
+
+function upgradeFlaviaGn2Pg() {
+    printMsg "Upgrade Flavia Gn2Pg schemas in destination database..."
+
+    upgradeGn2PgSchema "flavia"
+}
+
+function insertFlaviaGn2PgDataToGN() {
+    printMsg "Insert data from Flavia gn2pg schemas in destination database..."
+
+    executeSqlFile "200_insert_gn2pg_flavia_data.sql"
+}
+
+function transfertLpoGn2PgSchema() {
+    printMsg "Transfert LPO gn2pg schemas from source to destination database..."
+
+    transfertSchema "gn2pg_lpo"
+}
+
+function upgradeLpoGn2Pg() {
+    printMsg "Upgrade LPO Gn2Pg schemas in destination database..."
+
+    upgradeGn2PgSchema "lpo"
+}
+
+function insertLpoGn2PgDataToGN() {
+    printMsg "Insert data from LPO gn2pg schemas in destination database..."
+
+    executeSqlFile "210_insert_gn2pg_lpo_data.sql"
+}
+
+function transfertSchema() {
+    local schema_name="${1}"
+    printInfo "🚀 Starting transfert of ${schema_name} schema..."
+
+    PGPASSWORD="${dbgn_db_source_password}" pg_dump -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
+        -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
+        -n "${schema_name}" -F c | \
+    PGPASSWORD="${dbgn_db_destination_password}" pg_restore -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -1
+
+    if [ ${PIPESTATUS[1]} -eq 0 ]; then
+        printInfo "✅ Migration of ${schema_name} ended with success !"
+    else
+        exitScript "❌ An error occurred during the migration of ${schema_name}."
+    fi
+}
+
+function upgradeGn2PgSchema() {
+    local schema_name="${1}"
+    local gn2pg_root_dir="${root_dir}/gn2pg"
+    local gn2pg_sql_dir="${gn2pg_root_dir}/data/sql"
+
+    printInfo "Upgrade Gn2Pg ${schema_name} schema in destination database..."
+
+    cd "${gn2pg_root_dir}"
+    pipenv run gn2pg_cli db --json-tables-create "${schema_name}_config.toml"
+    executeSqlFile "${schema_name}_migrate_1.6.9_to_1.9.1.sql" "${gn2pg_sql_dir}"
+    cd "${gn2pg_sql_dir}"
+    pipenv run gn2pg_cli db --custom-script="${schema_name}_to_synthese.sql" "${schema_name}_config.toml"
+}
+
+function insertCbnaDataToGN() {
+    printMsg "Insert CBNA data to Synthese in destination database..."
+
+    runImportUpdateScript "cbna" "2025-08-13"
+}
+
+function insertCbnmcDataToGN() {
+    printMsg "Insert CBNMC data to Synthese in destination database..."
+
+    runImportUpdateScript "cbnmc" "2025-07-28"
+}
+
+function runImportUpdateScript() {
+    local org="${1}"
+    local import_date="${2}"
+    local filename_prefix="\${${org}import_date}_sinp_aura_${org}_test"
+    local script_root_dir="${root_dir}/${org}"
+
+    printVerbose "Delete previously extracted files in ${org}/data/raw"
+    cd "${script_root_dir}/data/raw"
+    rm -f "*.{csv,ini}"
+
+    printVerbose "Check if ${org^^} settings.ini exists"
+    cd "${script_root_dir}/config"
+    if [[ -f "settings.ini" ]]; then
+        printVerbose "\t copying settings.sample.ini to settings.ini."
+        cp "settings.sample.ini" "settings.ini"
+    else
+        printVerbose "\t ignore copying the existing settings.ini file."
+    fi
+
+    printVerbose "Update import date and prefix in ${org^^} settings.ini file"
+    cd "${script_root_dir}/config"
+    sed -i \
+        -e "s/^${org}_import_date=/${org}_import_date="${import_date}"/" \
+        -e "s/^${org}_filename_prefix=/${org}_filename_prefix=\"${filename_prefix}\"/" \
+        "settings.ini"
+
+    printVerbose "Run import update script for ${org^^}"
+    cd "${script_root_dir}/bin"
+    ./import_update.sh --verbose
+}
+
+function reloadObservationsAreasLinks() {
+    printMsg "Reload cor_area_synthese in destination database..."
+
+    executeSqlFileOnSrcDb "${sql_shared_dir}" "reload_cor_area_synthese.sql"
+}
+
+function startMaintenanceTask() {
+    printMsg "Start maintenance task in destination database..."
+    local script_root_dir="${root_dir}/maintenance"
+
+    cd "${script_root_dir}/bin"
+    ./upkeep.sh --verbose
 }
 
 function executeSuperAdminQueryOnDst() {
@@ -445,6 +723,7 @@ function executeQuery() {
 
 function executeSqlFile() {
     local sql_script="${1}"
+    local sql_directory="${2:-${dbgn_sql_migrate_dir}}"
 
     printInfo "\nExecute SQL script ${sql_script} on destination database"
 
@@ -452,7 +731,7 @@ function executeSqlFile() {
     output=$(PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${dbgn_sql_migrate_dir}/${sql_script}" 2>&1 | tee /dev/tty)
+        -f "${sql_directory}/${sql_script}" 2>&1 | tee /dev/tty)
 
     analyseSqlExecutionOutput "${output}" "${sql_script}"
 }

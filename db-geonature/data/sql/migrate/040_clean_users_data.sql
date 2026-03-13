@@ -112,14 +112,6 @@ WHERE r.champs_addi -> 'validate_charte' = '["true"]'::jsonb;
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'COMMIT if all is OK:'
-COMMIT ;
-
-
-
-BEGIN;
-
-\echo '----------------------------------------------------------------------------'
 \echo 'Reorder id_organisme in bib_organisme'
 
 UPDATE utilisateurs.bib_organismes
@@ -127,6 +119,7 @@ SET id_organisme = -id_organisme ;
 
 UPDATE utilisateurs.bib_organismes
 SET id_organisme = ABS(id_organisme) - 2 ;
+
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Deduplicate bib_organismes ALL entry'
@@ -153,9 +146,13 @@ WHERE id_organisme = -2 AND nom_organisme = 'ALL (save)';
 
 CLUSTER utilisateurs.bib_organismes USING pk_bib_organismes ;
 
+
 \echo '----------------------------------------------------------------------------'
 \echo 'Reset bib_organisme sequence'
 
 SELECT reset_sequence('utilisateurs', 'bib_organismes', 'id_organisme') ;
 
+
+\echo '----------------------------------------------------------------------------'
+\echo 'COMMIT if all is OK:'
 COMMIT;

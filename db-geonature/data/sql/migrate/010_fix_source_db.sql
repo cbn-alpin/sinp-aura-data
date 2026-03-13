@@ -170,5 +170,20 @@ WHERE bo.uuid_organisme = '58b4e0ce-2423-498c-83dd-ef1e1f7ba26e';
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Clean gn_synthese.t_sources'
+
+UPDATE gn_synthese.synthese SET id_source = gn_synthese.get_id_source_by_name('Simethis')
+WHERE id_source = gn_synthese.get_id_source_by_name('SI CBN') ;
+
+DELETE FROM gn_synthese.t_sources WHERE name_source = 'SI CBN' ;
+
+UPDATE gn_synthese.t_sources SET
+    desc_source = 'Data issues de l''importation via GN2PG depuis la base du Pôle Invertébrés.',
+    entity_source_pk_field = 'id_synthese',
+    url_source = 'https://orb.lpo-aura.org/#/synthese/occurrence/'
+WHERE name_source = 'lpo' ;
+
+
+\echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'
 COMMIT ;
