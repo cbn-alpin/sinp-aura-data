@@ -82,7 +82,7 @@ function main() {
     # Run Gn2Pg update
     printMsg "Running Gn2Pg updates with ${gn2pg_config_file_name} config..."
     cd "${current_dir}/../"
-    pipenv run gn2pg_cli ${gn2pg_verbosity} ${gn2pg_update_type} "${gn2pg_config_file_name}"
+    pipenv run gn2pg_cli download ${gn2pg_verbosity} ${gn2pg_update_type} "${gn2pg_config_file_name}"
 
     # Finalize Gn2Pg update
     stopStatusMessenger
