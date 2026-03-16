@@ -173,10 +173,10 @@ function extractDownloadDates() {
     actual_download_date=${actual_download_date:-"$(date '+%Y-%m-%d %H:%M:%S')"}
     local extract_last_download_date=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc "SELECT last_ts \
-            FROM gn2pg_${sn}.increment_log \
+            -AXqtc "SELECT xfer_start_ts \
+            FROM gn2pg_${sn}.import_log \
             WHERE source = '${sn}' AND controler = 'data' \
-            ORDER BY last_ts DESC ;"
+            ORDER BY xfer_start_ts DESC ;"
     )
     last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
     sendTelegram "⌚ ${gn2pg_source_name^^} last download date: ${last_download_date}
