@@ -140,7 +140,7 @@ function runStatusMessenger() {
 function extractDownloadedData() {
     downloaded_data_count=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc "SELECT COUNT(id_data) \
+            -AXqtc "SELECT COUNT(uuid) \
             FROM gn2pg_${sn}.data_json \
             WHERE source = '${sn}' \
                AND controler = 'data' \
@@ -150,7 +150,7 @@ function extractDownloadedData() {
 
     errors_count=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc "SELECT COUNT(id_data) \
+            -AXqtc "SELECT COUNT(uuid) \
             FROM gn2pg_${sn}.error_log \
             WHERE source = '${sn}' \
                AND controler = 'data' \
