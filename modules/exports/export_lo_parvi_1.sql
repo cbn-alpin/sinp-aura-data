@@ -6,6 +6,10 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Drop materialized view if exists gn_exports.lo_parvi_1'
+DROP MATERIALIZED VIEW IF EXISTS gn_exports.lo_parvi_1;
+
+\echo '----------------------------------------------------------------------------'
 \echo 'Create materialized view gn_exports.lo_parvi_1'
 
 CREATE MATERIALIZED VIEW gn_exports.lo_parvi_1 AS

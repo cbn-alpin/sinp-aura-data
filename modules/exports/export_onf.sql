@@ -9,6 +9,10 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Drop materialized view if exists gn_exports.onf'
+DROP MATERIALIZED VIEW IF EXISTS gn_exports.onf;
+
+\echo '----------------------------------------------------------------------------'
 \echo 'Create materialized view gn_exports.onf'
 
 CREATE MATERIALIZED VIEW gn_exports.onf AS
