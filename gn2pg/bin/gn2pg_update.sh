@@ -78,13 +78,12 @@ function main() {
     # Run Gn2Pg update
     startGn2Pg
 
-    # Wait for the initial import log entry to be created and get its ID
-    waitForInitialImportLog
-
     # Start status messenger in background
+    waitForInitialImportLog
     startStatusMessenger
 
     # Finalize Gn2Pg update
+    waitForGn2PgFinish
     stopStatusMessenger
 
     #+----------------------------------------------------------------------------------------------------------+
@@ -145,6 +144,7 @@ function waitForInitialImportLog() {
         attempts=$((attempts + 1))
         if [[ "${attempts}" -ge "${max_attempts}" ]]; then
             printError "Timeout waiting for initial ${app_name} import log entry."
+            kill $gn2pg_pid >/dev/null 2>&1
             sendTelegram "❌ ${app_name} failed to start ${gn2pg_update_type//--/^^} download
                 for ${gn2pg_source_name^^} on ${HOSTNAME^^}
                 (Import ID not found after waiting)!"
@@ -238,6 +238,10 @@ function extractDownloadedData() {
     local time_end="$(date +%s)"
     local time_diff="$((${time_end} - ${time_start}))"
     elapsed_time="$(displayTime "${time_diff}")"
+}
+
+function waitForGn2PgFinish() {
+    wait ${gn2pg_pid}
 }
 
 function stopStatusMessenger() {
