@@ -287,7 +287,7 @@ function extractDownloadInfos() {
         Status: ${xfer_status}
         Start at: ${xfer_start_ts}
         End at: ${xfer_end_ts}
-        Filters: ${xfer_filters}
+        Filters: ${xfer_filters//\\/}
         Comment: ${xfer_comment}"
 }
 
