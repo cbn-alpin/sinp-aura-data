@@ -78,7 +78,7 @@ function main() {
     # Run Gn2Pg update
     printMsg "Starting ${app_name} updates in background with ${gn2pg_config_file_name} config..."
     cd "${current_dir}/../"
-    pipenv run gn2pg_cli download ${gn2pg_verbosity} ${gn2pg_update_type} "${gn2pg_config_file_name}" &
+    pipenv run gn2pg_cli ${gn2pg_verbosity} download ${gn2pg_update_type} "${gn2pg_config_file_name}" &
     gn2pg_pid=$! # Store PID of background process
 
     # Wait for the initial import log entry to be created and get its ID
