@@ -164,7 +164,7 @@ function startStatusMessenger() {
 function runStatusMessenger() {
     while true; do
         extractDownloadedData
-        sendTelegram "${gn2pg_source_name^^} - Data already downloaded: ${api_count_items}
+        sendTelegram "📦 ${gn2pg_source_name^^} - Data already downloaded: ${api_count_items}
             Elapsed time: ${elapsed_time}
             ${errors_msg}"
         sleep ${gn2pg_messenger_pause}
@@ -282,7 +282,7 @@ function extractDownloadInfos() {
         xfer_filters \
         xfer_comment <<< "${import_data}"
 
-    sendTelegram "📰 ${gn2pg_source_name^^} import ${last_import_id} infos:
+    sendTelegram "📰 ${gn2pg_source_name^^} import #${last_import_id} infos:
         Type: ${xfer_type}
         Status: ${xfer_status}
         Start at: ${xfer_start_ts}
