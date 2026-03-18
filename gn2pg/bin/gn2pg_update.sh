@@ -207,7 +207,8 @@ function extractDownloadedData() {
     )
 
     # Parse the pipe-delimited output into variables
-    IFS='|' read -r api_count_items \
+    IFS='|' read -r \
+        api_count_items \
         api_count_errors \
         data_count_upserts \
         data_count_delete \
@@ -226,9 +227,11 @@ function extractDownloadedData() {
             errors_msg+="🔺 Metadata Errors: ${metadata_count_errors:-"-"}"
     fi
 
-    result_msg="Data upserts: ${data_count_upserts:-"-"}, "
-    result_msg+="deletes: ${data_count_delete:-"-"}, "
-    result_msg+="metadata upserts: ${metadata_count_upserts:-"-"}."
+    result_msg="Data: "
+    result_msg+="${api_count_items:-"-"} downloaded, "
+    result_msg+="${data_count_upserts:-"-"} upserted, "
+    result_msg+="${data_count_delete:-"-"} deleted, "
+    result_msg+="${metadata_count_upserts:-"-"} metadata upserted."
 
     result_icon="🟢"
     if [[ ! -z "${errors_msg}" ]]; then
@@ -271,7 +274,7 @@ function extractDownloadInfos() {
     )
 
     # Parse the pipe-delimited output into variables
-    IFS='|' read -r api_count_items \
+    IFS='|' read -r \
         xfer_type \
         xfer_status \
         xfer_start_ts \
