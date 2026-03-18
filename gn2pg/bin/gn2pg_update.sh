@@ -76,10 +76,7 @@ function main() {
     printInfo "${app_name} update script started at: ${fmt_time_start}"
 
     # Run Gn2Pg update
-    printMsg "Starting ${app_name} updates in background with ${gn2pg_config_file_name} config..."
-    cd "${current_dir}/../"
-    pipenv run gn2pg_cli ${gn2pg_verbosity} download ${gn2pg_update_type} "${gn2pg_config_file_name}" &
-    gn2pg_pid=$! # Store PID of background process
+    startGn2Pg
 
     # Wait for the initial import log entry to be created and get its ID
     waitForInitialImportLog
@@ -120,6 +117,15 @@ function prepareParameters() {
     sn="${gn2pg_source_name,,}"
 
     gn2pg_log_imports="${gn2pg_log_imports/\{source\}/${sn}}"
+}
+
+function startGn2Pg() {
+    printMsg "Starting ${app_name} updates in background with ${gn2pg_config_file_name} config..."
+    cd "${current_dir}/../"
+    pipenv run gn2pg_cli ${gn2pg_verbosity} download ${gn2pg_update_type} "${gn2pg_config_file_name}" &
+    gn2pg_pid=$! # Store PID of background process
+
+    sendTelegram "🚀 GN2PG CLI started in background with pid ${gn2pg_pid} for ${gn2pg_source_name^^}"
 }
 
 # DESC: Wait for Gn2Pg to create the initial import log entry and set last_import_id
@@ -177,13 +183,16 @@ function extractLastImportId() {
             LIMIT 1 ;"
     )
     last_import_id=${extract_import_id:-"0"}
-    sendTelegram "🆔 ${gn2pg_source_name^^} new import ID: ${last_import_id}"
+    if [[ "${last_import_id}" != "0" ]]; then
+        sendTelegram "🆔 ${gn2pg_source_name^^} new import ID: ${last_import_id}"
+    fi
+
 }
 
 function extractDownloadedData() {
     local import_data=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc -F '|' "SELECT \
+            -F '|' -AXqtc "SELECT \
                 api_count_items,
                 api_count_errors,
                 data_count_upserts,
@@ -208,18 +217,18 @@ function extractDownloadedData() {
 
     errors_msg=""
     if [[ "${api_count_errors}" != "0" ]]; then
-            errors_msg+="🔺 API Errors: ${api_count_errors}"
+            errors_msg+="🔺 API Errors: ${api_count_errors:-"-"}"
     fi
     if [[ "${data_count_errors}" != "0" ]]; then
-            errors_msg+="🔺 Data Errors: ${data_count_errors}"
+            errors_msg+="🔺 Data Errors: ${data_count_errors:-"-"}"
     fi
     if [[ "${metadata_count_errors}" != "0" ]]; then
-            errors_msg+="🔺 Metadata Errors: ${metadata_count_errors}"
+            errors_msg+="🔺 Metadata Errors: ${metadata_count_errors:-"-"}"
     fi
 
-    result_msg="Data upserts: ${data_count_upserts}, "
-    result_msg+="deletes: ${data_count_delete}, "
-    result_msg+="metadata upserts: ${metadata_count_upserts}."
+    result_msg="Data upserts: ${data_count_upserts:-"-"}, "
+    result_msg+="deletes: ${data_count_delete:-"-"}, "
+    result_msg+="metadata upserts: ${metadata_count_upserts:-"-"}."
 
     result_icon="🟢"
     if [[ ! -z "${errors_msg}" ]]; then
@@ -244,7 +253,7 @@ function stopStatusMessenger() {
 function extractDownloadInfos() {
     local import_data=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc -F '|' "SELECT \
+            -F '|' -AXqtc "SELECT \
                 xfer_type, \
                 xfer_status, \
                 xfer_start_ts, \
