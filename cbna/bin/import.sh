@@ -109,21 +109,27 @@ function main() {
     executeUpgradeScript "synthese" "insert"
     executeUpgradeScript "synthese" "update"
 
+    parseCsv "validation" "v"
+    executeCopy "validation"
+    displayStats "validation"
+    executeUpgradeScript "validation" "insert"
+    executeUpgradeScript "validation" "update"
+
+    parseCsv "validation" "v"
+    executeCopy "validation"
+    displayStats "validation"
+    executeUpgradeScript "validation" "insert"
+    executeUpgradeScript "validation" "update"
+
     reloadCorAreaSynthese
 
+    executeUpgradeScript "validation" "delete"
     executeUpgradeScript "synthese" "delete"
     executeUpgradeScript "dataset" "delete"
     executeUpgradeScript "acquisition framework" "delete"
     executeUpgradeScript "user" "delete"
     executeUpgradeScript "organism" "delete"
     executeUpgradeScript "source" "delete"
-
-    printPretty "Are you sure to run maitain DB SQL script wich lock database (y/n). Default: n ?" ${Red}
-    read -r -n 1 key
-    echo # Move to a new line
-    if [[ "${key}" =~ ^[Yy]$ ]]; then
-        maintainDb
-    fi
 
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
@@ -192,7 +198,7 @@ function parseCsv() {
         cd "${root_dir}/import-parser/"
         pipenv run python ./bin/gn_import_parser.py \
             --type "${type_abbr}" \
-            --config "${conf_dir}/parser_actions_update.ini" \
+            --config "${conf_dir}/parser_actions.ini" \
             "${raw_dir}/${csv_file}"
     else
         printVerbose "${type^^} CSV file already parsed." ${Gra}
@@ -316,15 +322,6 @@ function reloadCorAreaSynthese() {
         sed "s/\${syntheseImportTable}/${table}/g" "${sql_shared_dir}/update/synthese/reload.sql" | \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f -
-}
-
-function maintainDb() {
-    printMsg "Executing database maintenance on updated tables..."
-
-    checkSuperuser
-    export PGPASSWORD="${db_super_pass}"; \
-        psql -h "${db_host}" -U "${db_super_user}" -d "${db_name}" \
-            -f "${sql_shared_dir}/synthese_maintenance.sql"
 }
 
 main "${@}"

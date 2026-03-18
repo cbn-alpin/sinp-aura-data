@@ -4,7 +4,7 @@
 
 ### Vérification de l'archive
 
-Avant de lancer le script d'import initial ou de mise à jour, il est nécessaire
+Avant de lancer le script d'import, il est nécessaire
 de s'assurer de l'intégrité du format CSV de l'archive et de la possibilité de
 pouvoir intégrer les données dans la base (abscence de doublon sur les index uniques).
 Pour cela :
@@ -37,14 +37,11 @@ en le renomant `cbna/config/settings.ini`.
     * Adapter à votre installation les paramètres présents dans ce fichier. Si
     nécessaire, vous pouvez aussi y surcharger des paramètres du fichier
     `cbna/config/settings.default.ini`.
--   Se placer dans le dossier `cbna/bin/` et un des scripts :
-    - `./import_initial.sh -v` pour importer le jeu de données de test du CBNA.
-        _ Le script se charge de télécharger les données brutes depuis le dépôt SFTP
-        _ Les scripts SQL du dossier `cbna/data/sql/initial/` seront ensuite exécuté séquentiellement.
-    - `./import_update.sh -v` pour mettre à jour les données du CBNA.
+-   Se placer dans le dossier `cbna/bin/` et lancer le script :
+    - `./import.sh -v` pour importer les données du CBNA.
         _ Le script se charge de télécharger les données brutes depuis le dépôt SFTP.
         _ Les scripts SQL du dossier `shared/data/sql/update/` seront ensuite
-        exécutés séquentiellement dans ordre déterminé pour la mise à jour.
+        exécutés séquentiellement dans ordre déterminé pour l'import'.
 
 ## Synchronisation serveur
 
