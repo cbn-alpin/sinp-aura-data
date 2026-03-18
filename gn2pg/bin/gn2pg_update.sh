@@ -71,18 +71,21 @@ function main() {
     runChecks
     prepareParameters
     redirectOutput "${gn2pg_log_imports}"
-
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
     printInfo "${app_name} update script started at: ${fmt_time_start}"
 
-    # Prepare Gn2Pg update
-    startStatusMessenger
-
     # Run Gn2Pg update
-    printMsg "Running Gn2Pg updates with ${gn2pg_config_file_name} config..."
+    printMsg "Starting ${app_name} updates in background with ${gn2pg_config_file_name} config..."
     cd "${current_dir}/../"
-    pipenv run gn2pg_cli download ${gn2pg_verbosity} ${gn2pg_update_type} "${gn2pg_config_file_name}"
+    pipenv run gn2pg_cli download ${gn2pg_verbosity} ${gn2pg_update_type} "${gn2pg_config_file_name}" &
+    gn2pg_pid=$! # Store PID of background process
+
+    # Wait for the initial import log entry to be created and get its ID
+    waitForInitialImportLog
+
+    # Start status messenger in background
+    startStatusMessenger
 
     # Finalize Gn2Pg update
     stopStatusMessenger
@@ -119,49 +122,108 @@ function prepareParameters() {
     gn2pg_log_imports="${gn2pg_log_imports/\{source\}/${sn}}"
 }
 
+# DESC: Wait for Gn2Pg to create the initial import log entry and set last_import_id
+# ARGS: None
+# OUTS: Sets global last_import_id
+function waitForInitialImportLog() {
+    printMsg "Waiting for ${app_name} to create initial import log entry..."
+    local attempts=0
+    local max_attempts=60 # Wait up to 60 seconds (e.g., 1 second per attempt)
+    last_import_id="0" # Initialize to ensure loop runs
+    while [[ "${last_import_id}" == "0" || -z "${last_import_id}" ]]; do
+        extractLastImportId # This function sets the global last_import_id
+        if [[ "${last_import_id}" != "0" && -n "${last_import_id}" ]]; then
+            printMsg "Initial import log entry found: ID ${last_import_id}"
+            break
+        fi
+        attempts=$((attempts + 1))
+        if [[ "${attempts}" -ge "${max_attempts}" ]]; then
+            printError "Timeout waiting for initial ${app_name} import log entry."
+            sendTelegram "❌ ${app_name} failed to start ${gn2pg_update_type//--/^^} download
+                for ${gn2pg_source_name^^} on ${HOSTNAME^^}
+                (Import ID not found after waiting)!"
+            exitScript "Failed to start Gn2Pg download." 1
+        fi
+        sleep 1
+    done
+}
+
 function startStatusMessenger() {
     display_type="${gn2pg_update_type//--/}"
-    sendTelegram "🚀 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} …"
-    runStatusMessenger &
+    sendTelegram "🚀 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} (Import ID: ${last_import_id})…"
+    runStatusMessenger & # This is where it goes into background
     status_messenger_pid=$!
 }
 
 function runStatusMessenger() {
-    extractDownloadDates
     while true; do
         extractDownloadedData
-        sendTelegram "${gn2pg_source_name^^} - Data already downloaded: ${downloaded_data_count}
+        sendTelegram "${gn2pg_source_name^^} - Data already downloaded: ${api_count_items}
             Elapsed time: ${elapsed_time}
             ${errors_msg}"
         sleep ${gn2pg_messenger_pause}
     done
 }
 
+function extractLastImportId() {
+    local extract_import_id=$(export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -AXqtc "SELECT id \
+            FROM gn2pg_${sn}.import_log \
+            WHERE source = '${sn}' \
+                AND controler = 'data' \
+                AND xfer_status IN ('init', 'importing data') \
+            ORDER BY xfer_start_ts DESC \
+            LIMIT 1 ;"
+    )
+    last_import_id=${extract_import_id:-"0"}
+    sendTelegram "🆔 ${gn2pg_source_name^^} new import ID: ${last_import_id}"
+}
+
 function extractDownloadedData() {
-    downloaded_data_count=$(export PGPASSWORD="${db_pass}"; \
+    local import_data=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc "SELECT COUNT(uuid) \
-            FROM gn2pg_${sn}.data_json \
+            -AXqtc -F '|' "SELECT \
+                api_count_items,
+                api_count_errors,
+                data_count_upserts,
+                data_count_delete,
+                data_count_errors,
+                metadata_count_upserts,
+                metadata_count_errors \
+            FROM gn2pg_${sn}.import_log \
             WHERE source = '${sn}' \
                AND controler = 'data' \
-               AND type = 'synthese_with_metadata' \
-               AND update_ts > '${actual_download_date}' ;"
+               AND id = '${last_import_id}' ;"
     )
 
-    errors_count=$(export PGPASSWORD="${db_pass}"; \
-        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc "SELECT COUNT(uuid) \
-            FROM gn2pg_${sn}.error_log \
-            WHERE source = '${sn}' \
-               AND controler = 'data' \
-               AND last_ts >= '${last_download_date}' ;"
-    )
+    # Parse the pipe-delimited output into variables
+    IFS='|' read -r api_count_items \
+        api_count_errors \
+        data_count_upserts \
+        data_count_delete \
+        data_count_errors \
+        metadata_count_upserts \
+        metadata_count_errors <<< "${import_data}"
 
-    result="🟢"
     errors_msg=""
-    if [[ "${errors_count}" != "0" ]]; then
-        result="🔴"
-        errors_msg="🔺 Errors: ${errors_count} 🔺"
+    if [[ "${api_count_errors}" != "0" ]]; then
+            errors_msg+="🔺 API Errors: ${api_count_errors}"
+    fi
+    if [[ "${data_count_errors}" != "0" ]]; then
+            errors_msg+="🔺 Data Errors: ${data_count_errors}"
+    fi
+    if [[ "${metadata_count_errors}" != "0" ]]; then
+            errors_msg+="🔺 Metadata Errors: ${metadata_count_errors}"
+    fi
+
+    result_msg="Data upserts: ${data_count_upserts}, "
+    result_msg+="deletes: ${data_count_delete}, "
+    result_msg+="metadata upserts: ${metadata_count_upserts}."
+
+    result_icon="🟢"
+    if [[ ! -z "${errors_msg}" ]]; then
+        result_icon="🔴"
     fi
 
     local time_end="$(date +%s)"
@@ -169,28 +231,48 @@ function extractDownloadedData() {
     elapsed_time="$(displayTime "${time_diff}")"
 }
 
-function extractDownloadDates() {
-    actual_download_date=${actual_download_date:-"$(date '+%Y-%m-%d %H:%M:%S')"}
-    local extract_last_download_date=$(export PGPASSWORD="${db_pass}"; \
-        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
-            -AXqtc "SELECT xfer_start_ts \
-            FROM gn2pg_${sn}.import_log \
-            WHERE source = '${sn}' AND controler = 'data' \
-            ORDER BY xfer_start_ts DESC ;"
-    )
-    last_download_date=${extract_last_download_date:-"1970-01-01 00:00:00"}
-    sendTelegram "⌚ ${gn2pg_source_name^^} last download date: ${last_download_date}
-        Actual download date used: ${actual_download_date}"
-}
-
 function stopStatusMessenger() {
     kill $status_messenger_pid >/dev/null 2>&1
-    extractDownloadDates
+    extractDownloadInfos
     extractDownloadedData
 
-    sendTelegram "${result} Gn2Pg download for ${gn2pg_source_name^^} completed in ${elapsed_time} !
-        Downloaded data: ${downloaded_data_count}
+    sendTelegram "${result_icon} Gn2Pg download for ${gn2pg_source_name^^} completed in ${elapsed_time} !
+        ${result_msg}
         ${errors_msg}"
+}
+
+function extractDownloadInfos() {
+    local import_data=$(export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -AXqtc -F '|' "SELECT \
+                xfer_type, \
+                xfer_status, \
+                xfer_start_ts, \
+                xfer_end_ts, \
+                xfer_filters, \
+                comment \
+            FROM gn2pg_${sn}.import_log \
+            WHERE source = '${sn}' \
+               AND controler = 'data' \
+               AND id = '${last_import_id}' ;"
+    )
+
+    # Parse the pipe-delimited output into variables
+    IFS='|' read -r api_count_items \
+        xfer_type \
+        xfer_status \
+        xfer_start_ts \
+        xfer_end_ts \
+        xfer_filters \
+        xfer_comment <<< "${import_data}"
+
+    sendTelegram "📰 ${gn2pg_source_name^^} import ${last_import_id} infos:
+        Type: ${xfer_type}
+        Status: ${xfer_status}
+        Start at: ${xfer_start_ts}
+        End at: ${xfer_end_ts}
+        Filters: ${xfer_filters}
+        Comment: ${xfer_comment}"
 }
 
 main "${@}"
