@@ -115,12 +115,6 @@ function main() {
     executeUpgradeScript "validation" "insert"
     executeUpgradeScript "validation" "update"
 
-    parseCsv "validation" "v"
-    executeCopy "validation"
-    displayStats "validation"
-    executeUpgradeScript "validation" "insert"
-    executeUpgradeScript "validation" "update"
-
     reloadCorAreaSynthese
 
     executeUpgradeScript "validation" "delete"
