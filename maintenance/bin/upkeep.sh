@@ -351,7 +351,7 @@ function alert() {
 
 function sendStopMessage() {
     computeElapsedTime
-    sendTelegram "🟢 ${app_name} finished on ${HOSTNAME^^} …
+    sendTelegram "✅ ${app_name} finished on ${HOSTNAME^^} …
         Elapsed time: ${elapsed_time}"
 }
 
