@@ -438,6 +438,7 @@ function executeSqlScripts() {
     executeSqlFile "160_add_values_to_campanule_nomenclature.sql"
     executeSqlFile "170_updates_for_atlas_2.sql"
     executeSqlFileWithInterpolatedVar "180_add_invasive_species_taxhub_attribut.sql"
+    executeSqlFile "185_add_values_to_ds_publique_nomenclature.sql"
 }
 
 function migratePermissionRequests() {
