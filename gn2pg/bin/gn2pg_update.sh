@@ -156,7 +156,7 @@ function waitForInitialImportLog() {
 
 function startStatusMessenger() {
     display_type="${gn2pg_update_type//--/}"
-    sendTelegram "🚀 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} (Import ID: ${last_import_id})…"
+    sendTelegram "🔄 ${app_name} started ${display_type^^} download for ${gn2pg_source_name^^} on ${HOSTNAME^^} (Import ID: ${last_import_id})…"
     runStatusMessenger & # This is where it goes into background
     status_messenger_pid=$!
 }
@@ -189,6 +189,9 @@ function extractLastImportId() {
 
 }
 
+# TODO: split this function into two: one to extract data during download in order to generate
+# progress messages and another for extracting final result infos in order to generate
+# finish message
 function extractDownloadedData() {
     local import_data=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
@@ -234,8 +237,10 @@ function extractDownloadedData() {
     result_msg+="${metadata_count_upserts:-"-"} metadata upserted."
 
     result_icon="🟢"
+    finish_icon="✅"
     if [[ ! -z "${errors_msg}" ]]; then
         result_icon="🔴"
+        finish_icon="💥"
     fi
 
     local time_end="$(date +%s)"
@@ -252,7 +257,7 @@ function stopStatusMessenger() {
     extractDownloadInfos
     extractDownloadedData
 
-    sendTelegram "${result_icon} Gn2Pg download for ${gn2pg_source_name^^} completed in ${elapsed_time} !
+    sendTelegram "${finish_icon} Gn2Pg download for ${gn2pg_source_name^^} completed in ${elapsed_time} !
         ${result_msg}
         ${errors_msg}"
 }
