@@ -37,7 +37,7 @@ VALUES
 ),
 (
     ref_nomenclatures.get_id_nomenclature_type('DS_PUBLIQUE'),
-    'Re',
+    'Ac',
     'Publique acquise',
     'Publique acquise',
     'Publique Acquise : La donnée-source a été produite par un organisme privé (associations, bureaux d’étude…) ou une personne physique à titre personnel. Les droits patrimoniaux exclusifs ou non exclusifs, de copie, traitement et diffusion sans limitation ont été acquis à titre gracieux ou payant, sur marché ou par convention, par un organisme ayant autorité publique. La donnée-source est devenue publique.',
