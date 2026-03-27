@@ -128,6 +128,9 @@ WHERE bo.uuid_organisme = '9b25de50-8f1a-44bf-b7d9-0ab1a4f4efbb';
 UPDATE utilisateurs.bib_organismes AS bo SET
     nom_organisme = 'Autre (doublon6)'
 WHERE bo.uuid_organisme = '081067bf-c9ea-40be-b56b-614c6114f0d1';
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Autre (doublon7)'
+WHERE bo.uuid_organisme = '78f9fa0b-13c6-4b0c-8434-9b5f6be6785b';
 
 UPDATE utilisateurs.bib_organismes AS bo SET
     nom_organisme = 'Conservatoire d''Espaces Naturels de l''Allier (doublon)'
@@ -167,6 +170,18 @@ WHERE bo.uuid_organisme = '9f74fc2b-8065-491b-8e5a-9f734cbc5b92';
 UPDATE utilisateurs.bib_organismes AS bo SET
     nom_organisme = 'Union Européenne (doublon)'
 WHERE bo.uuid_organisme = '58b4e0ce-2423-498c-83dd-ef1e1f7ba26e';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Commune de Alba-la-Romaine (doublon)'
+WHERE bo.uuid_organisme = '92c18d3f-0edd-4175-a8dc-159b32b7fd71';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Office National des Forêts (doublon)'
+WHERE bo.uuid_organisme = 'a51e2bf1-2aa2-499e-80da-bc22cc648ba4';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Région Auvergne-Rhône-Alpes (doublon)'
+WHERE bo.uuid_organisme = '92619d79-ecc1-409c-b58f-60e26002c594';
 
 
 \echo '----------------------------------------------------------------------------'

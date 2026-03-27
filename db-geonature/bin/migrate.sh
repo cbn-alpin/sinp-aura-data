@@ -96,12 +96,12 @@ function main() {
     transfertExportModuleTables
     executeExportModuleScripts
 
-    transfertFlaviaGn2PgSchemas
-    #upgradeFlaviaGn2Pg # Not needed, it's already done in source DB
+    transfertFlaviaGn2PgSchema
+    cleanFlaviaGn2Pg
     insertFlaviaGn2PgDataToGN
 
     transfertLpoGn2PgSchema
-    #upgradeLpoGn2Pg # Not needed, it's already done in source DB
+    cleanLpoGn2Pg
     insertLpoGn2PgDataToGN
 
     insertCbnaDataToGN
@@ -281,6 +281,7 @@ function restoreDestinationDbFromBackup() {
 
     printInfo "Restoring destination database '${dbgn_db_destination_name}' from backup '${backup_db_name}'..."
     executeSuperAdminQueryOnDst "CREATE DATABASE ${dbgn_db_destination_name} WITH TEMPLATE ${backup_db_name} ;"
+    executeSuperAdminQueryOnDst "ALTER DATABASE ${dbgn_db_destination_name} OWNER TO ${dbgn_db_destination_user} ;"
 }
 
 function backupDefaultDataFromDestinationDb() {
@@ -323,6 +324,7 @@ function backupDestinationDb() {
 
     executeSuperAdminQueryOnDst "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${dbgn_db_destination_name}' AND pid <> pg_backend_pid();"
     executeSuperAdminQueryOnDst "CREATE DATABASE ${backup_db_name} WITH TEMPLATE ${dbgn_db_destination_name} ;"
+    executeSuperAdminQueryOnDst "ALTER DATABASE ${backup_db_name} OWNER TO ${dbgn_db_destination_user} ;"
 }
 
 function initializeDestinationDb()  {
@@ -566,16 +568,16 @@ function transfertFlaviaGn2PgSchema() {
     transfertSchema "gn2pg_flavia"
 }
 
-function upgradeFlaviaGn2Pg() {
-    printMsg "Upgrade Flavia Gn2Pg schemas in destination database..."
+function cleanFlaviaGn2Pg() {
+    printMsg "Clean Flavia Gn2Pg schemas in destination database..."
 
-    upgradeGn2PgSchema "flavia"
+    executeSqlFile "200_clean_gn2pg_flavia_data.sql"
 }
 
 function insertFlaviaGn2PgDataToGN() {
     printMsg "Insert data from Flavia gn2pg schemas in destination database..."
 
-    executeSqlFile "200_insert_gn2pg_flavia_data.sql"
+    exexecuteSqlFileAsAdmin "210_insert_gn2pg_flavia_data.sql"
 }
 
 function transfertLpoGn2PgSchema() {
@@ -584,48 +586,40 @@ function transfertLpoGn2PgSchema() {
     transfertSchema "gn2pg_lpo"
 }
 
-function upgradeLpoGn2Pg() {
-    printMsg "Upgrade LPO Gn2Pg schemas in destination database..."
+function cleanLpoGn2Pg() {
+    printMsg "Clean LPO Gn2Pg schemas in destination database..."
 
-    upgradeGn2PgSchema "lpo"
+    executeSqlFile "220_clean_gn2pg_lpo_data.sql"
 }
 
 function insertLpoGn2PgDataToGN() {
     printMsg "Insert data from LPO gn2pg schemas in destination database..."
 
-    executeSqlFile "210_insert_gn2pg_lpo_data.sql"
+    executeSqlFile "230_insert_gn2pg_lpo_data.sql"
 }
 
 function transfertSchema() {
     local schema_name="${1}"
     printInfo "🚀 Starting transfert of ${schema_name} schema..."
 
+    local transfert_time_start="$(date +%s)"
+    executeQuery "DROP SCHEMA IF EXISTS ${schema_name} CASCADE ;"
     PGPASSWORD="${dbgn_db_source_password}" pg_dump -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
         -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
         -n "${schema_name}" -F c | \
     PGPASSWORD="${dbgn_db_destination_password}" pg_restore -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
         -1
+    local result=${PIPESTATUS[1]}
+    local transfert_time_end="$(date +%s)"
+    local transfert_time_diff="$((${transfert_time_end} - ${transfert_time_start}))"
 
-    if [ ${PIPESTATUS[1]} -eq 0 ]; then
+    printInfo "Total transfert time elapsed: $(displayTime "${transfert_time_diff}")"
+    if [[ ${result} -eq 0 ]]; then
         printInfo "✅ Migration of ${schema_name} ended with success !"
     else
         exitScript "❌ An error occurred during the migration of ${schema_name}."
     fi
-}
-
-function upgradeGn2PgSchema() {
-    local schema_name="${1}"
-    local gn2pg_root_dir="${root_dir}/gn2pg"
-    local gn2pg_sql_dir="${gn2pg_root_dir}/data/sql"
-
-    printInfo "Upgrade Gn2Pg ${schema_name} schema in destination database..."
-
-    cd "${gn2pg_root_dir}"
-    pipenv run gn2pg_cli db --json-tables-create "${schema_name}_config.toml"
-    executeSqlFile "${schema_name}_migrate_1.6.9_to_1.9.1.sql" "${gn2pg_sql_dir}"
-    cd "${gn2pg_sql_dir}"
-    pipenv run gn2pg_cli db --custom-script="${schema_name}_to_synthese.sql" "${schema_name}_config.toml"
 }
 
 function insertCbnaDataToGN() {
@@ -731,6 +725,21 @@ function executeSqlFile() {
     output=$(PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -f "${sql_directory}/${sql_script}" 2>&1 | tee /dev/tty)
+
+    analyseSqlExecutionOutput "${output}" "${sql_script}"
+}
+
+function exexecuteSqlFileAsAdmin() {
+    local sql_script="${1}"
+    local sql_directory="${2:-${dbgn_sql_migrate_dir}}"
+
+    printInfo "\nExecute SQL script ${sql_script} as SUPERADMIN on destination database"
+
+    local output
+    output=$(PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_superadmin_name}" -d "${dbgn_db_destination_name}" \
         -f "${sql_directory}/${sql_script}" 2>&1 | tee /dev/tty)
 
     analyseSqlExecutionOutput "${output}" "${sql_script}"
