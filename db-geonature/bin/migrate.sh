@@ -637,12 +637,20 @@ function insertCbnmcDataToGN() {
 function runImportUpdateScript() {
     local org="${1}"
     local import_date="${2}"
-    local filename_prefix="\${${org}import_date}_sinp_aura_${org}_test"
+    local filename_prefix="\${${org}_import_date}_sinp_aura_${org}_test"
     local script_root_dir="${root_dir}/${org}"
+    local script_raw_dir="${script_root_dir}/data/raw"
 
-    printVerbose "Delete previously extracted files in ${org}/data/raw"
-    cd "${script_root_dir}/data/raw"
-    rm -f "*.{csv,ini}"
+    printVerbose "Delete previously extracted files in ${script_raw_dir}/data/raw :"
+    cd "${script_raw_dir}/"
+    rm -f ./*_rti.csv
+    rm -f ./*.ini
+    # Check if any .csv or .ini files exist. We expect none after the rm command.
+    if [[ -z "$(find . -maxdepth 1 \( -name '*.csv' -o -name '*.ini' \) -print -quit)" ]]; then
+        printVerbose "\t ${Gre}OK"
+    else
+        printVerbose "\t ${Red}KO"
+    fi
 
     printVerbose "Check if ${org^^} settings.ini exists"
     cd "${script_root_dir}/config"
@@ -656,13 +664,29 @@ function runImportUpdateScript() {
     printVerbose "Update import date and prefix in ${org^^} settings.ini file"
     cd "${script_root_dir}/config"
     sed -i \
-        -e "s/^${org}_import_date=/${org}_import_date="${import_date}"/" \
-        -e "s/^${org}_filename_prefix=/${org}_filename_prefix=\"${filename_prefix}\"/" \
+        -e "s/^${org}_import_date=.*$/${org}_import_date=\"${import_date}\"/" \
+        -e "s/^${org}_filename_prefix=.*$/${org}_filename_prefix=\"${filename_prefix}\"/" \
         "settings.ini"
 
-    printVerbose "Run import update script for ${org^^}"
+    if grep -q "^db_name=" "settings.ini"; then
+        sed -i -e "s/^db_name=.*$/db_name=\"${dbgn_db_destination_name}\"/" "settings.ini"
+    else
+        echo "db_name=\"${dbgn_db_destination_name}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_user=" "settings.ini"; then
+        sed -i -e "s/^db_user=.*$/db_user=\"${dbgn_db_destination_user}\"/" "settings.ini"
+    else
+        echo "db_user=\"${dbgn_db_destination_user}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_pass=" "settings.ini"; then
+        sed -i -e "s/^db_pass=.*$/db_pass=\"${dbgn_db_destination_password}\"/" "settings.ini"
+    else
+        echo "db_pass=\"${dbgn_db_destination_password}\"" >> "settings.ini"
+    fi
+
+    printVerbose "Run import script for ${org^^}"
     cd "${script_root_dir}/bin"
-    ./import_update.sh --verbose
+    ./import.sh --verbose
 }
 
 function reloadObservationsAreasLinks() {
