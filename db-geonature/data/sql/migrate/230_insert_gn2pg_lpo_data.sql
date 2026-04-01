@@ -277,6 +277,21 @@ BEGIN
 END
 $$ ;
 
+\echo '-------------------------------------------------------------------------------'
+\echo 'Cleaning synthese JSON fields'
+
+\echo 'Disable trigger "tri_meta_dates_change_synthese"'
+ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese ;
+
+\echo 'Clean addtional_data field'
+UPDATE gn_synthese.synthese SET
+    additional_data = NULL
+WHERE id_source = gn_synthese.get_id_source_by_name('lpo')
+    AND (additional_data = 'null' OR additional_data = '{}'::jsonb) ;
+
+\echo 'Enable trigger "tri_meta_dates_change_synthese"'
+ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_meta_dates_change_synthese ;
+
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Enable triggers on Synthese'
