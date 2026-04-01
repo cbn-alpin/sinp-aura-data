@@ -1162,7 +1162,11 @@ BEGIN
     SELECT
         NEW.item #>> '{comment_occurrence}' INTO the_comment_description;
     SELECT
-        NEW.item #> '{donnees_additionnelles}' INTO the_additional_data;
+        CASE
+            WHEN (NEW.item -> 'donnees_additionnelles') IS NULL OR (NEW.item -> 'donnees_additionnelles') = 'null'::jsonb OR (NEW.item -> 'donnees_additionnelles') = '{}'::jsonb THEN NULL
+            ELSE NEW.item -> 'donnees_additionnelles'
+        END
+    INTO the_additional_data;
     SELECT
         NULL INTO the_meta_validation_date;
 
