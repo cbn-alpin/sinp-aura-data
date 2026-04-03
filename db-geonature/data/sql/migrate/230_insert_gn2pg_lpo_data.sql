@@ -243,8 +243,11 @@ BEGIN
                 ref_nomenclatures.get_id_nomenclature('TYPE', item #>> '{label}') AS id_nomenclature_determination_method,
                 item #>> '{comment_releve}' AS comment_context,
                 item #>> '{comment_occurrence}' AS comment_description,
-                item #> '{donnees_additionnelles}' AS additional_data,
-                NULL::TIMESTAMP AS meta_validation_date,
+                CASE
+                    WHEN (item ->> 'donnees_additionnelles') IS NULL THEN NULL
+                    ELSE NULLIF(item -> 'donnees_additionnelles', '{}'::jsonb)
+                END AS additional_data,
+                CAST(item #>> '{date_validation}' AS TIMESTAMP) AS meta_validation_date,
                 'I'::bpchar AS last_action
             FROM computed_gn2pg_data
             ON CONFLICT DO NOTHING
@@ -276,21 +279,6 @@ BEGIN
     RAISE NOTICE 'Total time : %', clock_timestamp() - globalStartTime ;
 END
 $$ ;
-
-\echo '-------------------------------------------------------------------------------'
-\echo 'Cleaning synthese JSON fields'
-
-\echo 'Disable trigger "tri_meta_dates_change_synthese"'
-ALTER TABLE gn_synthese.synthese DISABLE TRIGGER tri_meta_dates_change_synthese ;
-
-\echo 'Clean addtional_data field'
-UPDATE gn_synthese.synthese SET
-    additional_data = NULL
-WHERE id_source = gn_synthese.get_id_source_by_name('lpo')
-    AND (additional_data = 'null' OR additional_data = '{}'::jsonb) ;
-
-\echo 'Enable trigger "tri_meta_dates_change_synthese"'
-ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_meta_dates_change_synthese ;
 
 
 \echo '-------------------------------------------------------------------------------'
