@@ -317,10 +317,22 @@ function exportCsvFromDst() {
 function insertUtilsFunctionsToDestinationDb() {
     printMsg "Insert utils functions into destination database..."
 
-    PGPASSWORD="${dbgn_db_destination_password}" psql \
+    executeSqlFileOnDestinationDb "${sql_shared_dir}" "utils_functions.sql"
+}
+
+function executeSqlFileOnDestinationDb() {
+    local sql_directory="${1}"
+    local sql_script="${2}"
+
+    printInfo "\nExecute SQL script ${sql_script} on source database"
+
+    local output
+    output=$(PGPASSWORD="${dbgn_db_destination_password}" psql \
         -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -f "${sql_shared_dir}/utils_functions.sql"
+        -f "${sql_directory}/${sql_script}" 2>&1 | tee /dev/tty)
+
+    analyseSqlExecutionOutput "${output}" "${sql_script}"
 }
 
 function backupDestinationDb() {
