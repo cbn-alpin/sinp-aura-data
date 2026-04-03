@@ -1152,9 +1152,9 @@ BEGIN
     SELECT
         CASE NEW.type
         WHEN 'synthese_with_label' THEN
-            gn2pg_flavia.fct_c_get_id_nomenclature_from_label ('TYPE' , NEW.item #>> '{label}')
+            gn2pg_flavia.fct_c_get_id_nomenclature_from_label ('TYPE' , NEW.item #>> '{methode_determination}')
         ELSE
-            gn2pg_flavia.fct_c_get_id_nomenclature ('TYPE' , NEW.item #>> '{label}')
+            gn2pg_flavia.fct_c_get_id_nomenclature ('TYPE' , NEW.item #>> '{methode_determination}')
 	END AS id_nomenclature_determination_method INTO
 	    the_id_nomenclature_determination_method;
     SELECT
@@ -1163,12 +1163,11 @@ BEGIN
         NEW.item #>> '{comment_occurrence}' INTO the_comment_description;
     SELECT
         CASE
-            WHEN (NEW.item -> 'donnees_additionnelles') IS NULL OR (NEW.item -> 'donnees_additionnelles') = 'null'::jsonb OR (NEW.item -> 'donnees_additionnelles') = '{}'::jsonb THEN NULL
-            ELSE NEW.item -> 'donnees_additionnelles'
+            WHEN (NEW.item ->> 'donnees_additionnelles') IS NULL THEN NULL
+            ELSE NULLIF(NEW.item -> 'donnees_additionnelles', '{}'::jsonb)
         END
     INTO the_additional_data;
-    SELECT
-        NULL INTO the_meta_validation_date;
+    SELECT cast(NEW.item #>> '{validation_date}' AS DATE) INTO the_meta_validation_date ;
 
 
     /* Proceed to upsert */
