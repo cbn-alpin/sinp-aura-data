@@ -80,6 +80,7 @@ function main() {
         if [[ "${has_new_data}" == "true" ]]; then
             updateOutsideObservations
             updateInpnImages
+            upsertRecentValidations
             refreshGeoNatureCore
             refreshGeoNatureExport
             refreshBiodivTerritory
@@ -133,6 +134,17 @@ function extractDbNewInfos() {
     max_update_date=$(export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -AXqtc "SELECT MAX(meta_update_date) FROM gn_synthese.synthese;")
+
+    max_validation_date=$(export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -AXqtc "SELECT MAX(validation_date) FROM gn_commons.t_validations;")
+
+    # Compute the most recent date between max_create_date and max_update_date
+    if [[ "${max_create_date}" > "${max_update_date}" ]]; then
+        max_edit_date="${max_create_date}"
+    else
+        max_edit_date="${max_update_date}"
+    fi
 }
 
 function readJsonLastInfos() {
@@ -141,6 +153,8 @@ function readJsonLastInfos() {
         last_max_id_synthese=$(jq .maxIdSynthese "${gnuk_json}")
         last_max_create_date=$(jq -r .maxCreateDate "${gnuk_json}")
         last_max_update_date=$(jq -r .maxUpdateDate "${gnuk_json}")
+        last_max_edit_date=$(jq -r .maxEditDate "${gnuk_json}")
+        last_max_validation_date=$(jq -r .maxValidationDate "${gnuk_json}")
         last_create_at=$(jq -r .createdAt "${gnuk_json}")
     fi
 }
@@ -169,8 +183,13 @@ function evaluateNewDataReason() {
 
 function writeNewJsonContent() {
     jo -p \
-        count=${count_id_synthese} maxIdSynthese=${max_id_synthese} maxCreateDate="${max_create_date}"  \
-        maxUpdateDate="${max_update_date}" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
+        count=${count_id_synthese} \
+        maxIdSynthese=${max_id_synthese} \
+        maxCreateDate="${max_create_date}" \
+        maxUpdateDate="${max_update_date}" \
+        maxEditDate="${max_edit_date}" \
+        maxValidationDate="${max_validation_date}" \
+        createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
         > "${gnuk_json}"
 }
 
@@ -188,11 +207,13 @@ function buildNewDataDetails() {
     if [[ "${has_new_data}" == "true" ]]; then
         new_data_details="
             ---------------------------
-            Type           : New / Last
-            obs count      : ${count_id_synthese-} / ${last_count_id_synthese-}
-            max id synthese: ${max_id_synthese-} / ${last_max_id_synthese-}
-            max create date: ${max_create_date-} / ${last_max_create_date-}
-            max update date: ${max_update_date-} / ${last_max_update_date-}
+            Type                 : New / Last
+            obs count            : ${count_id_synthese-} / ${last_count_id_synthese-}
+            max id synthese      : ${max_id_synthese-} / ${last_max_id_synthese-}
+            max create date      : ${max_create_date-} / ${last_max_create_date-}
+            max update date      : ${max_update_date-} / ${last_max_update_date-}
+            max edit date        : ${max_edit_date-} / ${last_max_edit_date-}
+            max validation date  : ${max_validation_date-} / ${last_max_validation_date-}
             "
     fi
 }
@@ -312,6 +333,19 @@ function refreshAtlas() {
         psql -h "${db_host}" -U "${db_user}" -d "${db_atlas_name}" \
             -v ON_ERROR_STOP=1 \
             -f "${sql_dir}/atlas_refresh.sql"
+    alert $? "${msg}"
+}
+
+function upsertValidations() {
+    local default_date=$(date -d '15 days ago' '+%Y-%m-%d %H:%M:%S')
+    local last_maintenance_date=${last_max_edit_date:-${max_validation_date:-${default_date}}}
+    msg="Upserting validations after ${last_maintenance_date} on db-srv..."
+    notify "${msg}"
+    export PGPASSWORD="${db_pass}"; \
+        psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
+            -v ON_ERROR_STOP=1 \
+            -v lastMaintenanceDate="${last_maintenance_date}" \
+            -f "${sql_dir}/upsert_validations.sql"
     alert $? "${msg}"
 }
 
