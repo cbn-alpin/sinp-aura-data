@@ -63,6 +63,7 @@ function main() {
     parseScriptOptions "${@}"
     loadScriptConfig "${setting_file_path-}"
     redirectOutput "${dbgn_log_file}"
+    runChecks
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
@@ -114,6 +115,11 @@ function main() {
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
     displayTimeElapsed
+}
+
+function runChecks {
+    local readonly commands=("jo" "jq" "ssh" "psql" "pg_dump" "pg_restore" "tee" "sed")
+    checkBinary "${commands[@]}"
 }
 
 function insertUtilsFunctionsToSrcDb() {
