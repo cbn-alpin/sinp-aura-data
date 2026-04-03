@@ -711,14 +711,18 @@ function runImportUpdateScript() {
 function reloadObservationsAreasLinks() {
     printMsg "Reload cor_area_synthese in destination database..."
 
-    executeSqlFileOnSrcDb "${sql_shared_dir}" "reload_cor_area_synthese.sql"
+    executeSqlFileOnDestinationDb "${sql_shared_dir}" "reload_cor_area_synthese.sql"
 }
 
 function startMaintenanceTask() {
     printMsg "Start maintenance task in destination database..."
     local script_root_dir="${root_dir}/maintenance"
+    local script_bin_dir="${script_root_dir}/bin"
+    local script_raw_dir="${script_root_dir}/raw"
 
-    cd "${script_root_dir}/bin"
+    cd "${script_bin_dir}"
+    jo -p maxValidationDate="1970-01-01" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
+        > "${script_raw_dir}/synthese_infos.json"
     ./upkeep.sh --verbose
 }
 
