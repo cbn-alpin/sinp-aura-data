@@ -79,7 +79,11 @@ function main() {
         sendStartMessage
         if [[ "${has_new_data}" == "true" ]]; then
             updateOutsideObservations
-            updateInpnImages
+            if [[ "${gnuk_update_inpn_images}" == "true" ]]; then
+                 updateInpnImages
+            else
+                notify "🟠 Updating INPN images disabled => skip updating INPN images..."
+            fi
             upsertRecentValidations
             refreshGeoNatureCore
             refreshGeoNatureExport
