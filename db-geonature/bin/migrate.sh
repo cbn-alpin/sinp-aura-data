@@ -659,13 +659,14 @@ function runImportUpdateScript() {
     local filename_prefix="\${${org}_import_date}_sinp_aura_${org}_test"
     local script_root_dir="${root_dir}/${org}"
     local script_raw_dir="${script_root_dir}/data/raw"
+    local parser_root_dir="${root_dir}/import-parser"
 
-    printVerbose "Delete previously extracted files in ${script_raw_dir}/data/raw :"
+    printVerbose "Delete previously extracted files in ${script_raw_dir} :"
     cd "${script_raw_dir}/"
     rm -f ./*_rti.csv
     rm -f ./*.ini
     # Check if any .csv or .ini files exist. We expect none after the rm command.
-    if [[ -z "$(find . -maxdepth 1 \( -name '*.csv' -o -name '*.ini' \) -print -quit)" ]]; then
+    if [[ -z "$(find "${script_raw_dir}/" -maxdepth 1 \( -name '*_rti.csv' -o -name '*.ini' \) -print -quit)" ]]; then
         printVerbose "\t ${Gre}OK"
     else
         printVerbose "\t ${Red}KO"
@@ -680,7 +681,7 @@ function runImportUpdateScript() {
         printVerbose "\t ignore copying the existing settings.ini file."
     fi
 
-    printVerbose "Update import date and prefix in ${org^^} settings.ini file"
+    printVerbose "Update parameters in ${org^^} settings.ini file"
     cd "${script_root_dir}/config"
     sed -i \
         -e "s/^${org}_import_date=.*$/${org}_import_date=\"${import_date}\"/" \
@@ -703,9 +704,47 @@ function runImportUpdateScript() {
         echo "db_pass=\"${dbgn_db_destination_password}\"" >> "settings.ini"
     fi
 
+    printVerbose "Check if import-parser settings.ini exists"
+    cd "${parser_root_dir}/config"
+    if [[ -f "settings.ini" ]]; then
+        printVerbose "\t creating settings.ini."
+        touch "settings.ini"
+    else
+        printVerbose "\t already existing settings.ini file."
+    fi
+
+    printVerbose "Update parameters in import-parser settings.ini file"
+    cd "${parser_root_dir}/config"
+    if grep -q "^db_name=" "settings.ini"; then
+        sed -i -e "s/^db_name=.*$/db_name=\"${dbgn_db_destination_name}\"/" "settings.ini"
+    else
+        echo "db_name=\"${dbgn_db_destination_name}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_user=" "settings.ini"; then
+        sed -i -e "s/^db_user=.*$/db_user=\"${dbgn_db_destination_user}\"/" "settings.ini"
+    else
+        echo "db_user=\"${dbgn_db_destination_user}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_pass=" "settings.ini"; then
+        sed -i -e "s/^db_pass=.*$/db_pass=\"${dbgn_db_destination_password}\"/" "settings.ini"
+    else
+        echo "db_pass=\"${dbgn_db_destination_password}\"" >> "settings.ini"
+    fi
+
     printVerbose "Run import script for ${org^^}"
     cd "${script_root_dir}/bin"
     ./import.sh --verbose
+}
+
+function upsertValidations() {
+    local last_maintenance_date='1970-01-01' # Set a default value for last_maintenance_date
+    printMsg "Upserting validations after ${last_maintenance_date} on db-srv..."
+    PGPASSWORD="${dbgn_db_destination_password}" psql \
+        -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
+        -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
+        -v ON_ERROR_STOP=1 \
+        -v lastMaintenanceDate="${last_maintenance_date}" \
+        -f "${root_dir}/maintenance/data/sql/upsert_validations.sql"
 }
 
 function reloadObservationsAreasLinks() {
@@ -718,7 +757,7 @@ function startMaintenanceTask() {
     printMsg "Start maintenance task in destination database..."
     local script_root_dir="${root_dir}/maintenance"
     local script_bin_dir="${script_root_dir}/bin"
-    local script_raw_dir="${script_root_dir}/raw"
+    local script_raw_dir="${script_root_dir}/data/raw"
 
     cd "${script_bin_dir}"
     jo -p maxValidationDate="1970-01-01" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
