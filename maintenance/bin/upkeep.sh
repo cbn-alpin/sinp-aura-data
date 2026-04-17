@@ -84,7 +84,7 @@ function main() {
             else
                 notify "🟠 Updating INPN images disabled => skip updating INPN images..."
             fi
-            upsertRecentValidations
+            upsertValidations
             refreshGeoNatureCore
             refreshGeoNatureExport
             refreshBiodivTerritory
