@@ -1,4 +1,5 @@
--- Grand Annecy export GN2PG :
+-- Grand Annecy export with GN2PG format :
+-- - 500 000 rows by materialized view
 -- - blurred geom if sensitive data
 -- - only observations with :
 --    * geom not null
@@ -10,16 +11,42 @@
 
 BEGIN;
 
-\echo '----------------------------------------------------------------------------'
-\echo 'Drop view if exists gn_exports.grand_annecy'
-
-DROP VIEW IF EXISTS gn_exports.grand_annecy;
-
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Create view gn_exports.grand_annecy'
+\echo 'Drop view if exists gn_exports.grand_annecy_1'
 
-CREATE VIEW gn_exports.grand_annecy AS
+DROP VIEW IF EXISTS gn_exports.grand_annecy_1;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Drop view if exists gn_exports.grand_annecy_2'
+
+DROP VIEW IF EXISTS gn_exports.grand_annecy_2;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Drop view if exists gn_exports.grand_annecy_3'
+
+DROP VIEW IF EXISTS gn_exports.grand_annecy_3;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Drop view if exists gn_exports.grand_annecy_4'
+
+DROP VIEW IF EXISTS gn_exports.grand_annecy_4;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Drop view if exists gn_exports.grand_annecy_5'
+
+DROP VIEW IF EXISTS gn_exports.grand_annecy_5;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Drop materialized view if exists gn_exports.grand_annecy'
+
+DROP MATERIALIZED VIEW IF EXISTS gn_exports.grand_annecy;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view gn_exports.grand_annecy'
+
+CREATE MATERIALIZED VIEW gn_exports.grand_annecy AS
 WITH grand_annecy_areas AS (
     SELECT id_area
     FROM ref_geo.l_areas
@@ -33,7 +60,7 @@ WITH grand_annecy_areas AS (
     )
 ),
 grand_annecy_observations AS (
-    SELECT
+    SELECT DISTINCT ON (s.id_synthese)
         s.id_synthese,
         st_astext(
             coalesce(sb.geom_4326, s.the_geom_4326)
@@ -418,11 +445,64 @@ FROM grand_annecy_observations AS gao
         ON s.id_nomenclature_determination_method = n19.id_nomenclature
     LEFT JOIN ref_nomenclatures.t_nomenclatures AS n20
         ON s.id_nomenclature_valid_status = n20.id_nomenclature
-ORDER BY
-    s.id_synthese ASC ;
+ORDER BY s.id_synthese ASC ;
 
--- CREATE UNIQUE INDEX unique_idx_grand_annecy
--- ON gn_exports.grand_annecy (id_synthese) ;
+CREATE UNIQUE INDEX unique_idx_grand_annecy
+ON gn_exports.grand_annecy (id_synthese) ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view gn_exports.grand_annecy_1'
+
+CREATE VIEW gn_exports.grand_annecy_1 AS
+SELECT *
+FROM gn_exports.grand_annecy
+ORDER BY id_synthese ASC
+OFFSET 0
+LIMIT 200000 ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view gn_exports.grand_annecy_2'
+
+CREATE VIEW gn_exports.grand_annecy_2 AS
+SELECT *
+FROM gn_exports.grand_annecy
+ORDER BY id_synthese ASC
+OFFSET 200000
+LIMIT 200000 ;
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view gn_exports.grand_annecy_3'
+
+CREATE VIEW gn_exports.grand_annecy_3 AS
+SELECT *
+FROM gn_exports.grand_annecy
+ORDER BY id_synthese ASC
+OFFSET 400000
+LIMIT 200000 ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view gn_exports.grand_annecy_4'
+
+CREATE VIEW gn_exports.grand_annecy_4 AS
+SELECT *
+FROM gn_exports.grand_annecy
+ORDER BY id_synthese ASC
+OFFSET 600000
+LIMIT 200000 ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Create materialized view gn_exports.grand_annecy_5'
+
+CREATE VIEW gn_exports.grand_annecy_5 AS
+SELECT *
+FROM gn_exports.grand_annecy
+ORDER BY id_synthese ASC
+OFFSET 800000 ;
+
 
 \echo '----------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
