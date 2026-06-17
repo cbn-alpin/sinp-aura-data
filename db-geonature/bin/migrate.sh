@@ -559,9 +559,11 @@ function executeExportModuleScripts() {
         "export_cen_savoie_1.sql"
         "export_cen_savoie_2.sql"
         "export_cen_savoie_3.sql"
+        "export_grand_annecy.sql"
         "export_lo_parvi_1.sql"
         "export_lo_parvi_2.sql"
         "export_onf.sql"
+        export_pnr_baronnies_provencales.sql
         "export_pnr_chartreuse.sql"
         "export_pnr_haut_jura.sql"
         "export_pnr_livradois_forez_1.sql"

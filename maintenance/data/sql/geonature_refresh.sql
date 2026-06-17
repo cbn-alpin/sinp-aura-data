@@ -90,6 +90,10 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.cen_savoie_flore_fonge_3 ;
 REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.pnr_baronnies_provencales ;
 
 \echo '----------------------------------------------------------------'
+\echo 'Refreshing gn_exports.grand_annecy:'
+REFRESH MATERIALIZED VIEW CONCURRENTLY gn_exports.grand_annecy ;
+
+\echo '----------------------------------------------------------------'
 \echo 'Refreshing gn_synthese.v_synthese_for_export already executed !'
 
 \echo '----------------------------------------------------------------'
