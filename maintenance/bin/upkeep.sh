@@ -342,7 +342,11 @@ function refreshAtlas() {
 
 function upsertValidations() {
     local default_date=$(date -d '15 days ago' '+%Y-%m-%d %H:%M:%S')
-    local last_maintenance_date=${last_max_edit_date:-${max_validation_date:-${default_date}}}
+    local _edit_date="${last_max_edit_date}"
+    [[ "$_edit_date" == "null" ]] && _edit_date=""
+    local _val_date="${max_validation_date}"
+    [[ "$_val_date" == "null" ]] && _val_date=""
+    local last_maintenance_date="${_edit_date:-${_val_date:-${default_date}}}"
     msg="Upserting validations after ${last_maintenance_date} on db-srv..."
     notify "${msg}"
     export PGPASSWORD="${db_pass}"; \
