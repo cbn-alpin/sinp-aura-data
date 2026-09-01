@@ -183,6 +183,62 @@ UPDATE utilisateurs.bib_organismes AS bo SET
     nom_organisme = 'Région Auvergne-Rhône-Alpes (doublon)'
 WHERE bo.uuid_organisme = '92619d79-ecc1-409c-b58f-60e26002c594';
 
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Naturalia Environnement (doublon)'
+WHERE bo.uuid_organisme = '5c4b022a-17fd-6f1e-e053-2614a8c09d9f';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Mosaïque Environnement (doublon)'
+WHERE bo.uuid_organisme = 'a14a142d-a482-126f-e053-2614a8c0cfbe';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'CEN Isère (doublon)'
+WHERE bo.uuid_organisme = '777bb69b-7459-4de8-b44e-fb4411771001';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'SOCIETE HERPETOLOGIQUE DE FRANCE (doublon)'
+WHERE bo.uuid_organisme = '5a433bd0-2011-25d9-e053-2614a8c026f8';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Association Le Pic Vert (doublon1)'
+WHERE bo.uuid_organisme = '42561d21-f766-4ce9-9f65-6c86bd8d48af';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Association Le Pic Vert (doublon2)'
+WHERE bo.uuid_organisme = 'b7367fb3-1b9a-4c2a-9358-5381e2b00402';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'De plumes et de glumes (doublon)'
+WHERE bo.uuid_organisme = '5f3c848e-96b0-4125-a734-1c830028875c';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Altiprom (doublon)'
+WHERE bo.uuid_organisme = '444d1e44-1579-4c91-beeb-2d548c479e92';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Commune de la Côte Saint-André (doublon)'
+WHERE bo.uuid_organisme = '3db1d4e0-d423-49e1-adbc-4598620165d7';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Société d''aménagement de Savoie (doublon)'
+WHERE bo.uuid_organisme = '433ba447-886a-454f-8fc4-847b468db976';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Commune de Châtillon-sur-Cluses (doublon)'
+WHERE bo.uuid_organisme = 'c8f292af-f581-4caf-a1d1-7a945e25106c';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Agence immobilière ORPI (doublon)'
+WHERE bo.uuid_organisme = '5daf9806-2232-4f39-b37c-2bf4d0d57643';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'Commune de Megève (doublon)'
+WHERE bo.uuid_organisme = 'da679bcc-d194-47b6-a09d-4365504fc68c';
+
+UPDATE utilisateurs.bib_organismes AS bo SET
+    nom_organisme = 'VALRIM Aménagement (doublon)'
+WHERE bo.uuid_organisme = '16e62746-1d94-48ed-a725-dc376544639c';
+
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Clean gn_synthese.t_sources'
