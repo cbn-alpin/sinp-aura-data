@@ -1,4 +1,4 @@
--- Migrate to GeoNature v2.16/2.17
+-- Migrate to GeoNature v2.17
 -- Clean all necessary tables before migration in destination db
 
 BEGIN;
@@ -38,8 +38,9 @@ TRUNCATE
     gn_permissions.backup_cor_role_action_filter_module_object, -- DATA: (Sample data) NEED to insert new data (?).
     gn_notifications.t_notifications_rules, -- DATA: (default) NEED to restore.
     gn_notifications.t_notifications,
-    gn_permissions.t_permissions_requests, -- TEST module: empty (TODO: remove this line)
-    pr_permission_request.t_permission_request, -- TEST module: empty (TODO: remove this line)
+    pr_permrequests.cor_request_permission, -- empty
+    pr_permrequests.t_custom_areas, -- empty
+    pr_permrequests.t_requests, -- empty
     gn_permissions.cor_permission_taxref, -- empty
     gn_permissions.cor_permission_area, -- empty
     gn_permissions.t_permissions, -- DATA: (Sample data) NEED to migrate.

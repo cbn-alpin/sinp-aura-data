@@ -1,4 +1,4 @@
--- Migrate to GeoNature v2.16/2.17
+-- Migrate to GeoNature v2.17
 -- Add global permissions
 
 BEGIN;
@@ -16,7 +16,7 @@ INSERT INTO gn_permissions.t_permissions (id_role, id_module, id_object, id_acti
 
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Add permissions to all groups for module PERMISSION_REQUEST'
+\echo 'Add permissions to all groups for module PERMREQUESTS'
 
 INSERT INTO gn_permissions.t_permissions (
     id_role,
@@ -27,61 +27,25 @@ INSERT INTO gn_permissions.t_permissions (
 ) VALUES (
     utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
     gn_permissions.get_id_action_by_code('C'), -- Lire (C)
-    gn_commons.get_id_module_bycode('PERMISSION_REQUEST'),
+    gn_commons.get_id_module_bycode('PERMREQUESTS'),
     gn_permissions.get_id_object('ALL'),
     gn_permissions.get_id_scope_by_label('Mes données')
 ), (
     utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
     gn_permissions.get_id_action_by_code('R'), -- Lire (R)
-    gn_commons.get_id_module_bycode('PERMISSION_REQUEST'),
+    gn_commons.get_id_module_bycode('PERMREQUESTS'),
     gn_permissions.get_id_object('ALL'),
     gn_permissions.get_id_scope_by_label('Mes données')
 ), (
     utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
     gn_permissions.get_id_action_by_code('U'), -- Mettre à jour (U)
-    gn_commons.get_id_module_bycode('PERMISSION_REQUEST'),
+    gn_commons.get_id_module_bycode('PERMREQUESTS'),
     gn_permissions.get_id_object('ALL'),
     gn_permissions.get_id_scope_by_label('Mes données')
 ), (
     utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
     gn_permissions.get_id_action_by_code('D'), -- Supprimer (D)
-    gn_commons.get_id_module_bycode('PERMISSION_REQUEST'),
-    gn_permissions.get_id_object('ALL'),
-    gn_permissions.get_id_scope_by_label('Mes données')
-) ;
-
-
-\echo '----------------------------------------------------------------------------'
-\echo 'Add permissions to all groups for module PERMISSIONS_REQUESTS (TEMPORARY)'
-
-INSERT INTO gn_permissions.t_permissions (
-    id_role,
-    id_action,
-    id_module,
-    id_object,
-    scope_value
-) VALUES (
-    utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
-    gn_permissions.get_id_action_by_code('C'), -- Lire (C)
-    gn_commons.get_id_module_bycode('PERMISSIONS_REQUESTS'),
-    gn_permissions.get_id_object('ALL'),
-    gn_permissions.get_id_scope_by_label('Mes données')
-), (
-    utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
-    gn_permissions.get_id_action_by_code('R'), -- Lire (R)
-    gn_commons.get_id_module_bycode('PERMISSIONS_REQUESTS'),
-    gn_permissions.get_id_object('ALL'),
-    gn_permissions.get_id_scope_by_label('Mes données')
-), (
-    utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
-    gn_permissions.get_id_action_by_code('U'), -- Mettre à jour (U)
-    gn_commons.get_id_module_bycode('PERMISSIONS_REQUESTS'),
-    gn_permissions.get_id_object('ALL'),
-    gn_permissions.get_id_scope_by_label('Mes données')
-), (
-    utilisateurs.get_id_group_by_name('Grp_utilisateurs'),
-    gn_permissions.get_id_action_by_code('D'), -- Supprimer (D)
-    gn_commons.get_id_module_bycode('PERMISSIONS_REQUESTS'),
+    gn_commons.get_id_module_bycode('PERMREQUESTS'),
     gn_permissions.get_id_object('ALL'),
     gn_permissions.get_id_scope_by_label('Mes données')
 ) ;

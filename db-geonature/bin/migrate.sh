@@ -462,7 +462,7 @@ function executeSqlScripts() {
 function migratePermissionRequests() {
     printMsg "Migrate permission requests in destination database..."
 
-    exportCsvFromSrcByQuery "pr_permission_request.tmp_permission_request" \
+    exportCsvFromSrcByQuery "pr_permrequests.tmp_permission_request" \
         "SELECT
             r."token",
             ur.uuid_role AS requested_by,
@@ -483,8 +483,8 @@ function migratePermissionRequests() {
             AND r.sensitive_access = TRUE
             AND r.processed_state = 'accepted'"
 
-    executeQuery "DROP TABLE IF EXISTS pr_permission_request.tmp_permission_request"
-    executeQuery "CREATE TABLE pr_permission_request.tmp_permission_request (
+    executeQuery "DROP TABLE IF EXISTS pr_permrequests.tmp_permission_request"
+    executeQuery "CREATE TABLE pr_permrequests.tmp_permission_request (
             token UUID,
             requested_by UUID,
             processed_date TIMESTAMP,
@@ -497,12 +497,12 @@ function migratePermissionRequests() {
             meta_update_date TIMESTAMP,
             CONSTRAINT pk_tmp_permission_request PRIMARY KEY (token)
         );"
-    importCsvToDst "pr_permission_request.tmp_permission_request"
+    importCsvToDst "pr_permrequests.tmp_permission_request"
 
 
     executeSqlFile "190_migrate_permission_requests.sql"
 
-    executeQuery "DROP TABLE IF EXISTS pr_permission_request.tmp_permission_request"
+    executeQuery "DROP TABLE IF EXISTS pr_permrequests.tmp_permission_request"
 }
 
 function transfertExportModuleTables() {

@@ -5,16 +5,16 @@
 BEGIN;
 
 \echo '----------------------------------------------------------------------------'
-\echo 'Add new column to pr_permission_request.t_permission_request'
-
-ALTER TABLE pr_permission_request.t_permission_request
-ADD COLUMN IF NOT EXISTS additional_data JSONB ;
-
-
-\echo '----------------------------------------------------------------------------'
 \echo 'Add temporary column to gn_permissions.t_permissions'
 
 ALTER TABLE gn_permissions.t_permissions
+ADD COLUMN IF NOT EXISTS migration_request_uuid UUID ;
+
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Add temporary column to pr_permrequests.t_requests'
+
+ALTER TABLE pr_permrequests.t_requests
 ADD COLUMN IF NOT EXISTS migration_request_uuid UUID ;
 
 
@@ -45,11 +45,11 @@ WITH new_permissions AS (
         r.end_date AS expire_on,
         TRUE AS validated,
         r.token
-    FROM pr_permission_request.tmp_permission_request AS r
+    FROM pr_permrequests.tmp_permission_request AS r
         CROSS JOIN (VALUES ('R'), ('E')) AS actions(code)
     WHERE NOT EXISTS (
         SELECT 'TRUE'
-        FROM gn_permissions.t_permissions p
+        FROM gn_permissions.t_permissions AS p
         WHERE p.id_role = utilisateurs.get_id_role_by_uuid(r.requested_by)
           AND p.id_action = gn_permissions.get_id_action_by_code(actions.code)
           AND p.id_module = gn_commons.get_id_module_by_code('SYNTHESE')
@@ -61,23 +61,34 @@ WITH new_permissions AS (
     RETURNING *
 ),
 inserted_requests AS (
-    INSERT INTO pr_permission_request.t_permission_request (
-        id_permission,
+    INSERT INTO pr_permrequests.t_requests (
         id_author,
         id_validator,
         validation_date,
-        additional_data
+        additional_data,
+        migration_request_uuid
     )
     SELECT
-        np.id_permission,
-        np.id_role,
-        utilisateurs.get_id_role_by_uuid(r.processed_by),
-        r.processed_date,
-        r.additional_data
-    FROM new_permissions AS np
-        JOIN pr_permission_request.tmp_permission_request AS r
-            ON r.token = np.migration_request_uuid
-    RETURNING id_permission
+        utilisateurs.get_id_role_by_uuid(requested_by),
+        utilisateurs.get_id_role_by_uuid(processed_by),
+        processed_date,
+        additional_data,
+        token
+    FROM pr_permrequests.tmp_permission_request
+    RETURNING id_request, migration_request_uuid
+),
+inserted_request_permission_links AS (
+    INSERT INTO pr_permrequests.cor_request_permission (
+        id_request,
+        id_permission
+    )
+    SELECT DISTINCT ON (p.id_permission)
+        r.id_request,
+        p.id_permission
+    FROM inserted_requests AS r
+        JOIN new_permissions AS p
+            ON r.migration_request_uuid = p.migration_request_uuid
+    RETURNING id_request, id_permission
 ),
 inserted_taxa_filters AS (
     INSERT INTO gn_permissions.cor_permission_taxref (
@@ -88,7 +99,7 @@ inserted_taxa_filters AS (
         np.id_permission,
         trim(unnest(string_to_array(r.taxonomic_filter, ',')))::integer
     FROM new_permissions AS np
-        JOIN pr_permission_request.tmp_permission_request AS r
+        JOIN pr_permrequests.tmp_permission_request AS r
             ON r.token = np.migration_request_uuid
     WHERE r.taxonomic_filter IS NOT NULL
         AND r.taxonomic_filter != ''
@@ -103,7 +114,7 @@ inserted_area_filters AS (
         np.id_permission,
         trim(unnest(string_to_array(r.geographic_filter, ',')))::integer
     FROM new_permissions AS np
-        JOIN pr_permission_request.tmp_permission_request AS r
+        JOIN pr_permrequests.tmp_permission_request AS r
             ON r.token = np.migration_request_uuid
     WHERE r.geographic_filter IS NOT NULL
         AND r.geographic_filter != ''
@@ -112,6 +123,7 @@ inserted_area_filters AS (
 SELECT
     (SELECT count(*) FROM new_permissions) AS new_permissions_count,
     (SELECT count(*) FROM inserted_requests) AS inserted_requests_count,
+    (SELECT count(*) FROM inserted_request_permission_links) AS inserted_request_permission_links_count,
     (SELECT count(*) FROM inserted_taxa_filters) AS inserted_taxa_filters_count,
     (SELECT count(*) FROM inserted_area_filters) AS inserted_area_filters_count;
 
@@ -124,6 +136,12 @@ DROP COLUMN IF EXISTS migration_request_uuid;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Remove temporary column to pr_permrequests.t_requests'
+
+ALTER TABLE pr_permrequests.t_requests
+DROP COLUMN IF EXISTS migration_request_uuid;
+
+
+\echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'
---COMMIT;
 COMMIT;
