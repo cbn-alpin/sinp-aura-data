@@ -61,7 +61,7 @@ function main() {
     initScript "${@}"
     parseScriptOptions "${@}"
     loadScriptConfig "${setting_file_path-}"
-    redirectOutput "${cm_log_imports}"
+    redirectOutput "${cbnmc_log_imports}"
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
@@ -133,22 +133,22 @@ function main() {
 function downloadDataArchive() {
     printMsg "Downloading ${app_code^^} data archive..."
 
-    if [[ ! -f "${raw_dir}/${cm_filename_archive}" ]]; then
+    if [[ ! -f "${raw_dir}/${cbnmc_filename_archive}" ]]; then
         downloadSftp "${sftp_user}" "${sftp_pwd}" \
             "${sftp_host}" "${sftp_port}" \
-            "/${app_code}/${cm_filename_archive}" "${raw_dir}/${cm_filename_archive}"
+            "/${app_code}/${cbnmc_filename_archive}" "${raw_dir}/${cbnmc_filename_archive}"
      else
-        printVerbose "Archive file \"${cm_filename_archive}\" already downloaded." ${Gra}
+        printVerbose "Archive file \"${cbnmc_filename_archive}\" already downloaded." ${Gra}
     fi
 }
 
 function extractArchive() {
     printMsg "Extract import data CSV files..."
 
-    if [[ -f "${raw_dir}/${cm_filename_archive}" ]]; then
-        if [[ ! -f "${raw_dir}/${cm_filename_synthese}" ]]; then
+    if [[ -f "${raw_dir}/${cbnmc_filename_archive}" ]]; then
+        if [[ ! -f "${raw_dir}/${cbnmc_filename_synthese}" ]]; then
             cd "${raw_dir}/"
-            tar jxvf "${raw_dir}/${cm_filename_archive}"
+            tar jxvf "${raw_dir}/${cbnmc_filename_archive}"
         else
             printVerbose "CSV files already extracted." ${Gra}
         fi
@@ -163,7 +163,7 @@ function prepareDb() {
 }
 
 function buildTablePrefix() {
-    table_prefix="${app_code}_${cm_import_date//-/}"
+    table_prefix="${app_code}_${cbnmc_import_date//-/}"
 }
 
 function parseCsv() {
@@ -179,7 +179,7 @@ function parseCsv() {
     if [[ "${#data_type_abbr}" = "1" ]]; then
         data_type_abbr="${data_type}"
     fi
-    declare -n csv_file="cm_filename_${data_type_abbr}"
+    declare -n csv_file="cbnmc_filename_${data_type_abbr}"
     local csv_to_import="${csv_file%.csv}_rti.csv"
 
     # Exit if CSV file not found
@@ -211,7 +211,7 @@ function executeCopy() {
     if [[ "${#data_type_abbr}" = "1" ]]; then
         data_type_abbr="${data_type}"
     fi
-    declare -n csv_file="cm_filename_${data_type_abbr}"
+    declare -n csv_file="cbnmc_filename_${data_type_abbr}"
     local csv_to_import="${csv_file%.csv}_rti.csv"
 
     # Exit if CSV file not found
@@ -254,7 +254,7 @@ function displayStats() {
     if [[ "${#data_type_abbr}" = "1" ]]; then
         data_type_abbr="${data_type}"
     fi
-    declare -n csv_file="cm_filename_${data_type_abbr}"
+    declare -n csv_file="cbnmc_filename_${data_type_abbr}"
 
     # Exit if CSV file not found
     if ! [[ -f "${raw_dir}/${csv_file}" ]]; then
@@ -282,7 +282,7 @@ function executeUpgradeScript() {
     if [[ "${#data_type_abbr}" = "1" ]]; then
         data_type_abbr="${data_type}"
     fi
-    declare -n csv_file="cm_filename_${data_type_abbr}"
+    declare -n csv_file="cbnmc_filename_${data_type_abbr}"
 
     # Exit if CSV file not found
     if ! [[ -f "${raw_dir}/${csv_file}" ]]; then
