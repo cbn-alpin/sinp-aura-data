@@ -725,9 +725,20 @@ function reloadObservationsAreasLinks() {
 
 function startMaintenanceTask() {
     printMsg "Start maintenance task in destination database..."
-    local script_root_dir="${root_dir}/maintenance"
+    local script="maintenance"
+    local script_root_dir="${root_dir}/${script}"
     local script_bin_dir="${script_root_dir}/bin"
     local script_raw_dir="${script_root_dir}/data/raw"
+
+    updateSettingsIniDbParameters "${script}" "${script_root_dir}/config"
+
+    printVerbose "Update other parameters in ${script^^} settings.ini file"
+    cd "${script_root_dir}/config"
+    if grep -q "^gnuk_update_inpn_images=" "settings.ini"; then
+        sed -i -e "s/^gnuk_update_inpn_images=.*$/gnuk_update_inpn_images=false/" "settings.ini"
+    else
+        echo "gnuk_update_inpn_images=false" >> "settings.ini"
+    fi
 
     cd "${script_bin_dir}"
     jo -p maxValidationDate="1970-01-01" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
