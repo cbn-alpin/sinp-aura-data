@@ -863,10 +863,11 @@ function executeSqlFileWithInterpolatedVar() {
     local output
     output=$({
         cat "${dbgn_sql_migrate_dir}/${sql_script}" | \
+        sed "s#\${ownerName}#${dbgn_db_destination_user}#g" | \
         sed "s#\${csvDirectory}#${data_dir}/csv#g" | \
-        PGPASSWORD="${dbgn_db_destination_password}" psql \
+        PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
             -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
-            -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}"
+            -U "${dbgn_db_destination_superadmin_name}" -d "${dbgn_db_destination_name}"
     } 2>&1 | tee /dev/tty)
 
     analyseSqlExecutionOutput "${output}" "${sql_script}"

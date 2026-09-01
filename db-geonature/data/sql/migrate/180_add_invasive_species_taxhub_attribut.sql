@@ -18,6 +18,12 @@ BEGIN ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Affect created objects to user ${ownerName}'
+
+SET ROLE ${ownerName} ;
+
+
+\echo '----------------------------------------------------------------------------'
 \echo 'Create function get_id_theme_by_name'
 
 DROP FUNCTION IF EXISTS taxonomie.get_id_theme_by_name(varchar) ;
@@ -59,12 +65,16 @@ ALTER TABLE gn_imports.taxa_lists ALTER COLUMN gid SET DEFAULT nextval('gn_impor
 \echo 'Copy Invasive Flora CVS file to temporary import table'
 ALTER TABLE gn_imports.taxa_lists ALTER COLUMN "group" SET DEFAULT 'Flora';
 
+RESET ROLE ;
+
 COPY gn_imports.taxa_lists (
     cd_nom,
     taxa_name
 )
 FROM '${csvDirectory}/taxa_list_invasive_flora.csv'
 WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
+
+SET ROLE ${ownerName} ;
 
 ALTER TABLE gn_imports.taxa_lists ALTER COLUMN "group" DROP DEFAULT;
 
@@ -73,12 +83,16 @@ ALTER TABLE gn_imports.taxa_lists ALTER COLUMN "group" DROP DEFAULT;
 \echo 'Copy Invasive Flora CVS file to temporary import table'
 ALTER TABLE gn_imports.taxa_lists ALTER COLUMN "group" SET DEFAULT 'Fauna';
 
+RESET ROLE ;
+
 COPY gn_imports.taxa_lists (
     cd_nom,
     taxa_name
 )
 FROM '${csvDirectory}/taxa_list_invasive_fauna.csv'
 WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
+
+SET ROLE ${ownerName} ;
 
 ALTER TABLE gn_imports.taxa_lists ALTER COLUMN "group" DROP DEFAULT;
 

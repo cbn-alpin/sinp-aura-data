@@ -8,6 +8,13 @@
 --      psql -h localhost -U geonatadmin -d geonature2db
 BEGIN;
 
+
+\echo '----------------------------------------------------------------------------'
+\echo 'Affect created objects to user ${ownerName}'
+
+SET ROLE ${ownerName} ;
+
+
 \echo '-------------------------------------------------------------------------------'
 \echo 'Set status of old sensitivity nomenclatures to deprecated'
 UPDATE ref_nomenclatures.t_nomenclatures SET
@@ -40,6 +47,9 @@ WITH NO DATA ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Copy new sensitivity nomenclatures CVS file to temporary import table'
+
+RESET ROLE;
+
 COPY gn_imports.sensitivity_nomenclatures (
     type_nomenclature_code,
     cd_nomenclature,
@@ -56,6 +66,7 @@ COPY gn_imports.sensitivity_nomenclatures (
 FROM '${csvDirectory}/sensitivity_nomenclatures.csv'
 WITH CSV HEADER DELIMITER ',' NULL '\N' ;
 
+SET ROLE ${ownerName} ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Insert new sensitivity nomenclatures to t_nomenclatures table'

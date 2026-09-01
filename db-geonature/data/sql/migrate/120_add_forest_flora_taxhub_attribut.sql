@@ -18,6 +18,12 @@ BEGIN ;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Affect created objects to user ${ownerName}'
+
+SET ROLE ${ownerName} ;
+
+
+\echo '----------------------------------------------------------------------------'
 \echo 'Create function get_id_theme_by_name'
 
 DROP FUNCTION IF EXISTS taxonomie.get_id_theme_by_name(varchar) ;
@@ -63,6 +69,8 @@ ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN gid SET DEFAULT nextval
 \echo 'Copy Tracheophyta CVS file to temporary import table'
 ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN "group" SET DEFAULT 'Tracheophyta';
 
+RESET ROLE ;
+
 COPY gn_imports.piority_forest_flora (
     cd_nom,
     taxa_name,
@@ -74,10 +82,14 @@ COPY gn_imports.piority_forest_flora (
 FROM '${csvDirectory}/priority_forest_flora_tracheophyta.csv'
 WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
 
+SET ROLE ${ownerName} ;
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Copy Bryophyta CVS file to temporary import table'
 ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN "group" SET DEFAULT 'Bryophyta';
+
+
+RESET ROLE ;
 
 COPY gn_imports.piority_forest_flora (
     cd_nom,
@@ -87,6 +99,8 @@ COPY gn_imports.piority_forest_flora (
 )
 FROM '${csvDirectory}/priority_forest_flora_bryophyta.csv'
 WITH CSV HEADER DELIMITER E'\t' NULL '\N' ;
+
+SET ROLE ${ownerName} ;
 
 ALTER TABLE gn_imports.piority_forest_flora ALTER COLUMN "group" DROP DEFAULT;
 
