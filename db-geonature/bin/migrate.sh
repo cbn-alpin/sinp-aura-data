@@ -108,6 +108,8 @@ function main() {
     insertCbnaDataToGN
     insertCbnmcDataToGN
 
+
+    enableAllGeoAreas
     reloadObservationsAreasLinks
 
     startMaintenanceTask
@@ -700,6 +702,19 @@ function upsertValidations() {
         -v ON_ERROR_STOP=1 \
         -v lastMaintenanceDate="${last_maintenance_date}" \
         -f "${root_dir}/maintenance/data/sql/upsert_validations.sql"
+}
+
+function enableAllGeoAreas() {
+    printMsg "Enable all ref geo areas in destination database..."
+
+    executeQuery "ALTER TABLE ref_geo.l_areas DISABLE TRIGGER tri_update_cor_area_synthese ;"
+    executeQuery "ALTER TABLE ref_geo.l_areas DISABLE TRIGGER tri_transform_geom_update ;"
+
+    executeQuery "UPDATE ref_geo.l_areas SET enable = TRUE WHERE enable = FALSE ;"
+
+    executeQuery "ALTER TABLE ref_geo.l_areas ENABLE TRIGGER tri_update_cor_area_synthese ;"
+    executeQuery "ALTER TABLE ref_geo.l_areas ENABLE TRIGGER tri_transform_geom_update ;"
+
 }
 
 function reloadObservationsAreasLinks() {
