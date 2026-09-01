@@ -644,21 +644,22 @@ function transfertSchema() {
 }
 
 function insertCbnaDataToGN() {
-    printMsg "Insert CBNA data to Synthese in destination database..."
-
-    runImportUpdateScript "cbna" "2025-08-13"
+    local org="cbna"
+    printMsg "Insert ${org^^} data to Synthese in destination database..."
+    runImportUpdateScript "${org}"
 }
 
 function insertCbnmcDataToGN() {
-    printMsg "Insert CBNMC data to Synthese in destination database..."
-
-    runImportUpdateScript "cbnmc" "2025-07-28"
+    local org="cbnmc"
+    printMsg "Insert ${org^^} data to Synthese in destination database..."
+    runImportUpdateScript "${org}"
 }
 
 function runImportUpdateScript() {
     local org="${1}"
-    local import_date="${2}"
-    local filename_prefix="\${${org}_import_date}_sinp_aura_${org}_test"
+    local import_date_var_name="dbgn_${org}_migrate_date"
+    local import_date="${!import_date_var_name}"
+    local filename_prefix="\${${org}_import_date}_sinp_aura_${org}"
     local script_root_dir="${root_dir}/${org}"
     local script_raw_dir="${script_root_dir}/data/raw"
     local parser_root_dir="${root_dir}/import-parser"
@@ -674,64 +675,16 @@ function runImportUpdateScript() {
         printVerbose "\t ${Red}KO"
     fi
 
-    printVerbose "Check if ${org^^} settings.ini exists"
-    cd "${script_root_dir}/config"
-    if [[ -f "settings.ini" ]]; then
-        printVerbose "\t copying settings.sample.ini to settings.ini."
-        cp "settings.sample.ini" "settings.ini"
-    else
-        printVerbose "\t ignore copying the existing settings.ini file."
-    fi
+    updateSettingsIniDbParameters "${org}" "${script_root_dir}/config"
 
-    printVerbose "Update parameters in ${org^^} settings.ini file"
+    printVerbose "Update other parameters in ${org^^} settings.ini file"
     cd "${script_root_dir}/config"
     sed -i \
         -e "s/^${org}_import_date=.*$/${org}_import_date=\"${import_date}\"/" \
         -e "s/^${org}_filename_prefix=.*$/${org}_filename_prefix=\"${filename_prefix}\"/" \
         "settings.ini"
 
-    if grep -q "^db_name=" "settings.ini"; then
-        sed -i -e "s/^db_name=.*$/db_name=\"${dbgn_db_destination_name}\"/" "settings.ini"
-    else
-        echo "db_name=\"${dbgn_db_destination_name}\"" >> "settings.ini"
-    fi
-    if grep -q "^db_user=" "settings.ini"; then
-        sed -i -e "s/^db_user=.*$/db_user=\"${dbgn_db_destination_user}\"/" "settings.ini"
-    else
-        echo "db_user=\"${dbgn_db_destination_user}\"" >> "settings.ini"
-    fi
-    if grep -q "^db_pass=" "settings.ini"; then
-        sed -i -e "s/^db_pass=.*$/db_pass=\"${dbgn_db_destination_password}\"/" "settings.ini"
-    else
-        echo "db_pass=\"${dbgn_db_destination_password}\"" >> "settings.ini"
-    fi
-
-    printVerbose "Check if import-parser settings.ini exists"
-    cd "${parser_root_dir}/config"
-    if [[ -f "settings.ini" ]]; then
-        printVerbose "\t creating settings.ini."
-        touch "settings.ini"
-    else
-        printVerbose "\t already existing settings.ini file."
-    fi
-
-    printVerbose "Update parameters in import-parser settings.ini file"
-    cd "${parser_root_dir}/config"
-    if grep -q "^db_name=" "settings.ini"; then
-        sed -i -e "s/^db_name=.*$/db_name=\"${dbgn_db_destination_name}\"/" "settings.ini"
-    else
-        echo "db_name=\"${dbgn_db_destination_name}\"" >> "settings.ini"
-    fi
-    if grep -q "^db_user=" "settings.ini"; then
-        sed -i -e "s/^db_user=.*$/db_user=\"${dbgn_db_destination_user}\"/" "settings.ini"
-    else
-        echo "db_user=\"${dbgn_db_destination_user}\"" >> "settings.ini"
-    fi
-    if grep -q "^db_pass=" "settings.ini"; then
-        sed -i -e "s/^db_pass=.*$/db_pass=\"${dbgn_db_destination_password}\"/" "settings.ini"
-    else
-        echo "db_pass=\"${dbgn_db_destination_password}\"" >> "settings.ini"
-    fi
+    updateSettingsIniDbParameters "import-parser" "${parser_root_dir}/config"
 
     printVerbose "Run import script for ${org^^}"
     cd "${script_root_dir}/bin"
@@ -765,6 +718,49 @@ function startMaintenanceTask() {
     jo -p maxValidationDate="1970-01-01" createdAt="$(date '+%Y-%m-%d %H:%M:%S')" \
         > "${script_raw_dir}/synthese_infos.json"
     ./upkeep.sh --verbose
+}
+
+function updateSettingsIniDbParameters() {
+    local script="${1}"
+    local config_dir="${2}"
+
+    printVerbose "Go to ${script^^} config directory: ${config_dir}"
+    cd "${config_dir}"
+
+    printVerbose "Check if ${script^^} settings.ini exists"
+    if [[ -f "settings.ini" ]]; then
+        printVerbose "\t copying settings.sample.ini to settings.ini."
+        cp "settings.sample.ini" "settings.ini"
+    else
+        printVerbose "\t ignore copying the existing settings.ini file."
+    fi
+
+    printVerbose "Update parameters in ${script^^} settings.ini file"
+    if grep -q "^db_name=" "settings.ini"; then
+        sed -i -e "s/^db_name=.*$/db_name=\"${dbgn_db_destination_name}\"/" "settings.ini"
+    else
+        echo "db_name=\"${dbgn_db_destination_name}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_user=" "settings.ini"; then
+        sed -i -e "s/^db_user=.*$/db_user=\"${dbgn_db_destination_user}\"/" "settings.ini"
+    else
+        echo "db_user=\"${dbgn_db_destination_user}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_pass=" "settings.ini"; then
+        sed -i -e "s/^db_pass=.*$/db_pass=\"${dbgn_db_destination_password}\"/" "settings.ini"
+    else
+        echo "db_pass=\"${dbgn_db_destination_password}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_host=" "settings.ini"; then
+        sed -i -e "s/^db_host=.*$/db_host=\"${dbgn_db_destination_host}\"/" "settings.ini"
+    else
+        echo "db_host=\"${dbgn_db_destination_host}\"" >> "settings.ini"
+    fi
+    if grep -q "^db_port=" "settings.ini"; then
+        sed -i -e "s/^db_port=.*$/db_port=\"${dbgn_db_destination_port}\"/" "settings.ini"
+    else
+        echo "db_port=\"${dbgn_db_destination_port}\"" >> "settings.ini"
+    fi
 }
 
 function executeSuperAdminQueryOnDst() {
