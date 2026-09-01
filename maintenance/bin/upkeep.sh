@@ -87,8 +87,16 @@ function main() {
             upsertValidations
             refreshGeoNatureCore
             refreshGeoNatureExport
-            refreshBiodivTerritory
-            refreshAtlas
+            if [[ "${gnuk_refresh_biodiv_territory}" == "true" ]]; then
+                 refreshBiodivTerritory
+            else
+                notify "🟠 Refreshing Biodiv Territory disabled => skip refreshing Biodiv Territory..."
+            fi
+            if [[ "${gnuk_refresh_atlas}" == "true" ]]; then
+                 refreshAtlas
+            else
+                notify "🟠 Refreshing Atlas disabled => skip refreshing Atlas..."
+            fi
         else
             printError "No new data => stop upkeeping !"
         fi
