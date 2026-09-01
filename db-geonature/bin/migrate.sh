@@ -108,7 +108,6 @@ function main() {
     insertCbnaDataToGN
     insertCbnmcDataToGN
 
-
     enableAllGeoAreas
     reloadObservationsAreasLinks
 
@@ -738,6 +737,16 @@ function startMaintenanceTask() {
         sed -i -e "s/^gnuk_update_inpn_images=.*$/gnuk_update_inpn_images=false/" "settings.ini"
     else
         echo "gnuk_update_inpn_images=false" >> "settings.ini"
+    fi
+    if grep -q "^gnuk_refresh_biodiv_territory=" "settings.ini"; then
+        sed -i -e "s/^gnuk_refresh_biodiv_territory=.*$/gnuk_refresh_biodiv_territory=false/" "settings.ini"
+    else
+        echo "gnuk_refresh_biodiv_territory=false" >> "settings.ini"
+    fi
+    if grep -q "^gnuk_refresh_atlas=" "settings.ini"; then
+        sed -i -e "s/^gnuk_refresh_atlas=.*$/gnuk_refresh_atlas=false/" "settings.ini"
+    else
+        echo "gnuk_refresh_atlas=false" >> "settings.ini"
     fi
 
     cd "${script_bin_dir}"
