@@ -7,7 +7,15 @@
 -- WARNING : this script is not used for now in imports bash script !
 BEGIN;
 
-SET LOCAL temp_tablespaces = 'tmp_data_storage' ;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_tablespace WHERE spcname = 'tmp_data_storage') THEN
+        EXECUTE 'SET LOCAL temp_tablespaces = ''tmp_data_storage''';
+        RAISE NOTICE 'Tablespace tmp_data_storage used for this transaction.';
+    ELSE
+        RAISE NOTICE 'Tablespace tmp_data_storage not found. Using default tablespace.';
+    END IF;
+END $$;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Refresh "gn_synthese.v_synthese_for_export" materialized view if necessary'
