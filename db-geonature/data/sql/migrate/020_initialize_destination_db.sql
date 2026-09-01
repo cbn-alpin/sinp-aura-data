@@ -61,6 +61,7 @@ TRUNCATE
     gn_meta.cor_dataset_territory, -- empty
     gn_meta.cor_dataset_actor, -- empty
     gn_commons.cor_field_dataset, -- empty
+    gn_imports.cor_import_datasets, -- empty
     gn_meta.t_datasets, -- empty
     gn_meta.t_bibliographical_references, -- empty
     gn_meta.cor_acquisition_framework_publication, -- empty
