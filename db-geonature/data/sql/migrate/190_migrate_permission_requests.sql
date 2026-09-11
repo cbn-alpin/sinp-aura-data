@@ -143,5 +143,16 @@ DROP COLUMN IF EXISTS migration_request_uuid;
 
 
 \echo '----------------------------------------------------------------------------'
+\echo 'Add Permrequests new geographic area type (previously deleted in ref_geo.bib_areas_types)'
+INSERT INTO ref_geo.bib_areas_types (type_name, type_code, type_desc)
+    VALUES (
+        'Zones des demandes de permission',
+        'PERMREQUESTS',
+        'Zones géographiques personnalisées associées aux demandes de permission.'
+    )
+    ON CONFLICT (type_code) DO NOTHING;
+
+
+\echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is OK:'
 COMMIT;
