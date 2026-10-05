@@ -634,10 +634,10 @@ function transfertSchema() {
     executeQuery "DROP SCHEMA IF EXISTS ${schema_name} CASCADE ;"
     PGPASSWORD="${dbgn_db_source_password}" pg_dump -h "${dbgn_db_source_host}" -p "${dbgn_db_source_port}" \
         -U "${dbgn_db_source_user}" -d "${dbgn_db_source_name}" \
-        -n "${schema_name}" -F c | \
+        -n "${schema_name}" -F c --no-tablespaces | \
     PGPASSWORD="${dbgn_db_destination_password}" pg_restore -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
         -U "${dbgn_db_destination_user}" -d "${dbgn_db_destination_name}" \
-        -1
+        -1 --no-tablespaces
     local result=${PIPESTATUS[1]}
     local transfert_time_end="$(date +%s)"
     local transfert_time_diff="$((${transfert_time_end} - ${transfert_time_start}))"
