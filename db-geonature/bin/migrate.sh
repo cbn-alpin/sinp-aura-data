@@ -109,6 +109,7 @@ function main() {
 
     insertCbnaDataToGN
     insertCbnmcDataToGN
+    insertTaxhubDataToGN
 
     enableAllGeoAreas
     reloadObservationsAreasLinks
@@ -696,6 +697,54 @@ function runImportUpdateScript() {
     printVerbose "Run import script for ${org^^}"
     cd "${script_root_dir}/bin"
     ./import.sh --verbose
+}
+
+function insertTaxhubDataToGN() {
+    printMsg "Insert TaxHub data to Synthese in destination database..."
+    runTaxhubImportScript "media" "2026-10-14" "media_pifh"
+    runTaxhubImportScript "txt" "2026-10-14" "attribute_cbn"
+    runTaxhubImportScript "media" "2024-09-18" "media_bilan_pop"
+}
+
+function runTaxhubImportScript() {
+    local org="taxhub"
+    local org_alias="th"
+    local script_type="${1}"
+    local import_date="${2}"
+    local dataset="${3}"
+    local filename_prefix="\${${org_alias}_import_date}_sinp_aura_${org}_${dataset}"
+    local script_root_dir="${root_dir}/${org}"
+    local script_raw_dir="${script_root_dir}/data/raw"
+    local parser_root_dir="${root_dir}/import-parser"
+
+    printVerbose "Delete previously extracted files in ${script_raw_dir} :"
+    cd "${script_raw_dir}/"
+    rm -f ./*.csv
+    rm -f ./*.md
+    # Check if any .csv or .ini files exist. We expect none after the rm command.
+    if [[ -z "$(find "${script_raw_dir}/" -maxdepth 1 \( -name '*_rti.csv' -o -name '*.ini' \) -print -quit)" ]]; then
+        printVerbose "\t ${Gre}OK"
+    else
+        printVerbose "\t ${Red}KO"
+    fi
+
+    updateSettingsIniDbParameters "${org}" "${script_root_dir}/config"
+
+    printVerbose "Update other parameters in ${org^^} settings.ini file"
+    cd "${script_root_dir}/config"
+    sed -i \
+        -e "s/^${org_alias}_import_date=.*$/${org_alias}_import_date=\"${import_date}\"/" \
+        -e "s/^${org_alias}_filename_prefix=.*$/${org_alias}_filename_prefix=\"${filename_prefix}\"/" \
+        "settings.ini"
+
+    printError "Check updated parameters in ${org^^} settings.ini file"
+    cat settings.ini | grep -E "^${org_alias}_(import_date|filename_prefix)="
+
+    updateSettingsIniDbParameters "import-parser" "${parser_root_dir}/config"
+
+    printVerbose "Run import ${script_type} script for ${org^^} on ${dataset} dataset"
+    cd "${script_root_dir}/bin"
+    ./import_${script_type}.sh --verbose
 }
 
 function upsertValidations() {
