@@ -84,6 +84,7 @@ function main() {
     insertUtilsFunctionsToDestinationDb
     initializeDestinationDb
     restoreDefaultDataToDestinationDb
+    configureModules
 
     importCsvFilesToDestinationDb
     cleanRefGeoInDestinationDb
@@ -353,6 +354,12 @@ function initializeDestinationDb()  {
     printMsg "Initialize destination database..."
 
     executeSqlFile "020_initialize_destination_db.sql"
+}
+
+function configureModules() {
+    printMsg "Configure modules in destination database..."
+
+    executeSqlFile "025_configure_modules.sql"
 }
 
 function restoreDefaultDataToDestinationDb() {
