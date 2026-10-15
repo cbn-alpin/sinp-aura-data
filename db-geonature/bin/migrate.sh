@@ -769,7 +769,7 @@ function updateSettingsIniDbParameters() {
     cd "${config_dir}"
 
     printVerbose "Check if ${script^^} settings.ini exists"
-    if [[ -f "settings.ini" ]]; then
+    if [[ ! -f "settings.ini" ]]; then
         printVerbose "\t copying settings.sample.ini to settings.ini."
         cp "settings.sample.ini" "settings.ini"
     else
