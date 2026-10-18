@@ -456,8 +456,8 @@ function executeSqlScripts() {
 
     executeSqlFile "060_replace_synthese_export_view.sql"
     executeSqlFile "070_replace_synthese_profile_view.sql"
-    executeSqlFile "080_disable_status_text.sql"
-    executeSqlFile "090_populate_bdc_statut_cor_text_area.sql"
+    executeSqlFile "080_populate_bdc_statut_cor_text_area.sql"
+    executeSqlFile "090_disable_status_text.sql"
     executeSqlFileWithInterpolatedVar "100_add_new_sensitivity_nomenclatures.sql"
     executeSqlFile "110_disable_permanently_sensitivity_triggers.sql"
     executeSqlFileWithInterpolatedVar "120_add_forest_flora_taxhub_attribut.sql"
