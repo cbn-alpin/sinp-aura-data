@@ -75,6 +75,7 @@ function main() {
     insertUtilsFunctionsToSrcDb
     fixSourceDb
     exportCsvFilesFromSourceDb
+    exportCsvFilesFromSourceDbForGn2Pg
     if [[ "${is_db_exists}" == "true" ]]; then
         restoreDestinationDbFromBackup
     else
@@ -110,6 +111,7 @@ function main() {
 
     insertCbnaDataToGN
     insertCbnmcDataToGN
+
     insertTaxhubDataToGN
 
     enableAllGeoAreas
@@ -228,6 +230,32 @@ function exportCsvFilesFromSourceDb() {
 
     exportCsvFromSrc "gn_synthese.t_sources" \
         "name_source, desc_source, entity_source_pk_field, url_source, meta_create_date, meta_update_date"
+}
+
+function exportCsvFilesFromSourceDbForGn2Pg() {
+    printMsg "Export to CSV files some fixes for Gn2Pg data from source database..."
+
+    exportCsvFromSrcByQuery "gn2pg_flavia_fix_af_uuid" \
+        "SELECT
+            m."uuid" AS d_uuid,
+            af.unique_acquisition_framework_id AS af_uuid
+        FROM gn2pg_flavia.metadata_json AS m
+            JOIN gn_meta.t_datasets AS d
+                ON d.unique_dataset_id = m."uuid"
+            JOIN gn_meta.t_acquisition_frameworks AS af
+                ON af.id_acquisition_framework = d.id_acquisition_framework
+        WHERE level = 'dataset'"
+
+    exportCsvFromSrcByQuery "gn2pg_lpo_fix_af_uuid" \
+        "SELECT
+            m."uuid" AS d_uuid,
+            af.unique_acquisition_framework_id AS af_uuid
+        FROM gn2pg_lpo.metadata_json AS m
+            JOIN gn_meta.t_datasets AS d
+                ON d.unique_dataset_id = m."uuid"
+            JOIN gn_meta.t_acquisition_frameworks AS af
+                ON af.id_acquisition_framework = d.id_acquisition_framework
+        WHERE level = 'dataset'"
 }
 
 function exportCsvFromSrc() {
@@ -607,7 +635,7 @@ function transfertFlaviaGn2PgSchema() {
 function cleanFlaviaGn2Pg() {
     printMsg "Clean Flavia Gn2Pg schemas in destination database..."
 
-    executeSqlFile "200_clean_gn2pg_flavia_data.sql"
+    executeSqlFileWithInterpolatedVar "200_clean_gn2pg_flavia_data.sql"
 }
 
 function insertFlaviaGn2PgDataToGN() {
@@ -625,7 +653,7 @@ function transfertLpoGn2PgSchema() {
 function cleanLpoGn2Pg() {
     printMsg "Clean LPO Gn2Pg schemas in destination database..."
 
-    executeSqlFile "220_clean_gn2pg_lpo_data.sql"
+    executeSqlFileWithInterpolatedVar "220_clean_gn2pg_lpo_data.sql"
 }
 
 function insertLpoGn2PgDataToGN() {
@@ -936,6 +964,7 @@ function executeSqlFileWithInterpolatedVar() {
         cat "${dbgn_sql_migrate_dir}/${sql_script}" | \
         sed "s#\${ownerName}#${dbgn_db_destination_user}#g" | \
         sed "s#\${csvDirectory}#${data_dir}/csv#g" | \
+        sed "s#\${rawDirectory}#${raw_dir}#g" | \
         PGPASSWORD="${dbgn_db_destination_superadmin_password}" psql \
             -h "${dbgn_db_destination_host}" -p "${dbgn_db_destination_port}" \
             -U "${dbgn_db_destination_superadmin_name}" -d "${dbgn_db_destination_name}"

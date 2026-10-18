@@ -1,50 +1,19 @@
 -- Script to trigger Gn2PG Flavia data insert to destination DB
 
+
 \echo '-------------------------------------------------------------------------------'
-\echo 'Batch insertion of the Flavia metadata in gn_meta with the Gn2Pg trigger'
+\echo 'Triggering insertion of the Flavia metadata in gn_meta with the Gn2Pg trigger'
 
-DO $$
-DECLARE
-    step INTEGER := 500 ;
-    total INTEGER ;
-    startTime TIMESTAMP ;
-    i INTEGER := 0;
-    id_record RECORD ;
-    curs_data CURSOR FOR
-        SELECT m.uuid
-        FROM gn2pg_flavia.metadata_json  AS m
-        WHERE m.source = 'flavia'
-        --  AND d.unique_id_sinp NOT IN (
-        --    SELECT DISTINCT uuid
-        --    FROM gn2pg_flavia.error_log
-        --    WHERE source = 'flavia' AND controler = 'metadata'
-        --  )
-        ORDER BY m.uuid ;
-BEGIN
-    SELECT COUNT(*) INTO total FROM gn2pg_flavia.metadata_json ;
-    RAISE NOTICE 'Total found: %, step used: %', total, step ;
-
-    RAISE NOTICE '-------------------------------------------------' ;
-    RAISE NOTICE 'Start to loop on Flavia metadata to trigger insert in "gn_meta" schema' ;
-    FOR id_record IN curs_data LOOP
-        i := i + 1;
-
-        UPDATE gn2pg_flavia.metadata_json
-        SET uuid = uuid
-        WHERE source = 'flavia' AND uuid = id_record.uuid ;
-
-        IF i % step = 0 OR i = 1 THEN
-            IF i % step = 0 THEN
-                RAISE NOTICE 'Processed record % / %', i, total;
-                RAISE NOTICE 'Loop execution time: %', clock_timestamp() - startTime;
-            END IF;
-            startTime := clock_timestamp();
-            RAISE NOTICE '-------------------------------------------------';
-            RAISE NOTICE 'Triggering % Flavia metadata from %', step, i ;
-        END IF;
-    END LOOP;
-END
-$$ ;
+-- First AF
+UPDATE gn2pg_flavia.metadata_json
+SET uuid = uuid
+WHERE source = 'flavia'
+    AND "level" = 'acquisition framework' ;
+-- Second D
+UPDATE gn2pg_flavia.metadata_json
+SET uuid = uuid
+WHERE source = 'flavia'
+    AND "level" = 'dataset' ;
 
 
 \echo '-------------------------------------------------------------------------------'

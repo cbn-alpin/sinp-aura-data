@@ -2,6 +2,70 @@
 
 BEGIN;
 
+\echo '-------------------------------------------------------------------------------'
+\echo 'Add on UPDATE to the Gn2Pg metadata trigger for the Flavia metadata'
+
+\echo 'Drop old trigger "tri_c_upsert_metadata_to_geonature"'
+DROP TRIGGER IF EXISTS tri_c_upsert_metadata_to_geonature ON gn2pg_flavia.metadata_json ;
+
+\echo 'Create new trigger "tri_c_upsert_metadata_to_geonature"'
+CREATE TRIGGER tri_c_upsert_metadata_to_geonature
+AFTER INSERT OR UPDATE ON gn2pg_flavia.metadata_json
+FOR EACH ROW EXECUTE FUNCTION gn2pg_flavia.fct_tri_upsert_metadata_to_geonature() ;
+
+\echo 'Disable new trigger "tri_c_upsert_metadata_to_geonature" for corrections'
+ALTER TABLE gn2pg_flavia.metadata_json DISABLE TRIGGER tri_c_upsert_metadata_to_geonature ;
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Fix metadata organisms name'
+WITH corrections(nom_organisme, ancien_uuid, nouvel_uuid) AS (
+    -- Liste des triplets : (Organisme, Ancien UUID à cibler, Nouvel UUID)
+    VALUES
+        ('Commune de Claix', '73099e88-58bd-4ed6-acd0-2a9518f16d64', 'bb8a23a0-9f7a-227b-e053-5014a8c06d8b')
+)
+UPDATE metadata_json
+SET item = jsonb_set(
+    item,
+    '{actors}',
+    (
+        SELECT jsonb_agg(
+            CASE
+                WHEN actor->'identity'->>'organism_name' = 'Commune de Claix'
+                THEN jsonb_set(actor, '{uuid_actor}', to_jsonb('NOUVEAU_UUID'::text))
+                ELSE actor
+            END
+            ORDER BY ord
+        )
+        FROM jsonb_array_elements(item->'actors') WITH ORDINALITY AS arr(actor, ord)
+    )
+)
+WHERE item @> '{"actors": [{"identity": {"organism_name": "Commune de Claix"}}]}';
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Fix metadata ca_uuid in item field'
+
+CREATE TABLE gn2pg_flavia.fix_af_uuid (
+    d_uuid uuid NULL,
+    af_uuid uuid NULL
+);
+
+COPY gn2pg_flavia.fix_af_uuid (d_uuid, af_uuid)
+FROM '${rawDirectory}/gn2pg_flavia_fix_af_uuid.csv'
+WITH (FORMAT csv, HEADER true, DELIMITER E'\t');
+
+UPDATE gn2pg_flavia.metadata_json AS m
+SET item = m.item || jsonb_build_object('ca_uuid', f.af_uuid)
+FROM gn2pg_flavia.fix_af_uuid AS f
+WHERE m.uuid = f.d_uuid
+    AND m.level = 'dataset'
+    AND NOT (m.item ? 'ca_uuid');
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Enable new trigger "tri_c_upsert_metadata_to_geonature"'
+ALTER TABLE gn2pg_flavia.metadata_json ENABLE TRIGGER tri_c_upsert_metadata_to_geonature ;
+
 
 \echo '-------------------------------------------------------------------------------'
 \echo 'Delete entries of data_json table without UUID'

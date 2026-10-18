@@ -4,6 +4,63 @@ BEGIN;
 
 
 \echo '-------------------------------------------------------------------------------'
+\echo 'Add on UPDATE to the Gn2Pg metadata trigger for the LPO metadata'
+
+\echo 'Drop old trigger "tri_c_upsert_metadata_to_geonature"'
+DROP TRIGGER IF EXISTS tri_c_upsert_metadata_to_geonature ON gn2pg_lpo.metadata_json ;
+
+\echo 'Create new trigger "tri_c_upsert_metadata_to_geonature"'
+CREATE TRIGGER tri_c_upsert_metadata_to_geonature
+AFTER INSERT OR UPDATE ON gn2pg_lpo.metadata_json
+FOR EACH ROW EXECUTE FUNCTION gn2pg_lpo.fct_tri_upsert_metadata_to_geonature() ;
+
+\echo 'Disable new trigger "tri_c_upsert_metadata_to_geonature" for corrections'
+ALTER TABLE gn2pg_lpo.metadata_json DISABLE TRIGGER tri_c_upsert_metadata_to_geonature ;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Fix metadata organisms name'
+
+UPDATE gn2pg_lpo.metadata_json
+SET item = jsonb_set(
+    item,
+    '{actors}',
+    (
+        SELECT COALESCE(jsonb_agg(actor ORDER BY ord), '[]'::jsonb)
+        FROM jsonb_array_elements(item->'actors') WITH ORDINALITY AS arr(actor, ord)
+        WHERE actor->>'uuid_actor' != '101358ba-aaf5-4c3f-8b16-bfd865116b44'
+    )
+)
+WHERE item @> '{"actors": [{"uuid_actor": "101358ba-aaf5-4c3f-8b16-bfd865116b44"}]}'
+AND "uuid" = '79e9809a-03b8-4158-a356-646968fc9349' ;
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Fix metadata ca_uuid in item field'
+
+CREATE TABLE gn2pg_lpo.fix_af_uuid (
+    d_uuid uuid NULL,
+    af_uuid uuid NULL
+);
+
+COPY gn2pg_lpo.fix_af_uuid (d_uuid, af_uuid)
+FROM '${rawDirectory}/gn2pg_lpo_fix_af_uuid.csv'
+WITH (FORMAT csv, HEADER true, DELIMITER E'\t');
+
+UPDATE gn2pg_lpo.metadata_json AS m
+SET item = m.item || jsonb_build_object('ca_uuid', f.af_uuid)
+FROM gn2pg_lpo.fix_af_uuid AS f
+WHERE m.uuid = f.d_uuid
+    AND m.level = 'dataset'
+    AND NOT (m.item ? 'ca_uuid');
+
+
+\echo '-------------------------------------------------------------------------------'
+\echo 'Enable new trigger "tri_c_upsert_metadata_to_geonature"'
+ALTER TABLE gn2pg_lpo.metadata_json ENABLE TRIGGER tri_c_upsert_metadata_to_geonature ;
+
+
+\echo '-------------------------------------------------------------------------------'
 \echo 'Delete entries of data_json table without UUID'
 
 DELETE FROM gn2pg_lpo.data_json WHERE uuid IS NULL ;
