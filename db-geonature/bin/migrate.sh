@@ -119,6 +119,8 @@ function main() {
 
     startMaintenanceTask
 
+    createSyntheseViewForAtlas
+
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
     displayTimeElapsed
@@ -887,6 +889,12 @@ function updateSettingsIniDbParameters() {
     else
         echo "db_port=\"${dbgn_db_destination_port}\"" >> "settings.ini"
     fi
+}
+
+function createSyntheseViewForAtlas() {
+    printMsg "Create synthese view for Atlas in destination database..."
+
+    executeSqlFile "300_add_synthese_view_for_atlas.sql"
 }
 
 function executeSuperAdminQueryOnDst() {
