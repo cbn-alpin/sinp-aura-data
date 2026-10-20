@@ -739,6 +739,7 @@ function insertTaxhubDataToGN() {
     runTaxhubImportScript "media" "2026-10-14" "media_pifh"
     runTaxhubImportScript "txt" "2026-10-14" "attribute_cbn"
     runTaxhubImportScript "media" "2024-09-18" "media_bilan_pop"
+    runTaxhubImportScript "media" "2026-10-20" "media_inpn"
 }
 
 function runTaxhubImportScript() {
@@ -772,7 +773,7 @@ function runTaxhubImportScript() {
         -e "s/^${org_alias}_filename_prefix=.*$/${org_alias}_filename_prefix=\"${filename_prefix}\"/" \
         "settings.ini"
 
-    printError "Check updated parameters in ${org^^} settings.ini file"
+    printVerbose "Check updated parameters in ${org^^} settings.ini file"
     cat settings.ini | grep -E "^${org_alias}_(import_date|filename_prefix)="
 
     updateSettingsIniDbParameters "import-parser" "${parser_root_dir}/config"
