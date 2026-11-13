@@ -20,7 +20,7 @@ ADD COLUMN IF NOT EXISTS migration_request_uuid UUID ;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'Migrate accepted and not finished permission requests'
-
+-- ⚠️ Sensitivity filter must be set to "FALSE" to allow access to sensitive data
 WITH new_permissions AS (
     INSERT INTO gn_permissions.t_permissions (
         id_role,
@@ -40,7 +40,7 @@ WITH new_permissions AS (
         gn_commons.get_id_module_by_code('SYNTHESE') AS id_module,
         gn_permissions.get_id_object_by_code('ALL') AS id_object,
         NULL AS scope_value,
-        TRUE AS sensitivity_filter,
+        FALSE AS sensitivity_filter,
         r.meta_create_date AS created_on,
         r.end_date AS expire_on,
         TRUE AS validated,
