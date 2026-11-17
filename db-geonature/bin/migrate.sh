@@ -122,6 +122,8 @@ function main() {
 
     createSyntheseViewForAtlas
 
+    cleanMetadataTables
+
     #+----------------------------------------------------------------------------------------------------------+
     # Display script execution infos
     displayTimeElapsed
@@ -957,6 +959,12 @@ function createSyntheseViewForAtlas() {
     printMsg "Create synthese view for Atlas in destination database..."
 
     executeSqlFile "300_add_synthese_view_for_atlas.sql"
+}
+
+function cleanMetadataTables() {
+    printMsg "Clean metadata tables in destination database..."
+
+    executeSqlFile "310_clean_metadata.sql"
 }
 
 function executeSuperAdminQueryOnDst() {
