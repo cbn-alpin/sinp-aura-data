@@ -100,6 +100,7 @@ function main() {
 
     transfertExportModuleTables
     executeExportModuleScripts
+    transfertExportModuleTablesConfig
 
     transfertFlaviaGn2PgSchema
     cleanFlaviaGn2Pg
@@ -626,6 +627,67 @@ function executeExportModuleScripts() {
     for file in "${files[@]}"; do
         executeSqlFile "${file}" "${module_sql_dir}"
     done
+}
+
+function transfertExportModuleTablesConfig() {
+    printMsg "Transfert export module tables config from source to destination database..."
+
+    printVerbose "Export gn_exports.t_exports from source DB"
+    exportCsvFromSrcByQuery "gn_exports.tmp_exports" \
+        'SELECT
+            e.id,
+            e.label,
+            e.schema_name,
+            e.view_name,
+            e."desc",
+            e.geometry_field,
+            e.geometry_srid,
+            e.public,
+            l.name_licence
+        FROM gn_exports.t_exports AS e
+            JOIN gn_exports.t_licences AS l
+                ON e.id_licence = l.id_licence'
+
+    executeQuery "DROP TABLE IF EXISTS gn_exports.tmp_exports"
+    executeQuery 'CREATE TABLE gn_exports.tmp_exports (
+            id INTEGER,
+            label TEXT,
+            schema_name TEXT,
+            view_name TEXT,
+            "desc" TEXT,
+            geometry_field VARCHAR(255),
+            geometry_srid INTEGER,
+            public BOOLEAN,
+            name_licence VARCHAR(100),
+            CONSTRAINT pk_tmp_exports PRIMARY KEY (id)
+        );'
+
+    importCsvToDst "gn_exports.tmp_exports"
+
+    printVerbose "Export gn_exports.cor_exports_roles tables from source DB"
+    exportCsvFromSrcByQuery "gn_exports.tmp_exports_roles" \
+        "SELECT
+            e.label AS label_export,
+            r.uuid_role
+        FROM gn_exports.cor_exports_roles AS er
+            JOIN utilisateurs.t_roles AS r
+                ON er.id_role = r.id_role
+            JOIN gn_exports.t_exports AS e
+                ON er.id_export = e.id"
+
+    executeQuery "DROP TABLE IF EXISTS gn_exports.tmp_exports_roles"
+    executeQuery "CREATE TABLE gn_exports.tmp_exports_roles (
+            label_export TEXT,
+            uuid_role UUID,
+            CONSTRAINT pk_tmp_exports_roles PRIMARY KEY (label_export, uuid_role)
+        );"
+
+    importCsvToDst "gn_exports.tmp_exports_roles"
+
+    executeSqlFile "195_migrate_exports.sql"
+
+    executeQuery "DROP TABLE IF EXISTS gn_exports.tmp_exports_roles"
+    executeQuery "DROP TABLE IF EXISTS gn_exports.tmp_exports"
 }
 
 function transfertFlaviaGn2PgSchema() {
