@@ -3,6 +3,7 @@
 -- - <my-year> : replace with the desired year.
 -- - <db-user-pwd> : replace with the database user password.
 \timing off
+
 COPY (
     SELECT
         ro.nom_role AS nom,

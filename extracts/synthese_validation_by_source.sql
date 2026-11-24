@@ -3,6 +3,7 @@
 -- - <my-source> : replace with the desired source name (see `gn_synthese.t_sources.name_source`)
 -- - <db-user-pwd> : replace with the database user password.
 \timing off
+
 COPY (
     SELECT
         s.unique_id_sinp,
