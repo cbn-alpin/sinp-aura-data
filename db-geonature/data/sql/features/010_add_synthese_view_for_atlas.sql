@@ -17,7 +17,8 @@ CREATE OR REPLACE VIEW gn_synthese.synthese_atlas AS
         observers,
         id_dataset
     FROM gn_synthese.synthese
-    WHERE id_nomenclature_valid_status IN (
+    WHERE the_geom_point IS NOT NULL
+        AND id_nomenclature_valid_status IN (
             ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '0'),
             ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '1'),
             ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '2')
